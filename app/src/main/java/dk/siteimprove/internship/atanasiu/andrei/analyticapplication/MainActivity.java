@@ -1,8 +1,10 @@
 package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 
 
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -21,6 +23,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, HomePageFragment.OnFragmentInteractionListener, VisitsFragment.OnFragmentInteractionListener,
         SocialMediaFragment.OnFragmentInteractionListener
 {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -115,10 +118,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_manage)
         {
 
-        } else if (id == R.id.nav_share)
-        {
-
-        } else if (id == R.id.nav_send)
+        }else if (id == R.id.nav_send)
         {
 
         }
