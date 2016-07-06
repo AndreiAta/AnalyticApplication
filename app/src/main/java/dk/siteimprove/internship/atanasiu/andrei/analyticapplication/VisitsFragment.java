@@ -156,7 +156,8 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
 
                 String combinedString = "VISITS TODAY: \n\n";
 
-                combinedString = combinedString + "Bounce Rate: " + bounce_rate + "\n" +
+                combinedString = combinedString +
+                        "Bounce Rate: " + bounce_rate + "\n" +
                         "New Visitors: " + new_visitors + "\n" +
                         "Page Views: " + page_views + "\n" +
                         "Returning Visitors: " + returning_visitors + "\n" +
