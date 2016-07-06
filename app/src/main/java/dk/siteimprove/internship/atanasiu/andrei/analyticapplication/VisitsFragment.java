@@ -39,11 +39,10 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
 {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    EditText emailText;
     TextView responseView;
     ProgressBar progressBar;
     static final String API_KEY = "ebd8cdc10745831de07c286a9c6d967d";
-    static final String API_URL = "https://api.siteimprove.com/v2/sites/73617/analytics/visitors/browsers";
+    static final String API_URL = "https://api.siteimprove.com/v2/sites/73617/analytics/overview/summary?period=Today";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -86,22 +85,6 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-
-      /*  responseView = (TextView) findViewById(R.id.responseView);
-        emailText = (EditText) findViewById(R.id.emailText);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
-        Button queryButton = (Button) findViewById(R.id.queryButton);
-
-        queryButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                new RetrieveFeedTask().execute();
-            }
-        });*/
     }
 
     class RetrieveFeedTask extends AsyncTask<Void, Void, String>
@@ -164,22 +147,23 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
 
 
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
-                JSONArray items = object.getJSONArray("items");
-                String allitems = "";
-                for(int i = 0; i < items.length(); i++)
-                {
-                    String browser_name = items.getJSONObject(i).getString("browser_name");
-                    String visits = items.getJSONObject(i).getString("visits");
-                    allitems = allitems +"Browser name: " + browser_name + "\n" + "Visits: " + visits + "\n\n" ;
-                }
+                int bounce_rate = object.getInt("bounce_rate");
+                int new_visitors = object.getInt("new_visitors");
+                int page_views = object.getInt("page_views");
+                int returning_visitors = object.getInt("returning_visitors");
+                int visits = object.getInt("visits");
+                int unique_visitors = object.getInt("unique_visitors");
 
+                String combinedString = "VISITS TODAY: \n\n";
 
+                combinedString = combinedString + "Bounce Rate: " + bounce_rate + "\n" +
+                        "New Visitors: " + new_visitors + "\n" +
+                        "Page Views: " + page_views + "\n" +
+                        "Returning Visitors: " + returning_visitors + "\n" +
+                        "Visits: " + visits + "\n" +
+                        "Unique Visitors: " + unique_visitors;
 
-                responseView.setText(allitems);
-
-
-                Log.i("IMPORTANT BBBBLLAAAAAA:",items.toString());
-
+                responseView.setText(combinedString);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -194,7 +178,6 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
     {
         View rootView = inflater.inflate(R.layout.fragment_visits, container, false);
         responseView = (TextView) rootView.findViewById(R.id.responseView);
-      //  emailText = (EditText) rootView.findViewById(R.id.emailText);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
 
 
