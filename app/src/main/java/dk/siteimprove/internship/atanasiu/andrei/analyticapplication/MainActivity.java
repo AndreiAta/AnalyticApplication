@@ -18,7 +18,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, HomePageFragment.OnFragmentInteractionListener, VisitsFragment.OnFragmentInteractionListener
+        implements NavigationView.OnNavigationItemSelectedListener, HomePageFragment.OnFragmentInteractionListener, VisitsFragment.OnFragmentInteractionListener,
+        SocialMediaFragment.OnFragmentInteractionListener
 {
 
     @Override
@@ -109,6 +110,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_slideshow)
         {
+            fragmentClass = SocialMediaFragment.class;
 
         } else if (id == R.id.nav_manage)
         {

@@ -26,15 +26,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SocialMediaFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SocialMediaFragment#newInstance} factory method to
- * create an instance of this fragment.
- *
- */
+
 public class SocialMediaFragment extends Fragment implements View.OnClickListener
 {
     // TODO: Rename parameter arguments, choose names that match
@@ -42,26 +34,17 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-
-    EditText emailText;
     TextView responseView;
     ProgressBar progressBar;
     static final String API_KEY = "ebd8cdc10745831de07c286a9c6d967d";
-    static final String API_URL = "https://api.siteimprove.com/v2/sites/73617/analytics/visitors/browsers";
+    static final String API_URL = "https://api.siteimprove.com/v2/sites/73617/analytics/traffic_sources/social_media_organisations";
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SocialMediaFragment.
-     */
+
     // TODO: Rename and change types and number of parameters
     public static SocialMediaFragment newInstance(String param1, String param2) {
         SocialMediaFragment fragment = new SocialMediaFragment();
@@ -148,9 +131,15 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                 String allitems = "";
                 for(int i = 0; i < items.length(); i++)
                 {
-                    String browser_name = items.getJSONObject(i).getString("browser_name");
+                    String referrals = items.getJSONObject(i).getString("referrals");
+                    String pages = items.getJSONObject(i).getString("pages");
                     String visits = items.getJSONObject(i).getString("visits");
-                    allitems = allitems +"Browser name: " + browser_name + "\n" + "Visits: " + visits + "\n\n" ;
+                    String organisation = items.getJSONObject(i).getString("organisation");
+                    allitems = allitems+
+                            "Organisation: " + organisation +"\n" +
+                            "Number of referrals: " + referrals + "\n" +
+                            "Visits: " + visits + "\n" +
+                            "Pages: " +pages+ "\n\n" ;
                 }
 
 
@@ -218,16 +207,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
