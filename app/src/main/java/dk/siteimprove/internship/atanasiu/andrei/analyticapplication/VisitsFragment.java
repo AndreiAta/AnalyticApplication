@@ -28,131 +28,22 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-
 public class VisitsFragment extends Fragment implements View.OnClickListener
 {
-    // TODO: Rename parameter arguments, choose names that match
     ProgressBar progressBar;
     BarChart chart;
     ArrayList<BarDataSet> dataSets;
     static final String API_KEY = "ebd8cdc10745831de07c286a9c6d967d";
     static final String API_URL = "https://api.siteimprove.com/v2/sites/73617/analytics/behavior/visits_by_hour";
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
-    public VisitsFragment()
-    {
-        // Required empty public constructor
-    }
-
-
-    // TODO: Rename and change types and number of parameters
-    public static VisitsFragment newInstance(String param1, String param2)
-    {
-        VisitsFragment fragment = new VisitsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    public VisitsFragment() {    } // Required empty public constructor
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    class RetrieveFeedTask extends AsyncTask<Void, Void, String>
-    {
-
-        private Exception exception;
-
-        protected void onPreExecute() {
-            progressBar.setVisibility(View.VISIBLE);
-            //responseView.setText("LOADING");
-        }
-
-        protected String doInBackground(Void... urls) {
-            String email = "andrei.atanasiu1994@gmail.com";
-            // Do some validation here
-
-
-            try {
-                URL url = new URL(API_URL );
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                String credentials = email + ":" + API_KEY;
-                String auth = "Basic" + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
-                urlConnection.setRequestProperty("Authorization",auth);
-                urlConnection.setRequestMethod("GET");
-                urlConnection.setRequestProperty("Accept", "application/json");
-                try {
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                    StringBuilder stringBuilder = new StringBuilder();
-                    String line;
-                    while ((line = bufferedReader.readLine()) != null) {
-                        stringBuilder.append(line).append("\n");
-                    }
-                    bufferedReader.close();
-                    return stringBuilder.toString();
-                }
-                finally{
-                    urlConnection.disconnect();
-                }
-            }
-            catch(Exception e) {
-                Log.e("ERROR", e.getMessage(), e);
-                return null;
-            }
-        }
-
-        protected void onPostExecute(String response)
-        {
-            if(response == null) {
-                response = "THERE WAS AN ERROR";
-            }
-            progressBar.setVisibility(View.GONE);
-            Log.i("INFO", response);
-
-            try {
-                Log.i("INFO XXXXXXXXX", response);
-
-                JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
-                JSONArray items = object.getJSONArray("items");
-                ArrayList<BarEntry> valueSet1 = new ArrayList<>();
-
-                for(Integer i = 0; i < items.length(); i++)
-                {
-                    int hour_of_day = items.getJSONObject(i).getInt("hour_of_day");
-                    int visits = items.getJSONObject(i).getInt("visits");
-
-                    BarEntry entry = new BarEntry((float)visits, hour_of_day);
-                    valueSet1.add(entry);
-
-                }
-                BarDataSet barDataSet1 = new BarDataSet(valueSet1, "VISITS PER HOUR");
-                barDataSet1.setColor(Color.rgb(0, 155, 0));
-                dataSets = new ArrayList<>();
-                dataSets.add(barDataSet1);
-
-                drawGraph();
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        }
     }
 
     @Override
@@ -178,15 +69,6 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         new RetrieveFeedTask().execute();
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri)
-    {
-        if (mListener != null)
-        {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Context context)
     {
@@ -207,7 +89,6 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         super.onDetach();
         mListener = null;
     }
-
 
     public interface OnFragmentInteractionListener
     {
@@ -231,11 +112,99 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         BarData data = new BarData(getXAxisValues(), dataSets);
         Log.i("DATA SETS", dataSets.toString());
         chart.setData(data);
-        //chart.setDescription("My Chart");
+        chart.setDescription("");
         chart.animateXY(2000, 2000);
         chart.invalidate();
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);
+    }
+
+
+    class RetrieveFeedTask extends AsyncTask<Void, Void, String> //This is a Class
+    {
+        private Exception exception;
+
+        protected void onPreExecute()
+        {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        protected String doInBackground(Void... urls)
+        {
+            String email = "andrei.atanasiu1994@gmail.com";
+
+            try
+            {
+                URL url = new URL(API_URL );
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                String credentials = email + ":" + API_KEY;
+                String auth = "Basic" + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
+                urlConnection.setRequestProperty("Authorization",auth);
+                urlConnection.setRequestMethod("GET");
+                urlConnection.setRequestProperty("Accept", "application/json");
+                try
+                {
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                    StringBuilder stringBuilder = new StringBuilder();
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null)
+                    {
+                        stringBuilder.append(line).append("\n");
+                    }
+                    bufferedReader.close();
+                    return stringBuilder.toString();
+                }
+                finally{
+                    urlConnection.disconnect();
+                }
+            }
+            catch(Exception e) {
+                Log.e("ERROR", e.getMessage(), e);
+                return null;
+            }
+        }
+
+        protected void onPostExecute(String response)
+        {
+            if(response == null) {
+                response = "THERE WAS AN ERROR";
+            }
+            progressBar.setVisibility(View.GONE);
+            Log.i("INFO", response);
+
+<<<<<<< HEAD
+            try {
+                Log.i("INFO XXXXXXXXX", response);
+
+=======
+            try
+            {
+>>>>>>> 78d722822e56185fa79df7ff9ab06783627d1d14
+                JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
+                JSONArray items = object.getJSONArray("items");
+                ArrayList<BarEntry> valueSet1 = new ArrayList<>();
+
+                for(Integer i = 0; i < items.length(); i++)
+                {
+                    int hour_of_day = items.getJSONObject(i).getInt("hour_of_day");
+                    int visits = items.getJSONObject(i).getInt("visits");
+
+                    BarEntry entry = new BarEntry((float)visits, hour_of_day);
+                    valueSet1.add(entry);
+
+                }
+                BarDataSet barDataSet1 = new BarDataSet(valueSet1, "VISITS PER HOUR");
+                barDataSet1.setColor(Color.rgb(0, 155, 0));
+                dataSets = new ArrayList<>();
+                dataSets.add(barDataSet1);
+
+                drawGraph();
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 }
