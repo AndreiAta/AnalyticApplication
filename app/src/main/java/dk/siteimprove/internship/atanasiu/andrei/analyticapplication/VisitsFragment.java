@@ -1,41 +1,41 @@
 package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
+import java.util.ArrayList;
 
 
 public class VisitsFragment extends Fragment implements View.OnClickListener
 {
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    TextView responseView;
     ProgressBar progressBar;
+    BarChart chart;
+    ArrayList<BarDataSet> dataSets;
     static final String API_KEY = "ebd8cdc10745831de07c286a9c6d967d";
-    static final String API_URL = "https://api.siteimprove.com/v2/sites/73617/analytics/overview/summary?period=Today";
+    static final String API_URL = "https://api.siteimprove.com/v2/sites/73617/analytics/behavior/visits_by_hour";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -80,17 +80,16 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
 
         protected void onPreExecute() {
             progressBar.setVisibility(View.VISIBLE);
-            responseView.setText("LOADING");
+            //responseView.setText("LOADING");
         }
 
         protected String doInBackground(Void... urls) {
             String email = "andrei.atanasiu1994@gmail.com";
-            // emailText.getText().toString();
             // Do some validation here
 
 
             try {
-                URL url = new URL(API_URL  /*"email=" + email + "&apiKey=" + API_KEY*/);
+                URL url = new URL(API_URL );
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 String credentials = email + ":" + API_KEY;
                 String auth = "Basic" + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
@@ -124,33 +123,29 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
             }
             progressBar.setVisibility(View.GONE);
             Log.i("INFO", response);
-            //responseView.setText(response);
-
-            // TODO: check this.exception
-            // TODO: do something with the feed
 
             try {
                 Log.i("INFO XXXXXXXXX", response);
 
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
-                int bounce_rate = object.getInt("bounce_rate");
-                int new_visitors = object.getInt("new_visitors");
-                int page_views = object.getInt("page_views");
-                int returning_visitors = object.getInt("returning_visitors");
-                int visits = object.getInt("visits");
-                int unique_visitors = object.getInt("unique_visitors");
+                JSONArray items = object.getJSONArray("items");
+                ArrayList<BarEntry> valueSet1 = new ArrayList<>();
 
-                String combinedString = "VISITS TODAY: \n\n";
+                for(Integer i = 0; i < items.length(); i++)
+                {
+                    int hour_of_day = items.getJSONObject(i).getInt("hour_of_day");
+                    int visits = items.getJSONObject(i).getInt("visits");
 
-                combinedString = combinedString +
-                        "Bounce Rate: " + bounce_rate + "\n" +
-                        "New Visitors: " + new_visitors + "\n" +
-                        "Page Views: " + page_views + "\n" +
-                        "Returning Visitors: " + returning_visitors + "\n" +
-                        "Visits: " + visits + "\n" +
-                        "Unique Visitors: " + unique_visitors;
+                    BarEntry entry = new BarEntry((float)visits, hour_of_day);
+                    valueSet1.add(entry);
 
-                responseView.setText(combinedString);
+                }
+                BarDataSet barDataSet1 = new BarDataSet(valueSet1, "VISITS PER HOUR");
+                barDataSet1.setColor(Color.rgb(0, 155, 0));
+                dataSets = new ArrayList<>();
+                dataSets.add(barDataSet1);
+
+                drawGraph();
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -164,18 +159,16 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
                              Bundle savedInstanceState)
     {
         View rootView = inflater.inflate(R.layout.fragment_visits, container, false);
-        responseView = (TextView) rootView.findViewById(R.id.responseView);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
-
-
         new RetrieveFeedTask().execute();
+        chart = (BarChart) rootView.findViewById(R.id.chart);
+
+
         Button queryButton = (Button) rootView.findViewById(R.id.queryButton);
 
         queryButton.setOnClickListener(this);
         // Inflate the layout for this fragment
         return  rootView;
-
-
     }
 
     @Override
@@ -219,5 +212,26 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
     {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private ArrayList<String> getXAxisValues() {
+        ArrayList<String> xAxis = new ArrayList<>();
+
+        for (Integer i = 0; i < 24 ; i++)
+        {
+            xAxis.add(i.toString());
+        }
+
+        return xAxis;
+    }
+
+    private void drawGraph()
+    {
+        BarData data = new BarData(getXAxisValues(), dataSets);
+        Log.i("DATA SETS", dataSets.toString());
+        chart.setData(data);
+        chart.setDescription("My Chart");
+        chart.animateXY(2000, 2000);
+        chart.invalidate();
     }
 }
