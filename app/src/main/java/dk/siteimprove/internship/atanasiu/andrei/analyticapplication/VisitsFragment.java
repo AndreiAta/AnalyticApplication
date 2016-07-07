@@ -173,14 +173,8 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
             progressBar.setVisibility(View.GONE);
             Log.i("INFO", response);
 
-<<<<<<< HEAD
-            try {
-                Log.i("INFO XXXXXXXXX", response);
-
-=======
             try
             {
->>>>>>> 78d722822e56185fa79df7ff9ab06783627d1d14
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
                 ArrayList<BarEntry> valueSet1 = new ArrayList<>();
