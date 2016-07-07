@@ -20,7 +20,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, HomePageFragment.OnFragmentInteractionListener, VisitsFragment.OnFragmentInteractionListener,
+        implements NavigationView.OnNavigationItemSelectedListener,
+        HomePageFragment.OnFragmentInteractionListener,
+        VisitsFragment.OnFragmentInteractionListener,
         SocialMediaFragment.OnFragmentInteractionListener
 {
 
