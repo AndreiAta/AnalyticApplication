@@ -189,7 +189,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
 
                 }
                 BarDataSet barDataSet1 = new BarDataSet(valueSet1, "VISITS PER HOUR");
-                barDataSet1.setColor(Color.rgb(0, 155, 0));
+                barDataSet1.setColor(Color.rgb(49, 79, 49));
                 dataSets = new ArrayList<>();
                 dataSets.add(barDataSet1);
 
