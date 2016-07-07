@@ -130,7 +130,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
             // TODO: do something with the feed
 
             try {
-
+                Log.i("INFO XXXXXXXXX", response);
 
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 int bounce_rate = object.getInt("bounce_rate");
