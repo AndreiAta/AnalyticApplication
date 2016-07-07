@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -230,8 +231,11 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         BarData data = new BarData(getXAxisValues(), dataSets);
         Log.i("DATA SETS", dataSets.toString());
         chart.setData(data);
-        chart.setDescription("My Chart");
+        //chart.setDescription("My Chart");
         chart.animateXY(2000, 2000);
         chart.invalidate();
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setSpaceBetweenLabels(0);
     }
 }
