@@ -170,7 +170,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
 
                 }
                 BarDataSet barDataSet1 = new BarDataSet(valueSet1, "VISITS");
-                barDataSet1.setColor(Color.rgb(0, 155, 0));
+                barDataSet1.setColor(Color.rgb(49, 79, 79));
                 dataSets = new ArrayList<>();
                 dataSets.add(barDataSet1);
 
