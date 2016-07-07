@@ -1,6 +1,7 @@
 package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,33 +12,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 
 
 public class SocialMediaFragment extends Fragment implements View.OnClickListener
 {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    TextView responseView;
+    BarChart chart;
+    ArrayList<BarDataSet> dataSets;
+    ArrayList<String> xAxis;
     ProgressBar progressBar;
     static final String API_KEY = "ebd8cdc10745831de07c286a9c6d967d";
     static final String API_URL = "https://api.siteimprove.com/v2/sites/73617/analytics/traffic_sources/social_media_organisations";
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -74,7 +76,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
 
         protected void onPreExecute() {
             progressBar.setVisibility(View.VISIBLE);
-            responseView.setText("LOADING");
+
         }
 
         protected String doInBackground(Void... urls) {
@@ -128,26 +130,36 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
 
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
-                String allitems = "";
+                ArrayList<BarEntry> valueSet1 = new ArrayList<>();
+                xAxis = new ArrayList<>();
+                int numberorg = 0;
                 for(int i = 0; i < items.length(); i++)
                 {
-                    String referrals = items.getJSONObject(i).getString("referrals");
-                    String pages = items.getJSONObject(i).getString("pages");
-                    String visits = items.getJSONObject(i).getString("visits");
+
+                    Integer pages = items.getJSONObject(i).getInt("pages");
+                    Integer visits = items.getJSONObject(i).getInt("visits");
                     String organisation = items.getJSONObject(i).getString("organisation");
-                    allitems = allitems+
-                            "Organisation: " + organisation +"\n" +
-                            "Number of referrals: " + referrals + "\n" +
-                            "Visits: " + visits + "\n" +
-                            "Pages: " +pages+ "\n\n" ;
+
+                    BarEntry entry = new BarEntry((float)visits, numberorg);
+                    valueSet1.add(entry);
+                    xAxis.add(organisation);
+                    numberorg = numberorg + 1;
+
+
                 }
 
+                BarDataSet barDataSet1 = new BarDataSet(valueSet1, "VISITS");
+                barDataSet1.setColor(Color.rgb(0, 155, 0));
+                dataSets = new ArrayList<>();
+                dataSets.add(barDataSet1);
+
+                drawGraph();
 
 
-                responseView.setText(allitems);
 
 
-                Log.i("IMPORTANT BBBBLLAAAAAA:",items.toString());
+
+
 
 
             } catch (JSONException e) {
@@ -164,10 +176,9 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
     {
 
         View rootView = inflater.inflate(R.layout.fragment_visits, container, false);
-        responseView = (TextView) rootView.findViewById(R.id.responseView);
-        //  emailText = (EditText) rootView.findViewById(R.id.emailText);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
-
+        new RetrieveFeedTask().execute();
+        chart = (BarChart) rootView.findViewById(R.id.chart);
 
         new RetrieveFeedTask().execute();
         Button queryButton = (Button) rootView.findViewById(R.id.queryButton);
@@ -211,5 +222,18 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private void drawGraph()
+    {
+        BarData data = new BarData(xAxis, dataSets);
+        Log.i("DATA SETS", dataSets.toString());
+        chart.setData(data);
+        //chart.setDescription("My Chart");
+        chart.animateXY(2000, 2000);
+        chart.invalidate();
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setSpaceBetweenLabels(0);
     }
 }
