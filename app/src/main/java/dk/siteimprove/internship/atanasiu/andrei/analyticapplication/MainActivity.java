@@ -23,7 +23,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         HomePageFragment.OnFragmentInteractionListener,
         VisitsFragment.OnFragmentInteractionListener,
-        SocialMediaFragment.OnFragmentInteractionListener
+        SocialMediaFragment.OnFragmentInteractionListener,
+        SearchEnginesFragment.OnFragmentInteractionListener
 {
 
 
@@ -119,6 +120,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_manage)
         {
+            fragmentClass = SearchEnginesFragment.class;
 
         }else if (id == R.id.nav_send)
         {
