@@ -28,8 +28,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-
-
 public class SocialMediaFragment extends Fragment implements View.OnClickListener
 {
     BarChart chart;
