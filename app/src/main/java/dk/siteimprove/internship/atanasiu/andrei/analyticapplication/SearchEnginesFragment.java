@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+
+import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -39,7 +41,7 @@ import com.github.mikephil.charting.data.BarEntry;
 
 public class SearchEnginesFragment extends Fragment implements View.OnClickListener
 {
-    BarChart chart;
+    HorizontalBarChart chart;
     ArrayList<BarDataSet> dataSets;
     ArrayList<String> xAxis;
     ProgressBar progressBar;
@@ -63,8 +65,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
     {
         View rootView = inflater.inflate(R.layout.fragment_search_engines, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
-
-        chart = (BarChart) rootView.findViewById(R.id.chart);
+        chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);
         new RetrieveFeedTask().execute();
 
         Button queryButton = (Button) rootView.findViewById(R.id.queryButton);
@@ -199,6 +200,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
 
                 BarDataSet barDataSet1 = new BarDataSet(valueSet1, "VISITS");
                 barDataSet1.setColor(Color.rgb(49, 79, 49));
+                barDataSet1.setBarSpacePercent(50f);
                 dataSets = new ArrayList<>();
                 dataSets.add(barDataSet1);
 
