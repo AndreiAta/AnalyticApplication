@@ -11,12 +11,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="left|top">
 
-        <EditText
-            android:id="@+id/emailText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
-            android:hint="Enter email address"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -27,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 style="@style/Base.Widget.AppCompat.Button.Borderless"
-                android:text="Search"
+                android:text="Update"
                 android:onClick="query"/>
         </LinearLayout>
         <LinearLayout

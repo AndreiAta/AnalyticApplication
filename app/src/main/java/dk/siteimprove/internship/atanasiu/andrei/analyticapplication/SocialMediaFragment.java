@@ -52,7 +52,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View rootView = inflater.inflate(R.layout.fragment_visits, container, false); // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_social_media, container, false); // Inflate the layout for this fragment
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         new RetrieveFeedTask().execute();
         chart = (BarChart) rootView.findViewById(R.id.chart);

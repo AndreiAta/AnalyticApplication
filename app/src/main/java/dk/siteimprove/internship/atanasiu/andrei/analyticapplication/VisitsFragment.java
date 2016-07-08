@@ -28,11 +28,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+
 public class VisitsFragment extends Fragment implements View.OnClickListener
 {
     ProgressBar progressBar;
-    BarChart chart;
-    ArrayList<BarDataSet> dataSets;
+    LineChart chart;
+    ArrayList<LineDataSet> dataSets;
     static final String API_KEY = "ebd8cdc10745831de07c286a9c6d967d";
     static final String API_URL = "https://api.siteimprove.com/v2/sites/73617/analytics/behavior/visits_by_hour";
 
@@ -53,7 +59,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         View rootView = inflater.inflate(R.layout.fragment_visits, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         new RetrieveFeedTask().execute();
-        chart = (BarChart) rootView.findViewById(R.id.chart);
+        chart = (LineChart) rootView.findViewById(R.id.chart);
 
 
         Button queryButton = (Button) rootView.findViewById(R.id.queryButton);
@@ -109,7 +115,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
 
     private void drawGraph()
     {
-        BarData data = new BarData(getXAxisValues(), dataSets);
+        LineData data = new LineData(getXAxisValues(), dataSets);
         Log.i("DATA SETS", dataSets.toString());
         chart.setData(data);
         chart.setDescription("");
@@ -118,7 +124,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);
-        data.setValueTextSize(7f);
+        data.setValueTextSize(9f);
     }
 
 
@@ -178,21 +184,22 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
             {
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
-                ArrayList<BarEntry> valueSet1 = new ArrayList<>();
+                ArrayList<Entry> valueSet1 = new ArrayList<>();
 
                 for(Integer i = 0; i < items.length(); i++)
                 {
                     int hour_of_day = items.getJSONObject(i).getInt("hour_of_day");
                     int visits = items.getJSONObject(i).getInt("visits");
 
-                    BarEntry entry = new BarEntry((float)visits, hour_of_day);
+                    Entry entry = new Entry((float)visits, hour_of_day);
                     valueSet1.add(entry);
 
                 }
-                BarDataSet barDataSet1 = new BarDataSet(valueSet1, "VISITS PER HOUR");
-                barDataSet1.setColor(Color.rgb(49, 79, 49));
+                LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "VISITS PER HOUR");
+                lineDataSet1.setColor(Color.rgb(49, 79, 49));
+                lineDataSet1.setDrawFilled(true);
                 dataSets = new ArrayList<>();
-                dataSets.add(barDataSet1);
+                dataSets.add(lineDataSet1);
 
                 drawGraph();
 

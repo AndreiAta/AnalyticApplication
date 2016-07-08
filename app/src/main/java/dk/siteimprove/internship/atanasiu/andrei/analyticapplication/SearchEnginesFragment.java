@@ -29,12 +29,18 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+
 
 
 public class SearchEnginesFragment extends Fragment implements View.OnClickListener
 {
-    LineChart chart;
-    ArrayList<LineDataSet> dataSets;
+    BarChart chart;
+    ArrayList<BarDataSet> dataSets;
     ArrayList<String> xAxis;
     ProgressBar progressBar;
     static final String API_KEY = "ebd8cdc10745831de07c286a9c6d967d";
@@ -58,7 +64,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
         View rootView = inflater.inflate(R.layout.fragment_search_engines, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
 
-        chart = (LineChart) rootView.findViewById(R.id.chart);
+        chart = (BarChart) rootView.findViewById(R.id.chart);
         new RetrieveFeedTask().execute();
 
         Button queryButton = (Button) rootView.findViewById(R.id.queryButton);
@@ -105,7 +111,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
 
     private void drawGraph()
     {
-        LineData data = new LineData(xAxis, dataSets);
+        BarData data = new BarData(xAxis, dataSets);
         Log.i("DATA SETS", dataSets.toString());
         chart.setData(data);
         chart.setDescription("");
@@ -114,7 +120,8 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);
-        data.setValueTextSize(9f);
+        data.setValueTextSize(10f);
+
     }
 
     class RetrieveFeedTask extends AsyncTask<Void, Void, String>
@@ -172,7 +179,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
 
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
-                ArrayList<Entry> valueSet1 = new ArrayList<>();
+                ArrayList<BarEntry> valueSet1 = new ArrayList<>();
                 xAxis = new ArrayList<>();
                 int numberSearch = 0;
                 for(int i = 0; i < items.length(); i++)
@@ -182,7 +189,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
                     Integer visits = items.getJSONObject(i).getInt("visits");
                     String search_engine = items.getJSONObject(i).getString("search_engine");
 
-                    Entry entry = new Entry((float)visits, numberSearch);
+                    BarEntry entry = new BarEntry((float)visits, numberSearch);
                     valueSet1.add(entry);
                     xAxis.add(search_engine);
                     numberSearch = numberSearch + 1;
@@ -190,10 +197,10 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
 
                 }
 
-                LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "VISITS");
-                lineDataSet1.setColor(Color.rgb(0, 0, 0));
+                BarDataSet barDataSet1 = new BarDataSet(valueSet1, "VISITS");
+                barDataSet1.setColor(Color.rgb(49, 79, 49));
                 dataSets = new ArrayList<>();
-                dataSets.add(lineDataSet1);
+                dataSets.add(barDataSet1);
 
                 drawGraph();
 
