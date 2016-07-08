@@ -114,6 +114,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);
+        data.setValueTextSize(9f);
     }
 
     class RetrieveFeedTask extends AsyncTask<Void, Void, String>

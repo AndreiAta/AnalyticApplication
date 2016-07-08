@@ -118,6 +118,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);
+        data.setValueTextSize(7f);
     }
 
 
