@@ -63,9 +63,9 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
     {
         View rootView = inflater.inflate(R.layout.fragment_search_engines, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
-
-        chart = (BarChart) rootView.findViewById(R.id.chart);
         new RetrieveFeedTask().execute();
+        chart = (BarChart) rootView.findViewById(R.id.chart);
+
 
         Button queryButton = (Button) rootView.findViewById(R.id.queryButton);
         queryButton.setOnClickListener(this);
