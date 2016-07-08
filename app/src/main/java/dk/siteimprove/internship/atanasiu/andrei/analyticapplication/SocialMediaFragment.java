@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -30,7 +31,7 @@ import java.util.ArrayList;
 
 public class SocialMediaFragment extends Fragment implements View.OnClickListener
 {
-    BarChart chart;
+    HorizontalBarChart chart;
     ArrayList<BarDataSet> dataSets;
     ArrayList<String> xAxis;
     ProgressBar progressBar;
@@ -52,8 +53,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
     {
         View rootView = inflater.inflate(R.layout.fragment_social_media, container, false); // Inflate the layout for this fragment
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
-
-        chart = (BarChart) rootView.findViewById(R.id.chart);
+        chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);
 
         new RetrieveFeedTask().execute();
 
@@ -101,6 +101,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);
+        data.setValueTextSize(10f);
     }
 
     class RetrieveFeedTask extends AsyncTask<Void, Void, String> // THIS IS A CLASS
@@ -144,6 +145,8 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
 
         protected void onPostExecute(String response)
         {
+            Log.i("ERROR", response);
+
             if(response == null) {
                 response = "THERE WAS AN ERROR";
             }
@@ -169,6 +172,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                 }
                 BarDataSet barDataSet1 = new BarDataSet(valueSet1, "VISITS");
                 barDataSet1.setColor(Color.rgb(49, 79, 79));
+                barDataSet1.setBarSpacePercent(50f);
                 dataSets = new ArrayList<>();
                 dataSets.add(barDataSet1);
 
