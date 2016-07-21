@@ -1,6 +1,7 @@
 package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 
 
+import android.app.Dialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.MainVisitsFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.VisitsFragment;
@@ -33,6 +37,8 @@ public class MainActivity extends AppCompatActivity
 {
 
     public static String API_ID; // Should perhaps have some getter/setter?
+    public static String API_EMAIL;
+    public static String API_KEY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -41,6 +47,28 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        if(API_EMAIL == null)
+        {
+            final Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.popup);
+            dialog.setCancelable(false);
+
+            final EditText emailText = (EditText) dialog.findViewById(R.id.emailTextField);
+            EditText apiKeyText = (EditText) dialog.findViewById(R.id.apiKeyTextField);
+            Button button = (Button) dialog.findViewById(R.id.Button01);
+            button.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    API_EMAIL = emailText.toString();
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.show();
+        }
 
         if (savedInstanceState == null) {
             Fragment fragment = null;
