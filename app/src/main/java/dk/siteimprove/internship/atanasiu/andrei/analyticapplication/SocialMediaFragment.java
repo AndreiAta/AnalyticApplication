@@ -36,7 +36,8 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
     ArrayList<String> xAxis;
     ProgressBar progressBar;
     static final String API_KEY = "ebd8cdc10745831de07c286a9c6d967d";
-    static final String API_URL = "https://api.siteimprove.com/v2/sites/73617/analytics/traffic_sources/social_media_organisations";
+    String API_URL = "";
+    //"https://api.siteimprove.com/v2/sites/73617/analytics/traffic_sources/social_media_organisations";
 
     private OnFragmentInteractionListener mListener;
 
@@ -51,6 +52,13 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        if(MainActivity.API_ID != null)
+        {
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID + "/analytics/traffic_sources/social_media_organisations";
+        }else
+        {
+            //TODO error message no Site selected
+        }
         View rootView = inflater.inflate(R.layout.fragment_social_media, container, false); // Inflate the layout for this fragment
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);

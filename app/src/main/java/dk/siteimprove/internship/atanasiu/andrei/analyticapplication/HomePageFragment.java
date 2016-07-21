@@ -44,6 +44,7 @@ public class HomePageFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
 
+
     }
 
     @Override
@@ -55,21 +56,22 @@ public class HomePageFragment extends Fragment
         new RetrieveFeedTask().execute();
 
         siteNames.add("Select Site");
-        siteNames.add("Another one");
-        siteNames.add("A Third one");
+        siteIds.add("Test");
         spinner = (Spinner) rootView.findViewById(R.id.spinner1);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, siteNames);
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        //spinner.setSelection(0);
         spinner.setAdapter(adapter);
-        spinner.setSelection(0);
         textView = (TextView) rootView.findViewById(R.id.homePageText);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
             {
-                String myString = spinner.getSelectedItem().toString();
-                textView.setText(myString);
+                Integer myInteger = spinner.getSelectedItemPosition();
+                textView.setText(siteIds.get(myInteger));
+                MainActivity.API_ID = siteIds.get(myInteger);
+
             }
 
             @Override
