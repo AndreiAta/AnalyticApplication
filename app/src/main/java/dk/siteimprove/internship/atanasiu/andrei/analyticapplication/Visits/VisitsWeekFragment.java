@@ -1,4 +1,4 @@
-package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
+package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -13,20 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -34,45 +20,66 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
-public class VisitsFragment extends Fragment implements View.OnClickListener
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
+
+
+public class VisitsWeekFragment extends Fragment
 {
+    private OnFragmentInteractionListener mListener;
     ProgressBar progressBar;
     LineChart chart;
     ArrayList<LineDataSet> dataSets;
     static final String API_KEY = "ebd8cdc10745831de07c286a9c6d967d";
-    static final String API_URL = "https://api.siteimprove.com/v2/sites/73617/analytics/behavior/visits_by_hour";
+    String API_URL = "";
 
-    private OnFragmentInteractionListener mListener;
+    public VisitsWeekFragment()
+    {
+        // Required empty public constructor
+    }
 
-    public VisitsFragment() {    } // Required empty public constructor
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        if(MainActivity.API_ID != null)
+        {
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID + "/analytics/behavior/visits_by_hour";
+
+        }else
+        {
+            //TODO error message no Site selected
+        }
         View rootView = inflater.inflate(R.layout.fragment_visits, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         new RetrieveFeedTask().execute();
         chart = (LineChart) rootView.findViewById(R.id.chart);
 
 
-        Button queryButton = (Button) rootView.findViewById(R.id.queryButton);
-
-        queryButton.setOnClickListener(this);
+        //Button queryButton = (Button) rootView.findViewById(R.id.queryButton);
+        //queryButton.setOnClickListener(this);
         // Inflate the layout for this fragment
         return  rootView;
-    }
 
-    @Override
-    public void onClick(View v)
-    {
-        new RetrieveFeedTask().execute();
     }
 
     @Override
@@ -96,38 +103,21 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         mListener = null;
     }
 
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
     public interface OnFragmentInteractionListener
     {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
-    private ArrayList<String> getXAxisValues() {
-        ArrayList<String> xAxis = new ArrayList<>();
-
-        for (Integer i = 0; i < 24 ; i++)
-        {
-            xAxis.add(i.toString());
-        }
-
-        return xAxis;
-    }
-
-    private void drawGraph()
-    {
-        LineData data = new LineData(getXAxisValues(), dataSets);
-        Log.i("DATA SETS", dataSets.toString());
-        chart.setData(data);
-        chart.setDescription("");
-        chart.animateXY(2000, 2000);
-        chart.invalidate();
-        XAxis xAxis = chart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setSpaceBetweenLabels(0);
-        data.setValueTextSize(9f);
-    }
-
-
     class RetrieveFeedTask extends AsyncTask<Void, Void, String> //This is a Class
     {
         private Exception exception;
@@ -170,6 +160,30 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
                 Log.e("ERROR", e.getMessage(), e);
                 return null;
             }
+        }
+        private ArrayList<String> getXAxisValues() {
+            ArrayList<String> xAxis = new ArrayList<>();
+
+            for (Integer i = 0; i < 24 ; i++)
+            {
+                xAxis.add(i.toString());
+            }
+
+            return xAxis;
+        }
+
+        private void drawGraph()
+        {
+            LineData data = new LineData(getXAxisValues(), dataSets);
+            Log.i("DATA SETS", dataSets.toString());
+            chart.setData(data);
+            chart.setDescription("");
+            chart.animateXY(2000, 2000);
+            chart.invalidate();
+            XAxis xAxis = chart.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xAxis.setSpaceBetweenLabels(0);
+            data.setValueTextSize(9f);
         }
 
         protected void onPostExecute(String response)

@@ -1,15 +1,10 @@
 package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 
 
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,14 +14,21 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.MainVisitsFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.VisitsFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.VisitsWeekFragment;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         HomePageFragment.OnFragmentInteractionListener,
         VisitsFragment.OnFragmentInteractionListener,
         SocialMediaFragment.OnFragmentInteractionListener,
-        SearchEnginesFragment.OnFragmentInteractionListener
+        SearchEnginesFragment.OnFragmentInteractionListener,
+        MainVisitsFragment.OnFragmentInteractionListener,
+        VisitsWeekFragment.OnFragmentInteractionListener
 {
 
+    public static String API_ID; // Should perhaps have some getter/setter?
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -112,7 +114,8 @@ public class MainActivity extends AppCompatActivity
             fragmentClass = HomePageFragment.class;
         } else if (id == R.id.nav_gallery)
         {
-            fragmentClass = VisitsFragment.class;
+            fragmentClass = MainVisitsFragment.class;
+
 
         } else if (id == R.id.nav_slideshow)
         {
