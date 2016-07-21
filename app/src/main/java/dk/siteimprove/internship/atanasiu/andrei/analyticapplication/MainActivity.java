@@ -18,6 +18,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaMainFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaWeekFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.MainVisitsFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.VisitsFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.VisitsMonthFragment;
@@ -33,7 +37,9 @@ public class MainActivity extends AppCompatActivity
         MainVisitsFragment.OnFragmentInteractionListener,
         VisitsWeekFragment.OnFragmentInteractionListener,
         VisitsMonthFragment.OnFragmentInteractionListener,
-        VisitsYearFragment.OnFragmentInteractionListener
+        VisitsYearFragment.OnFragmentInteractionListener,
+        SocialMediaWeekFragment.OnFragmentInteractionListener,
+        SocialMediaMainFragment.OnFragmentInteractionListener
 {
 
     public static String API_ID; // Should perhaps have some getter/setter?
@@ -151,7 +157,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_slideshow)
         {
-            fragmentClass = SocialMediaFragment.class;
+            fragmentClass = SocialMediaMainFragment.class;
 
         } else if (id == R.id.nav_manage)
         {
