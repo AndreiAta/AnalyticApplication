@@ -42,8 +42,18 @@ public class MainVisitsFragment extends Fragment
 
         Bundle arg2 = new Bundle();
         arg2.putInt("Arg for Frag2", 2);
-        mTabHost.addTab(mTabHost.newTabSpec("Tab2").setIndicator("Last seven days"),
+        mTabHost.addTab(mTabHost.newTabSpec("Tab2").setIndicator("Last 7 days"),
                 VisitsWeekFragment.class, arg2);
+
+        Bundle arg3 = new Bundle();
+        arg3.putInt("Arg for Frag3", 3);
+        mTabHost.addTab(mTabHost.newTabSpec("Tab3").setIndicator("Month"),
+                VisitsMonthFragment.class, arg3);
+
+        Bundle arg4 = new Bundle();
+        arg4.putInt("Arg for Frag4", 4);
+        mTabHost.addTab(mTabHost.newTabSpec("Tab4").setIndicator("Year"),
+                VisitsYearFragment.class, arg4);
 
         return mTabHost;
     }

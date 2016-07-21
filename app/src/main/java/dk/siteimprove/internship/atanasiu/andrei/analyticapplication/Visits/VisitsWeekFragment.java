@@ -69,15 +69,11 @@ public class VisitsWeekFragment extends Fragment
         {
             //TODO error message no Site selected
         }
-        View rootView = inflater.inflate(R.layout.fragment_visits, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_visits_week, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         new RetrieveFeedTask().execute();
         chart = (LineChart) rootView.findViewById(R.id.chart);
 
-
-        //Button queryButton = (Button) rootView.findViewById(R.id.queryButton);
-        //queryButton.setOnClickListener(this);
-        // Inflate the layout for this fragment
         return  rootView;
 
     }

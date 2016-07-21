@@ -74,11 +74,6 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         new RetrieveFeedTask().execute();
         chart = (LineChart) rootView.findViewById(R.id.chart);
 
-
-        Button queryButton = (Button) rootView.findViewById(R.id.queryButton);
-
-        queryButton.setOnClickListener(this);
-        // Inflate the layout for this fragment
         return  rootView;
 
     }
