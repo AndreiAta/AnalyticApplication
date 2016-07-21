@@ -16,7 +16,9 @@ import android.view.MenuItem;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.MainVisitsFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.VisitsFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.VisitsMonthFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.VisitsWeekFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.VisitsYearFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -25,7 +27,9 @@ public class MainActivity extends AppCompatActivity
         SocialMediaFragment.OnFragmentInteractionListener,
         SearchEnginesFragment.OnFragmentInteractionListener,
         MainVisitsFragment.OnFragmentInteractionListener,
-        VisitsWeekFragment.OnFragmentInteractionListener
+        VisitsWeekFragment.OnFragmentInteractionListener,
+        VisitsMonthFragment.OnFragmentInteractionListener,
+        VisitsYearFragment.OnFragmentInteractionListener
 {
 
     public static String API_ID; // Should perhaps have some getter/setter?

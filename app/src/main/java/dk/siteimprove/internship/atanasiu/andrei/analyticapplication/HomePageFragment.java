@@ -24,7 +24,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-
 public class HomePageFragment extends Fragment
 {
     public TextView textView;
@@ -43,15 +42,11 @@ public class HomePageFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-
         View rootView = inflater.inflate(R.layout.fragment_home_page, container, false);
         new RetrieveFeedTask().execute();
 
@@ -71,13 +66,11 @@ public class HomePageFragment extends Fragment
                 Integer myInteger = spinner.getSelectedItemPosition();
                 textView.setText(siteIds.get(myInteger));
                 MainActivity.API_ID = siteIds.get(myInteger);
-
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent)
             {
-
             }
         });
 
@@ -85,15 +78,6 @@ public class HomePageFragment extends Fragment
 
         // Inflate the layout for this fragment
         return rootView;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri)
-    {
-        if (mListener != null)
-        {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
