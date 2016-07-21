@@ -78,11 +78,6 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);
         new RetrieveFeedTask().execute();
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 843767e62a5be8210c4f250696acea457885e64a
         Button queryButton = (Button) rootView.findViewById(R.id.queryButton);
         queryButton.setOnClickListener(this);
         // Inflate the layout for this fragment
