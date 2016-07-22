@@ -138,13 +138,11 @@ public class SearchEnginesWeekFragment extends Fragment
         }
 
         protected String doInBackground(Void... urls) {
-            String email = "andrei.atanasiu1994@gmail.com";
-
 
             try {
                 URL url = new URL(API_URL);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                String credentials = email + ":" + API_KEY;
+                String credentials = MainActivity.API_EMAIL + ":" + MainActivity.API_KEY;
                 String auth = "Basic" + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
                 urlConnection.setRequestProperty("Authorization",auth);
                 urlConnection.setRequestMethod("GET");
