@@ -19,6 +19,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -58,7 +66,6 @@ public class MainActivity extends AppCompatActivity
     public static String API_ID; // Should perhaps have some getter/setter?
     public static String API_EMAIL;
     public static String API_KEY;
-    String filename = "myfile";
     EditText emailText;
     EditText apiKeyText;
 
@@ -80,14 +87,18 @@ public class MainActivity extends AppCompatActivity
             emailText = (EditText) dialog.findViewById(R.id.emailTextField);
             apiKeyText = (EditText) dialog.findViewById(R.id.apiKeyTextField);
             Button button = (Button) dialog.findViewById(R.id.Button01);
+            readFromFile();
             button.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View view)
                 {
                     API_EMAIL = emailText.getText().toString();
+                    API_KEY = apiKeyText.getText().toString();
+                    String totalString = API_EMAIL + "=-==-" + API_KEY;
+                    writeToFile(totalString);
+                    readFromFile();
                     dialog.dismiss();
-
                 }
             });
 
@@ -118,9 +129,50 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    private void writeToFile(String message)
+    {
+        String file_name = "test_file";
+        try
+        {
+            FileOutputStream fileOutputStream = openFileOutput(file_name, MODE_PRIVATE);
+            fileOutputStream.write(message.getBytes());
+            fileOutputStream.close();
+            //Toast.makeText(getApplicationContext(), "Email Saved", Toast.LENGTH_LONG).show();
+        }
+        catch (FileNotFoundException e) {e.printStackTrace();} // TODO: Handle somehow?
+        catch (IOException e) {e.printStackTrace();} // TODO: Handle somehow?
+    }
 
+    private void readFromFile()
+    {
+        try
+        {
+            String message;
+            FileInputStream fileInputStream = openFileInput("test_file");
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            StringBuffer stringBuffer = new StringBuffer();
+            while((message = bufferedReader.readLine()) != null)
+            {
+                stringBuffer.append(message);
+            }
+            String tempString = stringBuffer.toString();
+            if(tempString.contains("=-==-"))
+            {
+                String[] parts = tempString.split("=-==-");
+                API_EMAIL = parts[0];
+                API_KEY = parts[1];
+                emailText.setText(API_EMAIL);
+                apiKeyText.setText(API_KEY);
+            }
 
-        @Override
+            Toast.makeText(getApplicationContext(), API_EMAIL, Toast.LENGTH_LONG).show();
+
+        }
+        catch (FileNotFoundException e) {e.printStackTrace();}
+        catch (IOException e) {e.printStackTrace();}
+    }
+
     public void onBackPressed()
     {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

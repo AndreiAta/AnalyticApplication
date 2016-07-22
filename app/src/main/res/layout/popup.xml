@@ -34,7 +34,6 @@
             android:height="50dp"
             android:width="200dp"
             android:gravity="center"
-            android:inputType="textWebEmailAddress"
             android:layout_gravity="center_horizontal"
             />
 
