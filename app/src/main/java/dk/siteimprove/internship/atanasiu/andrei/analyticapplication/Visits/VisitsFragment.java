@@ -43,7 +43,9 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
     ProgressBar progressBar;
     LineChart chart;
     ArrayList<LineDataSet> dataSets;
-    static final String API_KEY = "ebd8cdc10745831de07c286a9c6d967d";
+    static final String API_KEY = MainActivity.API_KEY;
+    static final String API_EMAIL = MainActivity.API_EMAIL;
+            //"ebd8cdc10745831de07c286a9c6d967d";
     String API_URL = "";
     //"https://api.siteimprove.com/v2/sites/73617/analytics/behavior/visits_by_hour";
 
@@ -148,13 +150,11 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
 
         protected String doInBackground(Void... urls)
         {
-            String email = "andrei.atanasiu1994@gmail.com";
-
             try
             {
                 URL url = new URL(API_URL );
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                String credentials = email + ":" + API_KEY;
+                String credentials = API_EMAIL + ":" + API_KEY;
                 String auth = "Basic" + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
                 urlConnection.setRequestProperty("Authorization",auth);
                 urlConnection.setRequestMethod("GET");
