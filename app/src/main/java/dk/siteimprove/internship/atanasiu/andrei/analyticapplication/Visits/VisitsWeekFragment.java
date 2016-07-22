@@ -185,6 +185,7 @@ public class VisitsWeekFragment extends Fragment
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
                 ArrayList<Entry> valueSet1 = new ArrayList<>();
+                int compareCounter = 1;
 
                 for(Integer i = 0; i < items.length(); i++)
                 {

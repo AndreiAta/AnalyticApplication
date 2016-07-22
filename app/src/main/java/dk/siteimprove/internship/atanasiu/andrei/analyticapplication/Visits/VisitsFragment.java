@@ -191,14 +191,30 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
                 ArrayList<Entry> valueSet1 = new ArrayList<>();
+                int compareCounter = 0;
 
                 for(Integer i = 0; i < items.length(); i++)
                 {
                     int hour_of_day = items.getJSONObject(i).getInt("hour_of_day");
                     int visits = items.getJSONObject(i).getInt("visits");
 
-                    Entry entry = new Entry((float)visits, hour_of_day);
-                    valueSet1.add(entry);
+                    while(hour_of_day != compareCounter)
+                    {
+                        int stopValue = compareCounter;
+                        for(int j = stopValue; j < hour_of_day; j++)
+                        {
+                            Entry entry = new Entry(0, compareCounter-1);
+                            valueSet1.add(entry);
+                            compareCounter++;
+                        }
+
+                    }
+                    if(hour_of_day == compareCounter)
+                    {
+                        Entry entry = new Entry((float)visits, hour_of_day-1);
+                        valueSet1.add(entry);
+                        compareCounter++;
+                    }
 
                 }
                 LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "VISITS PER HOUR");

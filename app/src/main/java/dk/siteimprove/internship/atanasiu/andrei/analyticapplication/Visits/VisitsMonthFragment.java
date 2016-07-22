@@ -211,17 +211,12 @@ public class VisitsMonthFragment extends Fragment
                         compareCounter++;
                     }
 
-
-
                 }
                 LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "VISITS PER DAY");
                 lineDataSet1.setColor(Color.rgb(49, 79, 49));
                 lineDataSet1.setDrawFilled(true);
                 dataSets = new ArrayList<>();
                 dataSets.add(lineDataSet1);
-                Log.i("TOTALMONTHDAYS!!", totalMonthDays.toString());
-                Log.i("SIZEOFARRAY!!", String.valueOf(valueSet1.size()));
-
                 drawGraph();
                 compareCounter = 0;
                 totalMonthDays = 0;
