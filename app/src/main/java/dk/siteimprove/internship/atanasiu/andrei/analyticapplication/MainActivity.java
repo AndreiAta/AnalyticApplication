@@ -2,6 +2,7 @@ package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 
 
 import android.app.Dialog;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,13 +13,25 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesWeekFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaMainFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaWeekFragment;
@@ -45,6 +58,10 @@ public class MainActivity extends AppCompatActivity
     public static String API_ID; // Should perhaps have some getter/setter?
     public static String API_EMAIL;
     public static String API_KEY;
+    String filename = "myfile";
+    EditText emailText;
+    EditText apiKeyText;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -60,16 +77,17 @@ public class MainActivity extends AppCompatActivity
             dialog.setContentView(R.layout.popup);
             dialog.setCancelable(false);
 
-            final EditText emailText = (EditText) dialog.findViewById(R.id.emailTextField);
-            EditText apiKeyText = (EditText) dialog.findViewById(R.id.apiKeyTextField);
+            emailText = (EditText) dialog.findViewById(R.id.emailTextField);
+            apiKeyText = (EditText) dialog.findViewById(R.id.apiKeyTextField);
             Button button = (Button) dialog.findViewById(R.id.Button01);
             button.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View view)
                 {
-                    API_EMAIL = emailText.toString();
+                    API_EMAIL = emailText.getText().toString();
                     dialog.dismiss();
+
                 }
             });
 
@@ -100,7 +118,9 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    @Override
+
+
+        @Override
     public void onBackPressed()
     {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

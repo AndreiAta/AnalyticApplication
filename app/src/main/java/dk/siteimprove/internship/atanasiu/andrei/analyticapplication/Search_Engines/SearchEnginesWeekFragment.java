@@ -15,11 +15,10 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
-import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,34 +30,31 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 
 
-public class SearchEnginesFragment extends Fragment implements View.OnClickListener
+public class SearchEnginesWeekFragment extends Fragment
 {
+
     HorizontalBarChart chart;
     ArrayList<BarDataSet> dataSets;
     ArrayList<String> xAxis;
     ProgressBar progressBar;
     static final String API_KEY = "ebd8cdc10745831de07c286a9c6d967d";
     String API_URL = "";
-
     private OnFragmentInteractionListener mListener;
 
-    public SearchEnginesFragment() {  }    // Required empty public constructor
+    public SearchEnginesWeekFragment()
+    {
+        // Required empty public constructor
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
 
     }
 
@@ -68,18 +64,26 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
     {
         if(MainActivity.API_ID != null)
         {
-            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID + "/analytics/traffic_sources/search_engines?page=1&page_size=10&period=Today";
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID + "/analytics/traffic_sources/search_engines?page=1&page_size=10&period=LastSevenDays";
         }else
         {
             //TODO error message no Site selected
         }
-        View rootView = inflater.inflate(R.layout.fragment_search_engines, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_search_engines_week, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);
         new RetrieveFeedTask().execute();
         // Inflate the layout for this fragment
-        return  rootView;
+        return rootView;
+    }
 
+    // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(Uri uri)
+    {
+        if (mListener != null)
+        {
+            mListener.onFragmentInteraction(uri);
+        }
     }
 
     @Override
@@ -103,20 +107,11 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
         mListener = null;
     }
 
-    @Override
-    public void onClick(View v)
-    {
-        new RetrieveFeedTask().execute();
-    }
-
     public interface OnFragmentInteractionListener
     {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
-
-
     private void drawGraph()
     {
         BarData data = new BarData(xAxis, dataSets);
@@ -220,7 +215,5 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
 
         }
     }
-
-
 
 }
