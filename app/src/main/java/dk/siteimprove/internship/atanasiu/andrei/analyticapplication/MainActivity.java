@@ -2,7 +2,6 @@ package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 
 
 import android.app.Dialog;
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,7 +12,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,21 +26,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesMainFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesWeekFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaMainFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaMonthFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaWeekFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaYearFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.MainVisitsFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.VisitsFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.VisitsMonthFragment;
@@ -52,15 +43,21 @@ import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.Visi
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         HomePageFragment.OnFragmentInteractionListener,
-        VisitsFragment.OnFragmentInteractionListener,
         SocialMediaFragment.OnFragmentInteractionListener,
+        SocialMediaWeekFragment.OnFragmentInteractionListener,
+        SocialMediaMainFragment.OnFragmentInteractionListener,
+        SocialMediaMonthFragment.OnFragmentInteractionListener,
+        SocialMediaYearFragment.OnFragmentInteractionListener,
         SearchEnginesFragment.OnFragmentInteractionListener,
+        SearchEnginesWeekFragment.OnFragmentInteractionListener,
+        SearchEnginesMainFragment.OnFragmentInteractionListener,
         MainVisitsFragment.OnFragmentInteractionListener,
         VisitsWeekFragment.OnFragmentInteractionListener,
         VisitsMonthFragment.OnFragmentInteractionListener,
-        VisitsYearFragment.OnFragmentInteractionListener,
-        SocialMediaWeekFragment.OnFragmentInteractionListener,
-        SocialMediaMainFragment.OnFragmentInteractionListener
+        VisitsFragment.OnFragmentInteractionListener,
+        VisitsYearFragment.OnFragmentInteractionListener
+
+
 {
 
     public static String API_ID; // Should perhaps have some getter/setter?
@@ -68,6 +65,8 @@ public class MainActivity extends AppCompatActivity
     public static String API_KEY;
     EditText emailText;
     EditText apiKeyText;
+    View headerView;
+    public static String initialLogin;
 
 
     @Override
@@ -78,7 +77,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if(API_EMAIL == null)
+        if (initialLogin == null)
         {
             final Dialog dialog = new Dialog(this);
             dialog.setContentView(R.layout.popup);
@@ -86,6 +85,7 @@ public class MainActivity extends AppCompatActivity
 
             emailText = (EditText) dialog.findViewById(R.id.emailTextField);
             apiKeyText = (EditText) dialog.findViewById(R.id.apiKeyTextField);
+            initialLogin = "Logged in";
             Button button = (Button) dialog.findViewById(R.id.Button01);
             readFromFile();
             button.setOnClickListener(new View.OnClickListener()
@@ -98,10 +98,10 @@ public class MainActivity extends AppCompatActivity
                     String totalString = API_EMAIL + "=-==-" + API_KEY;
                     writeToFile(totalString);
                     readFromFile();
+
                     dialog.dismiss();
                 }
             });
-
             dialog.show();
         }
 
@@ -222,18 +222,19 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_camera)
         {
             fragmentClass = HomePageFragment.class;
+
         } else if (id == R.id.nav_gallery)
         {
             fragmentClass = MainVisitsFragment.class;
-
 
         } else if (id == R.id.nav_slideshow)
         {
             fragmentClass = SocialMediaMainFragment.class;
 
+
         } else if (id == R.id.nav_manage)
         {
-            fragmentClass = SearchEnginesFragment.class;
+            fragmentClass = SearchEnginesMainFragment.class;
 
         }else if (id == R.id.nav_send)
         {

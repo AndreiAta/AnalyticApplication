@@ -40,7 +40,6 @@ public class SocialMediaWeekFragment extends Fragment
     ArrayList<BarDataSet> dataSets;
     ArrayList<String> xAxis;
     ProgressBar progressBar;
-    static final String API_KEY = "ebd8cdc10745831de07c286a9c6d967d";
     String API_URL = "";
     private OnFragmentInteractionListener mListener;
 
@@ -124,12 +123,11 @@ public class SocialMediaWeekFragment extends Fragment
         }
 
         protected String doInBackground(Void... urls) {
-            String email = "andrei.atanasiu1994@gmail.com";
 
             try {
                 URL url = new URL(API_URL);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                String credentials = email + ":" + API_KEY;
+                String credentials = MainActivity.API_EMAIL + ":" + MainActivity.API_KEY;
                 String auth = "Basic" + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
                 urlConnection.setRequestProperty("Authorization",auth);
                 urlConnection.setRequestMethod("GET");

@@ -47,6 +47,7 @@ public class HomePageFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        getActivity().setTitle("Home Page");
         View rootView = inflater.inflate(R.layout.fragment_home_page, container, false);
         new RetrieveFeedTask().execute();
 

@@ -40,7 +40,6 @@ public class VisitsWeekFragment extends Fragment
     ProgressBar progressBar;
     LineChart chart;
     ArrayList<LineDataSet> dataSets;
-    static final String API_KEY = "ebd8cdc10745831de07c286a9c6d967d";
     String API_URL = "";
 
     public VisitsWeekFragment()
@@ -61,7 +60,7 @@ public class VisitsWeekFragment extends Fragment
     {
         if(MainActivity.API_ID != null)
         {
-            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID + "/analytics/behavior/visits_by_hour";
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID + "/analytics/behavior/visits_by_weekday?page=1&page_size=10&period=lastsevendays";
 
         }else
         {
@@ -113,13 +112,12 @@ public class VisitsWeekFragment extends Fragment
 
         protected String doInBackground(Void... urls)
         {
-            String email = "andrei.atanasiu1994@gmail.com";
 
             try
             {
                 URL url = new URL(API_URL );
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                String credentials = email + ":" + API_KEY;
+                String credentials = MainActivity.API_EMAIL + ":" + MainActivity.API_KEY;
                 String auth = "Basic" + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
                 urlConnection.setRequestProperty("Authorization",auth);
                 urlConnection.setRequestMethod("GET");
@@ -148,10 +146,13 @@ public class VisitsWeekFragment extends Fragment
         private ArrayList<String> getXAxisValues() {
             ArrayList<String> xAxis = new ArrayList<>();
 
-            for (Integer i = 0; i < 24 ; i++)
-            {
-                xAxis.add(i.toString());
-            }
+            xAxis.add("Mon");
+            xAxis.add("Tue");
+            xAxis.add("Wed");
+            xAxis.add("Thu");
+            xAxis.add("Fri");
+            xAxis.add("Sat");
+            xAxis.add("Sun");
 
             return xAxis;
         }
@@ -167,7 +168,8 @@ public class VisitsWeekFragment extends Fragment
             XAxis xAxis = chart.getXAxis();
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
             xAxis.setSpaceBetweenLabels(0);
-            data.setValueTextSize(9f);
+            xAxis.setAdjustXLabels(false);
+            data.setValueTextSize(8f);
         }
 
         protected void onPostExecute(String response)
@@ -186,14 +188,14 @@ public class VisitsWeekFragment extends Fragment
 
                 for(Integer i = 0; i < items.length(); i++)
                 {
-                    int hour_of_day = items.getJSONObject(i).getInt("hour_of_day");
+                    int day_of_week = items.getJSONObject(i).getInt("day_of_week");
                     int visits = items.getJSONObject(i).getInt("visits");
 
-                    Entry entry = new Entry((float)visits, hour_of_day);
+                    Entry entry = new Entry((float)visits, day_of_week-1);
                     valueSet1.add(entry);
 
                 }
-                LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "VISITS PER HOUR");
+                LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "VISITS PER DAY");
                 lineDataSet1.setColor(Color.rgb(49, 79, 49));
                 lineDataSet1.setDrawFilled(true);
                 dataSets = new ArrayList<>();

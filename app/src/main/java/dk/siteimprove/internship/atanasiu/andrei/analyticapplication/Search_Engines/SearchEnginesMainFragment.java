@@ -1,4 +1,4 @@
-package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media;
+package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines;
 
 import android.content.Context;
 import android.net.Uri;
@@ -10,19 +10,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.VisitsFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.VisitsWeekFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaWeekFragment;
 
 
-public class SocialMediaMainFragment extends Fragment
+public class SearchEnginesMainFragment extends Fragment
 {
     private FragmentTabHost mTabHost;
     private OnFragmentInteractionListener mListener;
 
-    public SocialMediaMainFragment()
+    public SearchEnginesMainFragment()
     {
         // Required empty public constructor
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -35,25 +36,17 @@ public class SocialMediaMainFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        getActivity().setTitle("Social Media");
+        getActivity().setTitle("Search Engines");
         mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), getChildFragmentManager(), R.layout.fragment_social_media_main);
+        mTabHost.setup(getActivity(), getChildFragmentManager(), R.layout.fragment_search_engines_main);
 
         Bundle arg1 = new Bundle();
         arg1.putInt("Arg for Frag1", 1);
-        mTabHost.addTab(mTabHost.newTabSpec("Tab1").setIndicator("Today"), SocialMediaFragment.class, arg1);
+        mTabHost.addTab(mTabHost.newTabSpec("Tab1").setIndicator("Today"), SearchEnginesFragment.class, arg1);
 
         Bundle arg2 = new Bundle();
         arg2.putInt("Arg for Frag2", 2);
-        mTabHost.addTab(mTabHost.newTabSpec("Tab2").setIndicator("Week"), SocialMediaWeekFragment.class, arg2);
-
-        Bundle arg3 = new Bundle();
-        arg3.putInt("Arg for Frag3", 3);
-        mTabHost.addTab(mTabHost.newTabSpec("Tab3").setIndicator("Month"), SocialMediaMonthFragment.class, arg3);
-
-        Bundle arg4 = new Bundle();
-        arg4.putInt("Arg for Frag4", 4);
-        mTabHost.addTab(mTabHost.newTabSpec("Tab4").setIndicator("Year"), SocialMediaYearFragment.class, arg4);
+        mTabHost.addTab(mTabHost.newTabSpec("Tab2").setIndicator("Week"), SearchEnginesWeekFragment.class, arg2);
         return mTabHost;
     }
 

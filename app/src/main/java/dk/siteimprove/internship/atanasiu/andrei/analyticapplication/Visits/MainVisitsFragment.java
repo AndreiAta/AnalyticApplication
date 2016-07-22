@@ -29,7 +29,9 @@ public class MainVisitsFragment extends Fragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        getActivity().setTitle("Visits");
         mTabHost = new FragmentTabHost(getActivity());
         mTabHost.setup(getActivity(), getChildFragmentManager(), R.layout.fragment_main_visits);
 
@@ -39,7 +41,7 @@ public class MainVisitsFragment extends Fragment
 
         Bundle arg2 = new Bundle();
         arg2.putInt("Arg for Frag2", 2);
-        mTabHost.addTab(mTabHost.newTabSpec("Tab2").setIndicator("Last 7 days"), VisitsWeekFragment.class, arg2);
+        mTabHost.addTab(mTabHost.newTabSpec("Tab2").setIndicator("Week"), VisitsWeekFragment.class, arg2);
 
         Bundle arg3 = new Bundle();
         arg3.putInt("Arg for Frag3", 3);
@@ -81,7 +83,6 @@ public class MainVisitsFragment extends Fragment
 
     public interface OnFragmentInteractionListener
     {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

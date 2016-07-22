@@ -1,4 +1,4 @@
-package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits;
+package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -13,11 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,16 +33,17 @@ import java.util.ArrayList;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 
-public class VisitsMonthFragment extends Fragment
+
+public class SocialMediaMonthFragment extends Fragment
 {
+    HorizontalBarChart chart;
+    ArrayList<BarDataSet> dataSets;
+    ArrayList<String> xAxis;
     ProgressBar progressBar;
-    LineChart chart;
-    ArrayList<LineDataSet> dataSets;
     String API_URL = "";
     private OnFragmentInteractionListener mListener;
-    Integer totalMonthDays = 0;
 
-    public VisitsMonthFragment()
+    public SocialMediaMonthFragment()
     {
         // Required empty public constructor
     }
@@ -60,19 +61,17 @@ public class VisitsMonthFragment extends Fragment
         if(MainActivity.API_ID != null)
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=ThisMonth";
-
+                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=Thismonth";
         }else
         {
             //TODO error message no Site selected
         }
-        View rootView = inflater.inflate(R.layout.fragment_visits_month, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_social_media_month, container, false); // Inflate the layout for this fragment
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+        chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);
+
         new RetrieveFeedTask().execute();
-        chart = (LineChart) rootView.findViewById(R.id.chart);
-
-        return  rootView;
-
+        return rootView;
     }
 
     @Override
@@ -102,21 +101,9 @@ public class VisitsMonthFragment extends Fragment
         void onFragmentInteraction(Uri uri);
     }
 
-    private ArrayList<String> getXAxisValues() {
-        ArrayList<String> xAxis = new ArrayList<>();
-
-        for (Integer i = 1; i <= totalMonthDays ; i++)
-        {
-            xAxis.add(i.toString());
-        }
-
-        return xAxis;
-    }
-
     private void drawGraph()
     {
-        LineData data = new LineData(getXAxisValues(), dataSets);
-        Log.i("DATA SETS", dataSets.toString());
+        BarData data = new BarData(xAxis, dataSets);
         chart.setData(data);
         chart.setDescription("");
         chart.animateXY(2000, 2000);
@@ -124,37 +111,32 @@ public class VisitsMonthFragment extends Fragment
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);
-        data.setValueTextSize(9f);
+        data.setValueTextSize(10f);
     }
 
-
-    class RetrieveFeedTask extends AsyncTask<Void, Void, String> //This is a Class
+    class RetrieveFeedTask extends AsyncTask<Void, Void, String> // THIS IS A CLASS
     {
         private Exception exception;
 
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             progressBar.setVisibility(View.VISIBLE);
         }
 
-        protected String doInBackground(Void... urls)
-        {
-            try
-            {
-                URL url = new URL(API_URL );
+        protected String doInBackground(Void... urls) {
+
+            try {
+                URL url = new URL(API_URL);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 String credentials = MainActivity.API_EMAIL + ":" + MainActivity.API_KEY;
                 String auth = "Basic" + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
                 urlConnection.setRequestProperty("Authorization",auth);
                 urlConnection.setRequestMethod("GET");
                 urlConnection.setRequestProperty("Accept", "application/json");
-                try
-                {
+                try {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                     StringBuilder stringBuilder = new StringBuilder();
                     String line;
-                    while ((line = bufferedReader.readLine()) != null)
-                    {
+                    while ((line = bufferedReader.readLine()) != null) {
                         stringBuilder.append(line).append("\n");
                     }
                     bufferedReader.close();
@@ -172,64 +154,41 @@ public class VisitsMonthFragment extends Fragment
 
         protected void onPostExecute(String response)
         {
+            Log.i("ERROR", response);
+
             if(response == null) {
                 response = "THERE WAS AN ERROR";
             }
             progressBar.setVisibility(View.GONE);
-            Log.i("INFO", response);
 
             try
             {
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
-                ArrayList<Entry> valueSet1 = new ArrayList<>();
-                int compareCounter = 1;
-
-                for(Integer i = 0; i < items.length(); i++) // Shouldnt use a method call
+                ArrayList<BarEntry> valueSet1 = new ArrayList<>();
+                xAxis = new ArrayList<>();
+                int numberorg = 0;
+                for(int i = 0; i < items.length(); i++)
                 {
-                    int day_of_month = items.getJSONObject(i).getInt("day_of_month");
-                    int visits = items.getJSONObject(i).getInt("visits");
+                    Integer visits = items.getJSONObject(i).getInt("visits");
+                    String organisation = items.getJSONObject(i).getString("organisation");
 
-
-                    while(day_of_month != compareCounter)
-                    {
-                        int stopValue = compareCounter;
-                        for(int j = stopValue; j < day_of_month; j++)
-                        {
-                            Entry entry = new Entry(0, compareCounter-1);
-                            valueSet1.add(entry);
-                            totalMonthDays++;
-                            compareCounter++;
-                        }
-
-                    }
-                    if(day_of_month == compareCounter)
-                    {
-                        Entry entry = new Entry((float)visits, day_of_month-1);
-                        valueSet1.add(entry);
-                        totalMonthDays++;
-                        compareCounter++;
-                    }
-
-
+                    BarEntry entry = new BarEntry((float)visits, numberorg);
+                    valueSet1.add(entry);
+                    xAxis.add(organisation);
+                    numberorg = numberorg + 1;
 
                 }
-                LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "VISITS PER DAY");
-                lineDataSet1.setColor(Color.rgb(49, 79, 49));
-                lineDataSet1.setDrawFilled(true);
+                BarDataSet barDataSet1 = new BarDataSet(valueSet1, "VISITS");
+                barDataSet1.setColor(Color.rgb(49, 79, 79));
+                barDataSet1.setBarSpacePercent(50f);
                 dataSets = new ArrayList<>();
-                dataSets.add(lineDataSet1);
-                Log.i("TOTALMONTHDAYS!!", totalMonthDays.toString());
-                Log.i("SIZEOFARRAY!!", String.valueOf(valueSet1.size()));
+                dataSets.add(barDataSet1);
 
                 drawGraph();
-                compareCounter = 0;
-                totalMonthDays = 0;
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         }
     }
 }

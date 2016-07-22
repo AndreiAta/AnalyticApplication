@@ -38,9 +38,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
     ArrayList<BarDataSet> dataSets;
     ArrayList<String> xAxis;
     ProgressBar progressBar;
-    static final String API_KEY = "ebd8cdc10745831de07c286a9c6d967d";
     String API_URL = "";
-    //"https://api.siteimprove.com/v2/sites/73617/analytics/traffic_sources/social_media_organisations";
 
     private OnFragmentInteractionListener mListener;
 
@@ -55,6 +53,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+
         if(MainActivity.API_ID != null)
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
@@ -123,12 +122,11 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
         }
 
         protected String doInBackground(Void... urls) {
-            String email = "andrei.atanasiu1994@gmail.com";
 
             try {
                 URL url = new URL(API_URL);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                String credentials = email + ":" + API_KEY;
+                String credentials = MainActivity.API_EMAIL + ":" + MainActivity.API_KEY;
                 String auth = "Basic" + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
                 urlConnection.setRequestProperty("Authorization",auth);
                 urlConnection.setRequestMethod("GET");

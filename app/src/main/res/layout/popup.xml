@@ -19,7 +19,13 @@
         android:layout_height="fill_parent"
         android:layout_centerHorizontal="true"
         android:layout_alignBottom="@+id/TextView01"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentRight="false">
 
         <EditText
             android:layout_width="wrap_content"
@@ -52,6 +58,14 @@
                 android:layout_centerHorizontal="true"
                 android:text="OK"
                 android:layout_gravity="center_horizontal"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text=""
+            android:id="@+id/testText"
+            android:layout_gravity="center_horizontal"/>
     </LinearLayout>
 
 </RelativeLayout>
