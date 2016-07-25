@@ -4,4 +4,14 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="ourGray">#afacac</color>
+    <!-- Our Colors -->
+    <color name="JavaBlue">#05B8C6</color>
+    <color name="White">#ffffff</color>
+    <color name="MineshaftGrey">#333333</color>
+    <color name="TuataraGrey">#444444</color>
+    <color name="LipstickPink">#b40061</color>
+    <color name="DullLimeGreen">#31b021</color>
+    <color name="JasperRed">#dc4242</color>
+    <color name="OnyxBlack">#222222</color>
+    <color name="BrandyPunchOrange">#da800c</color>
 </resources>

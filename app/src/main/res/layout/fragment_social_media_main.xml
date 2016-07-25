@@ -23,4 +23,28 @@
 
 
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/tab_indicator"
+        android:layout_width="fill_parent"
+        android:layout_height="5dp"
+        android:background="#bdbdbd" >
+
+        <LinearLayout
+            android:id="@+id/tab_indicator_left"
+            android:layout_width="wrap_content"
+            android:layout_height="5dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:background="#f44b3b" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tab_indicator_right"
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:layout_height="5dp"
+            android:layout_weight="1"
+            android:background="#bdbdbd" >
+        </LinearLayout>
+    </LinearLayout>
 </android.support.v4.app.FragmentTabHost>

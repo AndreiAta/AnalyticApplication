@@ -6,9 +6,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v4.view.PagerTabStrip;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.VisitsFragment;
@@ -19,6 +21,7 @@ public class SocialMediaMainFragment extends Fragment
 {
     private FragmentTabHost mTabHost;
     private OnFragmentInteractionListener mListener;
+    View rootView;
 
     public SocialMediaMainFragment()
     {
@@ -36,6 +39,8 @@ public class SocialMediaMainFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        rootView = inflater.inflate(R.layout.fragment_social_media_main, container, false);
+
         getActivity().setTitle("Social Media");
         mTabHost = new FragmentTabHost(getActivity());
         mTabHost.setup(getActivity(), getChildFragmentManager(), R.layout.fragment_social_media_main);
@@ -55,7 +60,24 @@ public class SocialMediaMainFragment extends Fragment
         Bundle arg4 = new Bundle();
         arg4.putInt("Arg for Frag4", 4);
         mTabHost.addTab(mTabHost.newTabSpec("Tab4").setIndicator("Year"), SocialMediaYearFragment.class, arg4);
+
+        for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++) {
+
+            mTabHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.rgb(49, 79, 79));
+            mTabHost.getTabWidget().getChildAt(i).setBackgroundResource(R.drawable.tab_indicator_holo);
+
+            final TextView tv = (TextView) mTabHost.getTabWidget().getChildAt(i)
+                    .findViewById(android.R.id.title);
+
+            // Look for the title view to ensure this is an indicator and not a divider.(I didn't know, it would return divider too, so I was getting an NPE)
+            if (tv == null)
+                continue;
+            else
+                tv.setTextColor(getResources().getColor(R.color.JavaBlue));
+
+        }
         return mTabHost;
+
     }
 
     @Override
