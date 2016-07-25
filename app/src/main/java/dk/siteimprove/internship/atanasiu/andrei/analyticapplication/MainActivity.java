@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity
 
             emailText = (EditText) dialog.findViewById(R.id.emailTextField);
             apiKeyText = (EditText) dialog.findViewById(R.id.apiKeyTextField);
-            initialLogin = "Logged in";
             Button button = (Button) dialog.findViewById(R.id.Button01);
             readFromFile();
             button.setOnClickListener(new View.OnClickListener()
@@ -93,12 +92,12 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onClick(View view)
                 {
+                    initialLogin = "Logged in";
                     API_EMAIL = emailText.getText().toString();
                     API_KEY = apiKeyText.getText().toString();
                     String totalString = API_EMAIL + "=-==-" + API_KEY;
                     writeToFile(totalString);
                     readFromFile();
-
                     dialog.dismiss();
                 }
             });
