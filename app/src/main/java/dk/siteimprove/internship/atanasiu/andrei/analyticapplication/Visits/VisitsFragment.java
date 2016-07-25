@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -44,6 +46,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
     LineChart chart;
     ArrayList<LineDataSet> dataSets;
     String API_URL = "";
+    int totalHours ;
 
     private OnFragmentInteractionListener mListener;
 
@@ -62,7 +65,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
 
         if(MainActivity.API_ID != null)
         {
-            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID + "/analytics/behavior/visits_by_hour";
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID + "/analytics/behavior/visits_by_hour?page=1&page_size=10&period=Today";
 
         }else
         {
@@ -113,7 +116,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
     private ArrayList<String> getXAxisValues() {
         ArrayList<String> xAxis = new ArrayList<>();
 
-        for (Integer i = 0; i < 24 ; i++)
+        for (Integer i = 0; i < totalHours ; i++)
         {
             xAxis.add(i.toString());
         }
@@ -132,7 +135,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);
-        data.setValueTextSize(9f);
+        data.setValueTextSize(0f);
     }
 
 
@@ -192,38 +195,47 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
                 JSONArray items = object.getJSONArray("items");
                 ArrayList<Entry> valueSet1 = new ArrayList<>();
                 int compareCounter = 0;
-
-                for(Integer i = 0; i < items.length(); i++)
+                totalHours = items.length();
+                if(totalHours == 0)
                 {
-                    int hour_of_day = items.getJSONObject(i).getInt("hour_of_day");
-                    int visits = items.getJSONObject(i).getInt("visits");
-
-                    while(hour_of_day != compareCounter)
+                    Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                }else
+                {
+                    for (Integer i = 0; i < totalHours; i++)
                     {
-                        int stopValue = compareCounter;
-                        for(int j = stopValue; j < hour_of_day; j++)
+                        int hour_of_day = items.getJSONObject(i).getInt("hour_of_day");
+                        int visits = items.getJSONObject(i).getInt("visits");
+
+                        while (hour_of_day != compareCounter)
                         {
-                            Entry entry = new Entry(0, compareCounter-1);
+
+                            int stopValue = compareCounter;
+                            for (int j = stopValue; j < hour_of_day; j++)
+                            {
+                                Entry entry = new Entry(0, compareCounter);
+                                valueSet1.add(entry);
+                                compareCounter++;
+                            }
+
+                        }
+                        if (hour_of_day == compareCounter)
+                        {
+                            Entry entry = new Entry((float) visits, hour_of_day);
                             valueSet1.add(entry);
                             compareCounter++;
                         }
 
                     }
-                    if(hour_of_day == compareCounter)
-                    {
-                        Entry entry = new Entry((float)visits, hour_of_day-1);
-                        valueSet1.add(entry);
-                        compareCounter++;
-                    }
 
+                    LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "VISITS PER HOUR");
+                    lineDataSet1.setColor(Color.rgb(49, 79, 49));
+                    lineDataSet1.setDrawFilled(true);
+                    dataSets = new ArrayList<>();
+                    dataSets.add(lineDataSet1);
+                    Log.i("TOTAL HOURS: ", String.valueOf(totalHours));
+
+                    drawGraph();
                 }
-                LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "VISITS PER HOUR");
-                lineDataSet1.setColor(Color.rgb(49, 79, 49));
-                lineDataSet1.setDrawFilled(true);
-                dataSets = new ArrayList<>();
-                dataSets.add(lineDataSet1);
-
-                drawGraph();
 
             } catch (JSONException e) {
                 e.printStackTrace();
