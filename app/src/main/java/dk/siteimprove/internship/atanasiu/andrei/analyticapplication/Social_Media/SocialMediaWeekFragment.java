@@ -19,6 +19,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,10 +59,20 @@ public class SocialMediaWeekFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        int dayOfWeek = new DateTime().getDayOfWeek();
+        DateTime currentDay = new DateTime();
+        String currentDate = currentDay.toString("yyyy-MM-dd");
+        currentDate = currentDate.replace("-","");
+
+        DateTime startOfWeek = new DateTime().minusDays(dayOfWeek - 1);
+        String mondayDate = startOfWeek.toString("yyyy-MM-dd");
+        mondayDate = mondayDate.replace("-","");
+        String period = mondayDate + "_" + currentDate;
+
         if(MainActivity.API_ID != null)
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=Lastsevendays";
+                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=" + period;
         }else
         {
             //TODO error message no Site selected
@@ -167,16 +178,14 @@ public class SocialMediaWeekFragment extends Fragment
                 JSONArray items = object.getJSONArray("items");
                 ArrayList<BarEntry> valueSet1 = new ArrayList<>();
                 xAxis = new ArrayList<>();
-                int numberorg = 0;
                 for(int i = 0; i < items.length(); i++)
                 {
                     Integer visits = items.getJSONObject(i).getInt("visits");
                     String organisation = items.getJSONObject(i).getString("organisation");
 
-                    BarEntry entry = new BarEntry((float)visits, numberorg);
+                    BarEntry entry = new BarEntry((float)visits, i);
                     valueSet1.add(entry);
                     xAxis.add(organisation);
-                    numberorg = numberorg + 1;
 
                 }
                 BarDataSet barDataSet1 = new BarDataSet(valueSet1, "VISITS");

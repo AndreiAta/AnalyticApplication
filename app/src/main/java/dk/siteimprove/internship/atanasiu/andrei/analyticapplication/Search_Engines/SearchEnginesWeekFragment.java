@@ -64,7 +64,8 @@ public class SearchEnginesWeekFragment extends Fragment
     {
         if(MainActivity.API_ID != null)
         {
-            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID + "/analytics/traffic_sources/search_engines?page=1&page_size=10&period=LastSevenDays";
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/traffic_sources/search_engines?page=1&page_size=10&period=LastSevenDays";
         }else
         {
             //TODO error message no Site selected
