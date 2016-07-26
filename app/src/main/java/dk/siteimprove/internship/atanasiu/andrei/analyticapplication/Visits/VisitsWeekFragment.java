@@ -20,6 +20,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +30,11 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
@@ -40,7 +45,11 @@ public class VisitsWeekFragment extends Fragment
     ProgressBar progressBar;
     LineChart chart;
     ArrayList<LineDataSet> dataSets;
+    ArrayList<Entry> valueSet1;
+    ArrayList<Entry> valueSet2;
     String API_URL = "";
+    Boolean secondCall = false;
+
 
     public VisitsWeekFragment()
     {
@@ -58,9 +67,22 @@ public class VisitsWeekFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        int dayOfWeek = new DateTime().getDayOfWeek();
+        DateTime currentDay = new DateTime();
+        String currentDate = currentDay.toString("yyyy-MM-dd");
+        currentDate = currentDate.replace("-","");
+
+        DateTime startOfWeek = new DateTime().minusDays(dayOfWeek - 1);
+        String mondayDate = startOfWeek.toString("yyyy-MM-dd");
+        mondayDate = mondayDate.replace("-","");
+        String period = mondayDate + "_" + currentDate;
+
+        Log.i("DAY OF WEEK", String.valueOf(period));
+
         if(MainActivity.API_ID != null)
         {
-            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID + "/analytics/behavior/visits_by_weekday?page=1&page_size=10&period=lastsevendays";
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=" + period;
 
         }else
         {
@@ -184,25 +206,66 @@ public class VisitsWeekFragment extends Fragment
             {
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
-                ArrayList<Entry> valueSet1 = new ArrayList<>();
+
+                if(secondCall)
+                {
+                    valueSet2 = new ArrayList<>();
+                }else
+                {
+                    valueSet1 = new ArrayList<>();
+                }
+
                 int compareCounter = 1;
 
                 for(Integer i = 0; i < items.length(); i++)
                 {
-                    int day_of_week = items.getJSONObject(i).getInt("day_of_week");
+                    //int day_of_month = items.getJSONObject(i).getInt("day_of_month");
                     int visits = items.getJSONObject(i).getInt("visits");
 
-                    Entry entry = new Entry((float)visits, day_of_week-1);
-                    valueSet1.add(entry);
+                    Entry entry = new Entry((float) visits, i);
+
+                    if (secondCall)
+                    {
+
+                        valueSet2.add(entry);
+                    }else
+                    {
+
+                        valueSet1.add(entry);
+                    }
+
 
                 }
-                LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "VISITS PER DAY");
-                lineDataSet1.setColor(Color.rgb(49, 79, 49));
-                lineDataSet1.setDrawFilled(true);
-                dataSets = new ArrayList<>();
-                dataSets.add(lineDataSet1);
 
-                drawGraph();
+                if(secondCall)
+                {
+                    LineDataSet lineDataSet2 = new LineDataSet(valueSet2, "VISITS PER DAY");
+                    lineDataSet2.setColor(Color.rgb(5, 184, 198));
+                    //lineDataSet2.setColor(R.color.JavaBlue);
+                    lineDataSet2.setDrawFilled(true);
+                    lineDataSet2.setFillColor(Color.rgb(5, 184, 198));
+                    lineDataSet2.setFillAlpha(15);
+                    Log.i("DATASETSSS2", dataSets.toString());
+                    dataSets.add(lineDataSet2);
+                    Log.i("DATASETSSS", dataSets.toString());
+                    drawGraph();
+                    secondCall = false;
+                }
+                else
+                {
+                    dataSets = new ArrayList<>();
+                    LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "VISITS PER DAY");
+                    lineDataSet1.setColor(Color.rgb(181, 0, 97));
+                    lineDataSet1.setDrawFilled(true);
+                    lineDataSet1.setFillColor(Color.rgb(181, 0, 97));
+                    lineDataSet1.setFillAlpha(15);
+                    dataSets.add(lineDataSet1);
+                    secondCall = true;
+                    API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                            "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=lastweek";
+                    new RetrieveFeedTask().execute();
+                }
+
 
             } catch (JSONException e) {
                 e.printStackTrace();
