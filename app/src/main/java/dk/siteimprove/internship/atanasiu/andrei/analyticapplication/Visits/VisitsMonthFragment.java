@@ -190,7 +190,6 @@ public class VisitsMonthFragment extends Fragment
                     int day_of_month = items.getJSONObject(i).getInt("day_of_month");
                     int visits = items.getJSONObject(i).getInt("visits");
 
-
                     while(day_of_month != compareCounter)
                     {
                         int stopValue = compareCounter;
@@ -201,7 +200,6 @@ public class VisitsMonthFragment extends Fragment
                             totalMonthDays++;
                             compareCounter++;
                         }
-
                     }
                     if(day_of_month == compareCounter)
                     {

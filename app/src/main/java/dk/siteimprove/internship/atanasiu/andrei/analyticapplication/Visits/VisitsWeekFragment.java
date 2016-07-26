@@ -11,8 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -30,11 +30,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
@@ -49,7 +45,11 @@ public class VisitsWeekFragment extends Fragment
     ArrayList<Entry> valueSet2;
     String API_URL = "";
     Boolean secondCall = false;
-
+    int dayOfWeek;
+    String thisWeekCompareMonDate;
+    String lastWeekCompareMonDate;
+    DateTime startOfWeek;
+    String lastSunday;
 
     public VisitsWeekFragment()
     {
@@ -67,14 +67,17 @@ public class VisitsWeekFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        int dayOfWeek = new DateTime().getDayOfWeek();
+        dayOfWeek = new DateTime().getDayOfWeek();
         DateTime currentDay = new DateTime();
         String currentDate = currentDay.toString("yyyy-MM-dd");
         currentDate = currentDate.replace("-","");
 
-        DateTime startOfWeek = new DateTime().minusDays(dayOfWeek - 1);
+        startOfWeek = new DateTime().minusDays(dayOfWeek - 1);
+        lastSunday = startOfWeek.minusDays(1).toString("dd");
+        lastWeekCompareMonDate = startOfWeek.minusDays(7).toString("dd");
         String mondayDate = startOfWeek.toString("yyyy-MM-dd");
-        mondayDate = mondayDate.replace("-","");
+        mondayDate = mondayDate.replace("-", "");
+        thisWeekCompareMonDate = startOfWeek.toString("dd");
         String period = mondayDate + "_" + currentDate;
 
         Log.i("DAY OF WEEK", String.valueOf(period));
@@ -120,7 +123,6 @@ public class VisitsWeekFragment extends Fragment
 
     public interface OnFragmentInteractionListener
     {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
     class RetrieveFeedTask extends AsyncTask<Void, Void, String> //This is a Class
@@ -206,7 +208,11 @@ public class VisitsWeekFragment extends Fragment
             {
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
-
+                Integer thisMonDate = Integer.parseInt(thisWeekCompareMonDate);
+                Integer lastMonDate = Integer.parseInt(lastWeekCompareMonDate);
+                Log.i("COMPARECOUNTER", String.valueOf(thisMonDate));
+                int totalDays = items.length();
+                int placementOnXAxis = 0;
                 if(secondCall)
                 {
                     valueSet2 = new ArrayList<>();
@@ -215,57 +221,96 @@ public class VisitsWeekFragment extends Fragment
                     valueSet1 = new ArrayList<>();
                 }
 
-                int compareCounter = 1;
-
-                for(Integer i = 0; i < items.length(); i++)
+                if(totalDays == 0)
                 {
-                    //int day_of_month = items.getJSONObject(i).getInt("day_of_month");
-                    int visits = items.getJSONObject(i).getInt("visits");
+                    Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                }else
+                {
+                    for (Integer i = 0; i < totalDays; i++)
+                    {
+                        int visits = items.getJSONObject(i).getInt("visits");
+                        int day_of_month = items.getJSONObject(i).getInt("day_of_month");
 
-                    Entry entry = new Entry((float) visits, i);
+                        //Check if you are doing the current week or last week
+                        // then check if any entries are missing and create then
+                        if (secondCall)
+                        {
+                            //Last Week
+                            while(day_of_month != lastMonDate)
+                            {
+                                int stopValue = lastMonDate;
+                                for(int j = stopValue; j < day_of_month; j++)
+                                {
+                                    Entry entry = new Entry(0, placementOnXAxis);
+                                    valueSet2.add(entry);
+                                    lastMonDate++;
+                                    placementOnXAxis++;
+                                }
+                            }
+                            if(day_of_month == lastMonDate)
+                            {
+                                Entry entry = new Entry((float)visits, placementOnXAxis);
+                                valueSet2.add(entry);
+                                lastMonDate++;
+                                placementOnXAxis++;
+                            }
+
+                            while(lastMonDate <= Integer.parseInt(lastSunday) && i == (totalDays - 1))
+                            {
+                                Entry entry = new Entry(0, placementOnXAxis);
+                                valueSet2.add(entry);
+                                lastMonDate++;
+                                placementOnXAxis++;
+                            }
+                        } else  //Current Week
+                        {
+                           while(day_of_month != thisMonDate)
+                           {
+                                int stopValue = thisMonDate;
+                               for(int j = stopValue; j < day_of_month; j++)
+                               {
+                                   Entry entry = new Entry(0, placementOnXAxis);
+                                   valueSet1.add(entry);
+                                   thisMonDate++;
+                                   placementOnXAxis++;
+                               }
+                           }
+                            if(day_of_month == thisMonDate)
+                            {
+                                Entry entry = new Entry((float)visits, placementOnXAxis);
+                                valueSet1.add(entry);
+                                thisMonDate++;
+                                placementOnXAxis++;
+                            }
+                        }
+                    }
 
                     if (secondCall)
                     {
+                        LineDataSet lineDataSet2 = new LineDataSet(valueSet2, "LAST WEEK");
+                        lineDataSet2.setColor(Color.rgb(5, 184, 198)); //TODO USE R.COLOR
+                        lineDataSet2.setDrawFilled(true);
+                        lineDataSet2.setFillColor(Color.rgb(5, 184, 198));
+                        lineDataSet2.setFillAlpha(15);
+                        dataSets.add(lineDataSet2);
+                        drawGraph();
 
-                        valueSet2.add(entry);
-                    }else
+                        secondCall = false;
+                    } else
                     {
-
-                        valueSet1.add(entry);
+                        dataSets = new ArrayList<>();
+                        LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "THIS WEEK");
+                        lineDataSet1.setColor(Color.rgb(181, 0, 97));
+                        lineDataSet1.setDrawFilled(true);
+                        lineDataSet1.setFillColor(Color.rgb(181, 0, 97));
+                        lineDataSet1.setFillAlpha(15);
+                        dataSets.add(lineDataSet1);
+                        secondCall = true;
+                        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                                "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=lastweek";
+                        new RetrieveFeedTask().execute();
                     }
-
-
                 }
-
-                if(secondCall)
-                {
-                    LineDataSet lineDataSet2 = new LineDataSet(valueSet2, "VISITS PER DAY");
-                    lineDataSet2.setColor(Color.rgb(5, 184, 198));
-                    //lineDataSet2.setColor(R.color.JavaBlue);
-                    lineDataSet2.setDrawFilled(true);
-                    lineDataSet2.setFillColor(Color.rgb(5, 184, 198));
-                    lineDataSet2.setFillAlpha(15);
-                    Log.i("DATASETSSS2", dataSets.toString());
-                    dataSets.add(lineDataSet2);
-                    Log.i("DATASETSSS", dataSets.toString());
-                    drawGraph();
-                    secondCall = false;
-                }
-                else
-                {
-                    dataSets = new ArrayList<>();
-                    LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "VISITS PER DAY");
-                    lineDataSet1.setColor(Color.rgb(181, 0, 97));
-                    lineDataSet1.setDrawFilled(true);
-                    lineDataSet1.setFillColor(Color.rgb(181, 0, 97));
-                    lineDataSet1.setFillAlpha(15);
-                    dataSets.add(lineDataSet1);
-                    secondCall = true;
-                    API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                            "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=lastweek";
-                    new RetrieveFeedTask().execute();
-                }
-
 
             } catch (JSONException e) {
                 e.printStackTrace();

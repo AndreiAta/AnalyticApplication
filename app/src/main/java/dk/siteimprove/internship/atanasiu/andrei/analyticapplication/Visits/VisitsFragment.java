@@ -61,7 +61,8 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
     {
         if(MainActivity.API_ID != null)
         {
-            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID + "/analytics/behavior/visits_by_hour?page=1&page_size=10&period=Today";
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/behavior/visits_by_hour?page=1&page_size=10&period=Today";
 
         }else
         {
