@@ -73,7 +73,10 @@ public class SocialMediaMainFragment extends Fragment
             if (tv == null)
                 continue;
             else
+            {
                 tv.setTextColor(getResources().getColor(R.color.JavaBlue));
+            }
+            mTabHost.getTabWidget().getChildAt(i).getLayoutParams().height = 175;
 
         }
         return mTabHost;

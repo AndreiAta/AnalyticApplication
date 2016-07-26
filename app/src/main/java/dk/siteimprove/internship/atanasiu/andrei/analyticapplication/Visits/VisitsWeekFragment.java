@@ -20,6 +20,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +30,11 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
@@ -58,9 +63,24 @@ public class VisitsWeekFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+
+
+        int dayOfWeek = new DateTime().getDayOfWeek();
+        DateTime currentDay = new DateTime();
+        String currentDate = currentDay.toString("yyyy-MM-dd");
+        currentDate = currentDate.replace("-","");
+
+        DateTime startOfWeek = new DateTime().minusDays(dayOfWeek - 1);
+        String mondayDate = startOfWeek.toString("yyyy-MM-dd");
+        mondayDate = mondayDate.replace("-","");
+        String period = mondayDate + "_" + currentDate;
+
+        Log.i("DAY OF WEEK", String.valueOf(period));
+
         if(MainActivity.API_ID != null)
         {
-            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID + "/analytics/behavior/visits_by_weekday?page=1&page_size=10&period=lastsevendays";
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=" + period;
 
         }else
         {
@@ -189,10 +209,10 @@ public class VisitsWeekFragment extends Fragment
 
                 for(Integer i = 0; i < items.length(); i++)
                 {
-                    int day_of_week = items.getJSONObject(i).getInt("day_of_week");
+                    //int day_of_month = items.getJSONObject(i).getInt("day_of_month");
                     int visits = items.getJSONObject(i).getInt("visits");
 
-                    Entry entry = new Entry((float)visits, day_of_week-1);
+                    Entry entry = new Entry((float)visits, i);
                     valueSet1.add(entry);
 
                 }
