@@ -114,7 +114,10 @@ public class SocialMediaMonthFragment extends Fragment
         data.setValueTextSize(10f);
     }
 
-    class RetrieveFeedTask extends AsyncTask<Void, Void, String> // THIS IS A CLASS
+    // ==================================
+    //          THIS IS A CLASS
+    // ==================================
+    class RetrieveFeedTask extends AsyncTask<Void, Void, String>
     {
         private Exception exception;
 
