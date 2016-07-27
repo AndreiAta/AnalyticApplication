@@ -113,7 +113,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
     private ArrayList<String> getXAxisValues() {
         ArrayList<String> xAxis = new ArrayList<>();
 
-        for (Integer i = 0; i < totalHours ; i++)
+        for (Integer i = 0; i < 24 ; i++)
         {
             xAxis.add(i.toString());
         }

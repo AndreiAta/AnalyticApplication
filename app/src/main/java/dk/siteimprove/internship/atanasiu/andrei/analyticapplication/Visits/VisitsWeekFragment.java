@@ -1,6 +1,7 @@
 package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -50,6 +51,7 @@ public class VisitsWeekFragment extends Fragment
     String lastWeekCompareMonDate;
     DateTime startOfWeek;
     String lastSunday;
+    Boolean landscapeMode = false; //temp
 
     public VisitsWeekFragment()
     {
@@ -60,6 +62,17 @@ public class VisitsWeekFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        int currentOrientation = getResources().getConfiguration().orientation;
+        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+            landscapeMode = true;
+            Toast.makeText(getActivity().getApplicationContext(), "Landscape", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            landscapeMode = false;
+            Toast.makeText(getActivity().getApplicationContext(), "Portrait", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -193,7 +206,17 @@ public class VisitsWeekFragment extends Fragment
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
             xAxis.setSpaceBetweenLabels(0);
             xAxis.setAdjustXLabels(false);
-            data.setValueTextSize(8f);
+            if(landscapeMode)
+            {
+                data.setValueTextSize(0f);
+                chart.getAxisRight().setDrawLabels(false);
+            }else
+            {
+                data.setValueTextSize(0f);
+                chart.getAxisLeft().setDrawLabels(false);
+                chart.getAxisRight().setDrawLabels(false);
+            }
+
         }
 
         protected void onPostExecute(String response)
@@ -232,7 +255,7 @@ public class VisitsWeekFragment extends Fragment
                         int day_of_month = items.getJSONObject(i).getInt("day_of_month");
 
                         //Check if you are doing the current week or last week
-                        // then check if any entries are missing and create then
+                        //then check if any entries are missing and create then
                         if (secondCall)
                         {
                             //Last Week
@@ -266,7 +289,7 @@ public class VisitsWeekFragment extends Fragment
                         {
                            while(day_of_month != thisMonDate)
                            {
-                                int stopValue = thisMonDate;
+                               int stopValue = thisMonDate;
                                for(int j = stopValue; j < day_of_month; j++)
                                {
                                    Entry entry = new Entry(0, placementOnXAxis);
@@ -305,10 +328,17 @@ public class VisitsWeekFragment extends Fragment
                         lineDataSet1.setFillColor(Color.rgb(181, 0, 97));
                         lineDataSet1.setFillAlpha(15);
                         dataSets.add(lineDataSet1);
-                        secondCall = true;
-                        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=lastweek";
-                        new RetrieveFeedTask().execute();
+
+                        if(landscapeMode) //temp landscape
+                        {
+                            secondCall = true;
+                            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                              "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=lastweek";
+                            new RetrieveFeedTask().execute();
+                        }else
+                        {
+                            drawGraph();//temp landscape
+                        }
                     }
                 }
 
