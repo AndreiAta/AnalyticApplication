@@ -1,5 +1,7 @@
 package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits;
 
+import android.app.ActionBar;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -7,12 +9,15 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -47,11 +52,16 @@ public class VisitsWeekFragment extends Fragment
     String API_URL = "";
     Boolean secondCall = false;
     int dayOfWeek;
+    Integer totalVisits;
     String thisWeekCompareMonDate;
     String lastWeekCompareMonDate;
     DateTime startOfWeek;
     String lastSunday;
-    Boolean landscapeMode = false; //temp
+    Boolean landscapeMode;
+    TextView textViewDate;
+    TextView textViewInfo;
+    TextView textViewTotal;
+
 
     public VisitsWeekFragment()
     {
@@ -62,8 +72,8 @@ public class VisitsWeekFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        int currentOrientation = getResources().getConfiguration().orientation;
-        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE)
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
         {
             landscapeMode = true;
             Toast.makeText(getActivity().getApplicationContext(), "Landscape", Toast.LENGTH_SHORT).show();
@@ -73,18 +83,17 @@ public class VisitsWeekFragment extends Fragment
             landscapeMode = false;
             Toast.makeText(getActivity().getApplicationContext(), "Portrait", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        //Get time period for the API Call
         dayOfWeek = new DateTime().getDayOfWeek();
         DateTime currentDay = new DateTime();
         String currentDate = currentDay.toString("yyyy-MM-dd");
-        currentDate = currentDate.replace("-","");
-
+        currentDate = currentDate.replace("-", "");
         startOfWeek = new DateTime().minusDays(dayOfWeek - 1);
         lastSunday = startOfWeek.minusDays(1).toString("dd");
         lastWeekCompareMonDate = startOfWeek.minusDays(7).toString("dd");
@@ -92,8 +101,9 @@ public class VisitsWeekFragment extends Fragment
         mondayDate = mondayDate.replace("-", "");
         thisWeekCompareMonDate = startOfWeek.toString("dd");
         String period = mondayDate + "_" + currentDate;
-
-        Log.i("DAY OF WEEK", String.valueOf(period));
+        //Get Time Period for the Text View
+        String textDatePeriod = startOfWeek.toString("dd-MMMM") + " to " + currentDay.toString("dd-MMMM");
+        textDatePeriod = textDatePeriod.replace("-", " ");
 
         if(MainActivity.API_ID != null)
         {
@@ -106,11 +116,16 @@ public class VisitsWeekFragment extends Fragment
         }
         View rootView = inflater.inflate(R.layout.fragment_visits_week, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+        textViewDate = (TextView) rootView.findViewById(R.id.textViewDate);
+        textViewInfo = (TextView) rootView.findViewById(R.id.textViewInfo);
+        textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
+        textViewDate.setText(textDatePeriod);
+        totalVisits = 0;
+
         new RetrieveFeedTask().execute();
         chart = (LineChart) rootView.findViewById(R.id.chart);
 
         return  rootView;
-
     }
 
     @Override
@@ -202,14 +217,19 @@ public class VisitsWeekFragment extends Fragment
             chart.setDescription("");
             chart.animateXY(2000, 2000);
             chart.invalidate();
+            chart.setBackgroundColor(Color.rgb(68, 68, 68));
+            chart.setGridBackgroundColor(R.color.White);
             XAxis xAxis = chart.getXAxis();
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
             xAxis.setSpaceBetweenLabels(0);
             xAxis.setAdjustXLabels(false);
+            xAxis.setTextColor(Color.WHITE);
+            chart.getLegend().setTextColor(Color.WHITE);
             if(landscapeMode)
             {
                 data.setValueTextSize(0f);
                 chart.getAxisRight().setDrawLabels(false);
+                chart.getAxisLeft().setTextColor(Color.WHITE);
             }else
             {
                 data.setValueTextSize(0f);
@@ -247,6 +267,7 @@ public class VisitsWeekFragment extends Fragment
                 if(totalDays == 0)
                 {
                     Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                    totalVisits = 0;
                 }else
                 {
                     for (Integer i = 0; i < totalDays; i++)
@@ -304,6 +325,7 @@ public class VisitsWeekFragment extends Fragment
                                 valueSet1.add(entry);
                                 thisMonDate++;
                                 placementOnXAxis++;
+                                totalVisits = totalVisits + visits;
                             }
                         }
                     }
@@ -311,10 +333,10 @@ public class VisitsWeekFragment extends Fragment
                     if (secondCall)
                     {
                         LineDataSet lineDataSet2 = new LineDataSet(valueSet2, "LAST WEEK");
-                        lineDataSet2.setColor(Color.rgb(5, 184, 198)); //TODO USE R.COLOR
+                        lineDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
                         lineDataSet2.setDrawFilled(true);
-                        lineDataSet2.setFillColor(Color.rgb(5, 184, 198));
-                        lineDataSet2.setFillAlpha(15);
+                        lineDataSet2.setFillColor(Color.rgb(181, 0, 97));
+                        lineDataSet2.setFillAlpha(40);
                         dataSets.add(lineDataSet2);
                         drawGraph();
 
@@ -323,12 +345,12 @@ public class VisitsWeekFragment extends Fragment
                     {
                         dataSets = new ArrayList<>();
                         LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "THIS WEEK");
-                        lineDataSet1.setColor(Color.rgb(181, 0, 97));
+                        lineDataSet1.setColor(Color.rgb(5, 184, 198));
                         lineDataSet1.setDrawFilled(true);
-                        lineDataSet1.setFillColor(Color.rgb(181, 0, 97));
-                        lineDataSet1.setFillAlpha(15);
+                        lineDataSet1.setFillColor(Color.rgb(5, 184, 198));
+                        lineDataSet1.setFillAlpha(40);
                         dataSets.add(lineDataSet1);
-
+                        textViewTotal.setText(totalVisits.toString());
                         if(landscapeMode) //temp landscape
                         {
                             secondCall = true;
