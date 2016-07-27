@@ -71,6 +71,8 @@ public class MainVisitsFragment extends Fragment
             mTabHost.getTabWidget().getChildAt(i).getLayoutParams().height = 175;
 
         }
+
+        mTabHost.getTabWidget().setDividerDrawable(null);
         return mTabHost;
 
     }
