@@ -2,6 +2,7 @@ package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 
 
 import android.app.Dialog;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -70,22 +71,20 @@ public class MainActivity extends AppCompatActivity
 
 
 {
-
     public static String API_ID; // Should perhaps have some getter/setter?
     public static String API_EMAIL;
     public static String API_KEY;
     EditText emailText;
     EditText apiKeyText;
-    View headerView;
     public static String initialLogin;
-
+    public Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (initialLogin == null)
@@ -139,6 +138,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     private void writeToFile(String message)

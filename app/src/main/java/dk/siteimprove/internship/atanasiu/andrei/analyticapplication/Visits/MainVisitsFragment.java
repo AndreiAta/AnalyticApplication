@@ -1,6 +1,8 @@
 package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits;
 
+import android.app.ActionBar;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,7 +11,9 @@ import android.support.v4.app.FragmentTabHost;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 
@@ -17,7 +21,8 @@ import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 public class MainVisitsFragment extends Fragment
 {
     private OnFragmentInteractionListener mListener;
-    private FragmentTabHost mTabHost;
+    public FragmentTabHost mTabHost;
+    boolean landscapeMode;
 
     public MainVisitsFragment()
     {
@@ -28,6 +33,17 @@ public class MainVisitsFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        int currentOrientation = getResources().getConfiguration().orientation;
+        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+            landscapeMode = true;
+            Toast.makeText(getActivity().getApplicationContext(), "Landscape", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            landscapeMode = false;
+            Toast.makeText(getActivity().getApplicationContext(), "Portrait", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -71,8 +87,11 @@ public class MainVisitsFragment extends Fragment
             mTabHost.getTabWidget().getChildAt(i).getLayoutParams().height = 175;
 
         }
-
         mTabHost.getTabWidget().setDividerDrawable(null);
+        if(landscapeMode)
+        {
+            mTabHost.getTabWidget().setVisibility(View.GONE);
+        }
         return mTabHost;
 
     }
