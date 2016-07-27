@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
@@ -178,6 +179,8 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                     numberorg = numberorg + 1;
 
                 }
+
+
                 BarDataSet barDataSet1 = new BarDataSet(valueSet1, "VISITS");
                 barDataSet1.setColor(Color.rgb(49, 79, 79));
                 barDataSet1.setBarSpacePercent(50f);
