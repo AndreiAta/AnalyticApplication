@@ -7,18 +7,20 @@
     <!-- TODO: Update blank fragment layout -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/scrollView"
         android:background="@color/TuataraGrey">
+
+
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="left|top">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:background="@color/TuataraGrey">
 
@@ -32,7 +34,7 @@
 
                 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                             xmlns:tools="http://schemas.android.com/tools"
-                            android:layout_width="match_parent"
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:paddingLeft="@dimen/activity_horizontal_margin"
                             android:paddingRight="@dimen/activity_horizontal_margin"
@@ -42,7 +44,7 @@
                             android:background="@color/TuataraGrey">
                    <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/chart"
-                    android:layout_width="match_parent"
+                    android:layout_width="fill_parent"
                     android:layout_height="200dp"
                     android:layout_below="@+id/textViewTotal"
                     android:layout_alignParentEnd="true"/>
@@ -75,8 +77,192 @@
                         android:textColor="@color/White"
                         android:textSize="25dp"/>
 
+
                 </RelativeLayout>
         </LinearLayout>
+        <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                     android:id="@+id/table"
+                     android:layout_width="fill_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_marginTop="10dp"
+            >
+
+            <TableRow
+                android:background="#607D8B"
+                android:padding="5dp">
+                <TextView
+                    android:id="@+id/columnOne"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Day of Week"
+                    android:layout_span="28"/>
+
+                <TextView
+                    android:id="@+id/columnTwo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Visits"
+                    android:layout_column="38"/>
+            </TableRow>
+
+            <TableRow
+                android:background="#ECEFF1"
+                android:padding="5dp">
+                <TextView
+                    android:id="@+id/rowOne"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Monday"
+                    android:layout_span="150"/>
+
+                <TextView
+                    android:id="@+id/mondayValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="-"
+                    android:layout_column="69"
+                    android:gravity="center"
+                    android:textAlignment="center"/>
+
+            </TableRow>
+
+            <TableRow
+                android:background="#ECEFF1"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Tuesday"
+                    android:layout_column="0"
+                    android:layout_span="150"/>
+
+                <TextView
+                    android:id="@+id/tuesdayValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="-"
+                    android:layout_column="177"
+                    android:gravity="center"
+                    android:textAlignment="center"/>
+
+            </TableRow>
+
+            <TableRow
+                android:background="#ECEFF1"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Wednesday"
+                    android:layout_column="0"
+                    android:layout_span="150"/>
+
+                <TextView
+                    android:id="@+id/wednesdayValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="-"
+                    android:layout_column="183"
+                    android:gravity="center"
+                    android:textAlignment="center"/>
+            </TableRow>
+
+            <TableRow
+                android:background="#ECEFF1"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Thursday"
+                    android:layout_column="0"
+                    android:layout_span="150"/>
+
+                <TextView
+                    android:id="@+id/thursdayValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="-"
+                    android:layout_column="1"
+                    android:gravity="center"
+                    android:textAlignment="center"/>
+
+            </TableRow>
+
+            <TableRow
+                android:background="#ECEFF1"
+                android:padding="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Friday"
+                    android:layout_span="90"/>
+
+                <TextView
+                    android:id="@+id/fridayValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="-"
+                    android:layout_column="171"
+                    android:gravity="center"/>
+            </TableRow>
+
+            <TableRow
+                android:background="#ECEFF1"
+                android:padding="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Saturday"
+                    android:layout_span="90"/>
+
+                <TextView
+                    android:id="@+id/saturdayValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="-"
+                    android:layout_column="160"
+                    android:gravity="center"
+                    android:textAlignment="center"/>
+            </TableRow>
+
+            <TableRow
+                android:background="#ECEFF1"
+                android:padding="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Sunday"
+                    android:layout_span="90"/>
+
+                <TextView
+                    android:id="@+id/sundayValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="-"
+                    android:layout_column="148"
+                    android:gravity="center"/>
+            </TableRow>
+
+        </TableLayout>
     </LinearLayout>
     </ScrollView>
 </FrameLayout>

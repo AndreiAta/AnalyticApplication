@@ -18,9 +18,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,11 +65,11 @@ public class VisitsWeekFragment extends Fragment
     DateTime startOfWeek;
     String lastSunday;
     Boolean landscapeMode;
-    TextView textViewDate;
-    TextView textViewInfo;
-    TextView textViewTotal;
-    HorizontalScrollView scrollView;
+    TextView textViewDate, textViewInfo, textViewTotal, valueOne, columnTwo, mondayValue, tuesdayValue, wednesdayValue, thursdayValue, fridayValue, saturdayValue, sundayValue;
+    ArrayList<TextView> visitsColumn;
     boolean apiIdSelected;
+    TableLayout table;
+    ArrayList<Integer> tableValues = new ArrayList<>();
 
     public VisitsWeekFragment()
     {
@@ -123,6 +126,33 @@ public class VisitsWeekFragment extends Fragment
         textViewDate = (TextView) rootView.findViewById(R.id.textViewDate);
         textViewInfo = (TextView) rootView.findViewById(R.id.textViewInfo);
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
+
+        table = (TableLayout) rootView.findViewById(R.id.table);
+        visitsColumn = new ArrayList<>();
+        mondayValue = (TextView) rootView.findViewById(R.id.mondayValue);
+        visitsColumn.add(mondayValue);
+        tuesdayValue = (TextView) rootView.findViewById(R.id.tuesdayValue);
+        visitsColumn.add(tuesdayValue);
+        wednesdayValue = (TextView) rootView.findViewById(R.id.wednesdayValue);
+        visitsColumn.add(wednesdayValue);
+
+        TableRow tableRowTest = new TableRow(getContext());
+        tableRowTest.setBackgroundColor(Color.WHITE);
+
+        TextView tvTest = new TextView(getContext());
+        //tvTest.setLayoutParams(new FrameLayout.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+        tvTest.setLayoutParams(new TableRow.LayoutParams(0));
+        tvTest.setText("testing");
+
+        TextView tvTest2 = new TextView(getContext());
+        //tvTest2.setLayoutParams(new FrameLayout.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+        tvTest.setLayoutParams(new TableRow.LayoutParams(1));
+        tvTest2.setText("123");
+
+        tableRowTest.addView(tvTest);
+        tableRowTest.addView(tvTest2);
+        table.addView(tableRowTest);
+
         textViewDate.setText(textDatePeriod);
         totalVisits = 0;
 
@@ -141,9 +171,21 @@ public class VisitsWeekFragment extends Fragment
         {
             Toast.makeText(getActivity().getApplicationContext(), "YOU HAVE NO INTERNET!", Toast.LENGTH_SHORT).show();
         }
+        if(landscapeMode)
+        {
+            table.setVisibility(View.GONE);
+        }
         chart = (LineChart) rootView.findViewById(R.id.chart);
 
         return  rootView;
+    }
+
+    public void fillTable()
+    {
+        for (int i = 0; i < visitsColumn.size() ; i++)
+        {
+           visitsColumn.get(i).setText(tableValues.get(i).toString());
+        }
     }
 
     @Override
@@ -352,6 +394,7 @@ public class VisitsWeekFragment extends Fragment
                                {
                                    Entry entry = new Entry(0, placementOnXAxis);
                                    valueSet1.add(entry);
+                                   tableValues.add(0);
                                    thisMonDate++;
                                    placementOnXAxis++;
                                }
@@ -360,6 +403,7 @@ public class VisitsWeekFragment extends Fragment
                             {
                                 Entry entry = new Entry((float)visits, placementOnXAxis);
                                 valueSet1.add(entry);
+                                tableValues.add(visits);
                                 thisMonDate++;
                                 placementOnXAxis++;
                                 totalVisits = totalVisits + visits;
@@ -396,6 +440,7 @@ public class VisitsWeekFragment extends Fragment
                             new RetrieveFeedTask().execute();
                         }else
                         {
+                            fillTable();
                             drawGraph();//temp landscape
                         }
                     }
