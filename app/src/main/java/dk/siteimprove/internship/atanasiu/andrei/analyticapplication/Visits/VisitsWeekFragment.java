@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -82,13 +84,6 @@ public class VisitsWeekFragment extends Fragment
         {
             landscapeMode = false;
             Toast.makeText(getActivity().getApplicationContext(), "Portrait", Toast.LENGTH_SHORT).show();
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE);
         }
     }
 
@@ -129,7 +124,14 @@ public class VisitsWeekFragment extends Fragment
         textViewDate.setText(textDatePeriod);
         totalVisits = 0;
 
-        new RetrieveFeedTask().execute();
+        if(haveNetworkConnection())
+        {
+            new RetrieveFeedTask().execute();
+        }
+        else
+        {
+            Toast.makeText(getActivity().getApplicationContext(), "YOU HAVE NO INTERNET!", Toast.LENGTH_SHORT).show();
+        }
         chart = (LineChart) rootView.findViewById(R.id.chart);
 
         return  rootView;
@@ -160,6 +162,24 @@ public class VisitsWeekFragment extends Fragment
     {
         void onFragmentInteraction(Uri uri);
     }
+
+    public boolean haveNetworkConnection() {
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
+
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                if (ni.isConnected())
+                    haveConnectedWifi = true;
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (ni.isConnected())
+                    haveConnectedMobile = true;
+        }
+        return haveConnectedWifi || haveConnectedMobile;
+    }
+
     class RetrieveFeedTask extends AsyncTask<Void, Void, String> //This is a Class
     {
         private Exception exception;
