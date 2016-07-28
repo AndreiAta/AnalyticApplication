@@ -86,17 +86,19 @@
                      android:layout_width="fill_parent"
                      android:layout_height="wrap_content"
                      android:layout_marginTop="10dp"
-                     android:padding="5dp">
+                     android:padding="5dp"
+                     android:background="@color/TuataraGrey">
 
             <TableRow
-                android:background="#607D8B"
+                android:background="@color/JavaBlue"
                 android:padding="5dp">
                 <TextView
                     android:id="@+id/columnOne"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Day of Week"/>
+                    android:text="Day of Week"
+                    android:textColor="@color/White"/>
 
                 <TextView
                     android:id="@+id/columnTwo"
@@ -104,7 +106,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="right"
-                    android:text="Visits"/>
+                    android:text="Visits"
+                    android:textColor="@color/White"/>
             </TableRow>
 
 

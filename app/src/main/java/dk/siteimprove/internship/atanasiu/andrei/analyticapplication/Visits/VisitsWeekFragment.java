@@ -169,16 +169,19 @@ public class VisitsWeekFragment extends Fragment
         {
             TableRow[] tableRow = new TableRow[7];
             tableRow[i] = new TableRow(getActivity());
-            tableRow[i].setBackgroundColor(Color.WHITE);
+            //tableRow[i].setBackgroundColor(Color.WHITE);
+            tableRow[i].setPadding(40,40,40,40);
 
             TextView weekDay = new TextView(getActivity());
             weekDay.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
             weekDay.setText(tableWeekDays.get(i));
+            weekDay.setTextColor(Color.WHITE);
 
             TextView visits = new TextView(getActivity());
             visits.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
             visits.setGravity(Gravity.RIGHT);
             visits.setText(tableValues.get(i).toString());
+            visits.setTextColor(Color.WHITE);
 
             tableRow[i].addView(weekDay);
             tableRow[i].addView(visits);
