@@ -37,12 +37,10 @@ public class MainVisitsFragment extends Fragment
         if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE)
         {
             landscapeMode = true;
-            Toast.makeText(getActivity().getApplicationContext(), "Landscape", Toast.LENGTH_SHORT).show();
         }
         else
         {
             landscapeMode = false;
-            Toast.makeText(getActivity().getApplicationContext(), "Portrait", Toast.LENGTH_SHORT).show();
         }
     }
 
