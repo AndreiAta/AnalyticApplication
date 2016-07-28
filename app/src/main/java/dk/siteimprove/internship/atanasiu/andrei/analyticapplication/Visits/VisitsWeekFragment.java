@@ -1,7 +1,5 @@
 package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits;
 
-import android.app.ActionBar;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -11,16 +9,15 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,11 +59,11 @@ public class VisitsWeekFragment extends Fragment
     DateTime startOfWeek;
     String lastSunday;
     Boolean landscapeMode;
-    TextView textViewDate;
-    TextView textViewInfo;
-    TextView textViewTotal;
-    HorizontalScrollView scrollView;
+    TextView textViewDate, textViewInfo, textViewTotal;
     boolean apiIdSelected;
+    TableLayout table;
+    ArrayList<Integer> tableValues = new ArrayList<>();
+    ArrayList<String> tableWeekDays = new ArrayList<>();
 
     public VisitsWeekFragment()
     {
@@ -108,6 +105,7 @@ public class VisitsWeekFragment extends Fragment
         String textDatePeriod = startOfWeek.toString("dd-MMMM") + " to " + currentDay.toString("dd-MMMM");
         textDatePeriod = textDatePeriod.replace("-", " ");
 
+
         if(!MainActivity.API_ID.equalsIgnoreCase("test"))
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
@@ -123,6 +121,16 @@ public class VisitsWeekFragment extends Fragment
         textViewDate = (TextView) rootView.findViewById(R.id.textViewDate);
         textViewInfo = (TextView) rootView.findViewById(R.id.textViewInfo);
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
+
+        table = (TableLayout) rootView.findViewById(R.id.table);
+        tableWeekDays.add("Monday");
+        tableWeekDays.add("Tuesday");
+        tableWeekDays.add("Wednesday");
+        tableWeekDays.add("Thursday");
+        tableWeekDays.add("Friday");
+        tableWeekDays.add("Saturday");
+        tableWeekDays.add("Sunday");
+
         textViewDate.setText(textDatePeriod);
         totalVisits = 0;
 
@@ -141,9 +149,43 @@ public class VisitsWeekFragment extends Fragment
         {
             Toast.makeText(getActivity().getApplicationContext(), "YOU HAVE NO INTERNET!", Toast.LENGTH_SHORT).show();
         }
+        if(landscapeMode)
+        {
+            table.setVisibility(View.GONE);
+        }
         chart = (LineChart) rootView.findViewById(R.id.chart);
 
         return  rootView;
+    }
+
+    public void createTable()
+    {
+        for (int i = tableValues.size(); i < 7; i++)
+        {
+            tableValues.add(0);
+        }
+
+        for (int i = 0; i <7 ; i++)
+        {
+            TableRow[] tableRow = new TableRow[7];
+            tableRow[i] = new TableRow(getActivity());
+            tableRow[i].setBackgroundColor(Color.WHITE);
+            tableRow[i].setPadding(50,50,50,50);
+
+            TextView weekDay = new TextView(getActivity());
+            weekDay.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            weekDay.setText(tableWeekDays.get(i));
+
+            TextView visits = new TextView(getActivity());
+            visits.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            visits.setGravity(Gravity.RIGHT);
+            visits.setText(tableValues.get(i).toString());
+
+            tableRow[i].addView(weekDay);
+            tableRow[i].addView(visits);
+            table.addView(tableRow[i]);
+        }
+
     }
 
     @Override
@@ -345,21 +387,23 @@ public class VisitsWeekFragment extends Fragment
                             }
                         } else  //Current Week
                         {
-                           while(day_of_month != thisMonDate)
-                           {
-                               int stopValue = thisMonDate;
-                               for(int j = stopValue; j < day_of_month; j++)
-                               {
-                                   Entry entry = new Entry(0, placementOnXAxis);
-                                   valueSet1.add(entry);
-                                   thisMonDate++;
-                                   placementOnXAxis++;
-                               }
-                           }
+                            while(day_of_month != thisMonDate)
+                            {
+                                int stopValue = thisMonDate;
+                                for(int j = stopValue; j < day_of_month; j++)
+                                {
+                                    Entry entry = new Entry(0, placementOnXAxis);
+                                    valueSet1.add(entry);
+                                    tableValues.add(0);
+                                    thisMonDate++;
+                                    placementOnXAxis++;
+                                }
+                            }
                             if(day_of_month == thisMonDate)
                             {
                                 Entry entry = new Entry((float)visits, placementOnXAxis);
                                 valueSet1.add(entry);
+                                tableValues.add(visits);
                                 thisMonDate++;
                                 placementOnXAxis++;
                                 totalVisits = totalVisits + visits;
@@ -392,10 +436,11 @@ public class VisitsWeekFragment extends Fragment
                         {
                             secondCall = true;
                             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                              "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=lastweek";
+                                    "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=lastweek";
                             new RetrieveFeedTask().execute();
                         }else
                         {
+                            createTable();
                             drawGraph();//temp landscape
                         }
                     }
@@ -406,7 +451,7 @@ public class VisitsWeekFragment extends Fragment
             } catch (ClassCastException ce){
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
             }
-            
+
 
         }
     }
