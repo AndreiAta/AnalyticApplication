@@ -1,7 +1,5 @@
 package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits;
 
-import android.app.ActionBar;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -11,17 +9,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.HorizontalScrollView;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -65,11 +59,11 @@ public class VisitsWeekFragment extends Fragment
     DateTime startOfWeek;
     String lastSunday;
     Boolean landscapeMode;
-    TextView textViewDate, textViewInfo, textViewTotal, valueOne, columnTwo, mondayValue, tuesdayValue, wednesdayValue, thursdayValue, fridayValue, saturdayValue, sundayValue;
-    ArrayList<TextView> visitsColumn;
+    TextView textViewDate, textViewInfo, textViewTotal;
     boolean apiIdSelected;
     TableLayout table;
     ArrayList<Integer> tableValues = new ArrayList<>();
+    ArrayList<String> tableWeekDays = new ArrayList<>();
 
     public VisitsWeekFragment()
     {
@@ -111,6 +105,7 @@ public class VisitsWeekFragment extends Fragment
         String textDatePeriod = startOfWeek.toString("dd-MMMM") + " to " + currentDay.toString("dd-MMMM");
         textDatePeriod = textDatePeriod.replace("-", " ");
 
+
         if(!MainActivity.API_ID.equalsIgnoreCase("test"))
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
@@ -128,30 +123,13 @@ public class VisitsWeekFragment extends Fragment
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
 
         table = (TableLayout) rootView.findViewById(R.id.table);
-        visitsColumn = new ArrayList<>();
-        mondayValue = (TextView) rootView.findViewById(R.id.mondayValue);
-        visitsColumn.add(mondayValue);
-        tuesdayValue = (TextView) rootView.findViewById(R.id.tuesdayValue);
-        visitsColumn.add(tuesdayValue);
-        wednesdayValue = (TextView) rootView.findViewById(R.id.wednesdayValue);
-        visitsColumn.add(wednesdayValue);
-
-        TableRow tableRowTest = new TableRow(getContext());
-        tableRowTest.setBackgroundColor(Color.WHITE);
-
-        TextView tvTest = new TextView(getContext());
-        //tvTest.setLayoutParams(new FrameLayout.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-        tvTest.setLayoutParams(new TableRow.LayoutParams(0));
-        tvTest.setText("testing");
-
-        TextView tvTest2 = new TextView(getContext());
-        //tvTest2.setLayoutParams(new FrameLayout.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-        tvTest.setLayoutParams(new TableRow.LayoutParams(1));
-        tvTest2.setText("123");
-
-        tableRowTest.addView(tvTest);
-        tableRowTest.addView(tvTest2);
-        table.addView(tableRowTest);
+        tableWeekDays.add("Monday");
+        tableWeekDays.add("Tuesday");
+        tableWeekDays.add("Wednesday");
+        tableWeekDays.add("Thursday");
+        tableWeekDays.add("Friday");
+        tableWeekDays.add("Saturday");
+        tableWeekDays.add("Sunday");
 
         textViewDate.setText(textDatePeriod);
         totalVisits = 0;
@@ -180,12 +158,33 @@ public class VisitsWeekFragment extends Fragment
         return  rootView;
     }
 
-    public void fillTable()
+    public void createTable()
     {
-        for (int i = 0; i < visitsColumn.size() ; i++)
+        for (int i = tableValues.size(); i < 7; i++)
         {
-           visitsColumn.get(i).setText(tableValues.get(i).toString());
+            tableValues.add(0);
         }
+
+        for (int i = 0; i <7 ; i++)
+        {
+            TableRow[] tableRow = new TableRow[7];
+            tableRow[i] = new TableRow(getActivity());
+            tableRow[i].setBackgroundColor(Color.WHITE);
+
+            TextView weekDay = new TextView(getActivity());
+            weekDay.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            weekDay.setText(tableWeekDays.get(i));
+
+            TextView visits = new TextView(getActivity());
+            visits.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            visits.setGravity(Gravity.RIGHT);
+            visits.setText(tableValues.get(i).toString());
+
+            tableRow[i].addView(weekDay);
+            tableRow[i].addView(visits);
+            table.addView(tableRow[i]);
+        }
+
     }
 
     @Override
@@ -440,7 +439,7 @@ public class VisitsWeekFragment extends Fragment
                             new RetrieveFeedTask().execute();
                         }else
                         {
-                            fillTable();
+                            createTable();
                             drawGraph();//temp landscape
                         }
                     }
