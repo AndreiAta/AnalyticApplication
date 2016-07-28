@@ -18,7 +18,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,7 +65,7 @@ public class VisitsWeekFragment extends Fragment
     TextView textViewDate;
     TextView textViewInfo;
     TextView textViewTotal;
-
+    HorizontalScrollView scrollView;
 
     public VisitsWeekFragment()
     {
@@ -222,6 +224,7 @@ public class VisitsWeekFragment extends Fragment
                 return null;
             }
         }
+
         private ArrayList<String> getXAxisValues() {
             ArrayList<String> xAxis = new ArrayList<>();
 
@@ -246,12 +249,12 @@ public class VisitsWeekFragment extends Fragment
             chart.invalidate();
             chart.setBackgroundColor(Color.rgb(68, 68, 68));
             chart.setGridBackgroundColor(R.color.White);
+            chart.getLegend().setTextColor(Color.WHITE);
             XAxis xAxis = chart.getXAxis();
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
             xAxis.setSpaceBetweenLabels(0);
             xAxis.setAdjustXLabels(false);
             xAxis.setTextColor(Color.WHITE);
-            chart.getLegend().setTextColor(Color.WHITE);
             if(landscapeMode)
             {
                 data.setValueTextSize(0f);

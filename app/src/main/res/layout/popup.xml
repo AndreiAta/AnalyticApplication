@@ -34,7 +34,7 @@
                 >
 
                 <EditText
-                    android:layout_width="wrap_content"
+                    android:layout_width="238dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/emailTextField"
                     android:layout_alignParentTop="true"
@@ -50,7 +50,7 @@
                     android:textColorHint="@color/White"/>
 
                 <EditText
-                    android:layout_width="181dp"
+                    android:layout_width="238dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/apiKeyTextField"
                     android:layout_gravity="center_horizontal"

@@ -8,6 +8,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/scrollView"
         android:background="@color/TuataraGrey">
     <LinearLayout
         android:orientation="vertical"
@@ -67,11 +68,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="28,402"
+                        android:text="0"
                         android:id="@+id/textViewTotal"
                         android:layout_below="@+id/textViewInfo"
                         android:layout_centerHorizontal="true"
-                        android:textColor="@color/White"/>
+                        android:textColor="@color/White"
+                        android:textSize="25dp"/>
 
                 </RelativeLayout>
         </LinearLayout>
