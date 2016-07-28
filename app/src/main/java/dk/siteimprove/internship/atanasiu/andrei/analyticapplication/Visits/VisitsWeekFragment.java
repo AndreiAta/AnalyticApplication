@@ -403,7 +403,10 @@ public class VisitsWeekFragment extends Fragment
 
             } catch (JSONException e) {
                 e.printStackTrace();
+            } catch (ClassCastException ce){
+                Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
             }
+            
 
         }
     }

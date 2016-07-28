@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -221,6 +222,8 @@ public class VisitsMonthFragment extends Fragment
 
             } catch (JSONException e) {
                 e.printStackTrace();
+            } catch (ClassCastException ce){
+                Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
             }
 
         }
