@@ -56,7 +56,6 @@ public class HomePageFragment extends Fragment
         spinner = (Spinner) rootView.findViewById(R.id.spinner1);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, siteNames);
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
-        //spinner.setSelection(1);
         spinner.setAdapter(adapter);
         textView = (TextView) rootView.findViewById(R.id.homePageText);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
@@ -172,6 +171,7 @@ public class HomePageFragment extends Fragment
                     siteIds.add(id.toString());
 
                 }
+                spinner.setSelection(1);
 
             } catch (JSONException e) {
                 e.printStackTrace();

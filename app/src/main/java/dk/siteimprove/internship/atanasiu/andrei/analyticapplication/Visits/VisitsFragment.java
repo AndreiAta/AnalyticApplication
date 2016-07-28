@@ -44,6 +44,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
     ArrayList<LineDataSet> dataSets;
     String API_URL = "";
     int totalHours ;
+    boolean apiIdSelected;
 
     private OnFragmentInteractionListener mListener;
 
@@ -59,18 +60,29 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        if(MainActivity.API_ID != null)
+        if(!MainActivity.API_ID.equalsIgnoreCase("test"))
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/behavior/visits_by_hour?page=1&page_size=10&period=Today";
+            apiIdSelected = true;
 
         }else
         {
-            //TODO error message no Site selected
+            apiIdSelected = false;
         }
         View rootView = inflater.inflate(R.layout.fragment_visits, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
-        new RetrieveFeedTask().execute();
+
+        // TODO add interneCheck aswell
+        if(apiIdSelected)
+        {
+            new RetrieveFeedTask().execute();
+        }
+        else
+        {
+            Toast.makeText(getActivity().getApplicationContext(), "PLEASE SELECT A SITE!!", Toast.LENGTH_SHORT).show();
+        }
+
         chart = (LineChart) rootView.findViewById(R.id.chart);
 
         return  rootView;

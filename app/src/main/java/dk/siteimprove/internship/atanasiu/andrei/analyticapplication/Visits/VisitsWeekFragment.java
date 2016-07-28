@@ -66,6 +66,7 @@ public class VisitsWeekFragment extends Fragment
     TextView textViewInfo;
     TextView textViewTotal;
     HorizontalScrollView scrollView;
+    boolean apiIdSelected;
 
     public VisitsWeekFragment()
     {
@@ -80,12 +81,10 @@ public class VisitsWeekFragment extends Fragment
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
         {
             landscapeMode = true;
-            Toast.makeText(getActivity().getApplicationContext(), "Landscape", Toast.LENGTH_SHORT).show();
         }
         else
         {
             landscapeMode = false;
-            Toast.makeText(getActivity().getApplicationContext(), "Portrait", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -109,14 +108,15 @@ public class VisitsWeekFragment extends Fragment
         String textDatePeriod = startOfWeek.toString("dd-MMMM") + " to " + currentDay.toString("dd-MMMM");
         textDatePeriod = textDatePeriod.replace("-", " ");
 
-        if(MainActivity.API_ID != null)
+        if(!MainActivity.API_ID.equalsIgnoreCase("test"))
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=" + period;
+            apiIdSelected = true;
 
         }else
         {
-            //TODO error message no Site selected
+            apiIdSelected = false;
         }
         View rootView = inflater.inflate(R.layout.fragment_visits_week, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
@@ -128,7 +128,14 @@ public class VisitsWeekFragment extends Fragment
 
         if(haveNetworkConnection())
         {
-            new RetrieveFeedTask().execute();
+            if(apiIdSelected)
+            {
+                new RetrieveFeedTask().execute();
+            }
+            else
+            {
+                Toast.makeText(getActivity().getApplicationContext(), "PLEASE SELECT A SITE!!", Toast.LENGTH_SHORT).show();
+            }
         }
         else
         {
