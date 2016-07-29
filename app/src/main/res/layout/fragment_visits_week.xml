@@ -80,35 +80,37 @@
 
 
                 </RelativeLayout>
-            </LinearLayout>
-            <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                         android:id="@+id/table"
-                         android:layout_width="fill_parent"
-                         android:layout_height="wrap_content"
-                         android:layout_marginTop="10dp"
-                         android:padding="5dp">
 
-                <TableRow
-                    android:background="#607D8B"
-                    android:padding="5dp">
-                    <TextView
-                        android:id="@+id/columnOne"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Day of Week"/>
+        </LinearLayout>
+        <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                     android:id="@+id/table"
+                     android:layout_width="fill_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_marginTop="10dp"
+                     android:padding="5dp"
+                     android:background="@color/TuataraGrey">
 
-                    <TextView
-                        android:id="@+id/columnTwo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="right"
-                        android:text="Visits"/>
-                </TableRow>
+            <TableRow
+                android:background="@color/JavaBlue"
+                android:padding="5dp">
+                <TextView
+                    android:id="@+id/columnOne"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Day of Week"
+                    android:textColor="@color/White"/>
 
-
-            </TableLayout>
+                <TextView
+                    android:id="@+id/columnTwo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:text="Visits"
+                    android:textColor="@color/White"/>
+            </TableRow>
+        </TableLayout>
         </LinearLayout>
     </ScrollView>
 </FrameLayout>
