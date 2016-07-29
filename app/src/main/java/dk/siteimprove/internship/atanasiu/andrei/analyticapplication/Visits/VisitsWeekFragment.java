@@ -177,6 +177,7 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
             tableRow[i] = new TableRow(getActivity());
             tableRow[i].setPadding(40,40,40,40);
 
+
             TextView weekDay = new TextView(getActivity());
             weekDay.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
             weekDay.setText(tableWeekDays.get(i));
@@ -410,18 +411,18 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
                             }
                         } else  //Current Week
                         {
-                           while(day_of_month != thisMonDate)
-                           {
-                               int stopValue = thisMonDate;
-                               for(int j = stopValue; j < day_of_month; j++)
-                               {
-                                   Entry entry = new Entry(0, placementOnXAxis);
-                                   valueSet1.add(entry);
-                                   tableValues.add(0);
-                                   thisMonDate++;
-                                   placementOnXAxis++;
-                               }
-                           }
+                            while(day_of_month != thisMonDate)
+                            {
+                                int stopValue = thisMonDate;
+                                for(int j = stopValue; j < day_of_month; j++)
+                                {
+                                    Entry entry = new Entry(0, placementOnXAxis);
+                                    valueSet1.add(entry);
+                                    tableValues.add(0);
+                                    thisMonDate++;
+                                    placementOnXAxis++;
+                                }
+                            }
                             if(day_of_month == thisMonDate)
                             {
                                 Entry entry = new Entry((float)visits, placementOnXAxis);
@@ -459,7 +460,7 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
                         {
                             secondCall = true;
                             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                              "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=lastweek";
+                                    "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=lastweek";
                             new RetrieveFeedTask().execute();
                         }else
                         {
@@ -474,7 +475,7 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
             } catch (ClassCastException ce){
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
             }
-            
+
 
         }
     }
