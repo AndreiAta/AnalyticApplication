@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 
-public class VisitsWeekFragment extends Fragment
+public class VisitsWeekFragment extends Fragment implements View.OnClickListener
 {
     private OnFragmentInteractionListener mListener;
     ProgressBar progressBar;
@@ -59,11 +59,12 @@ public class VisitsWeekFragment extends Fragment
     DateTime startOfWeek;
     String lastSunday;
     Boolean landscapeMode;
-    TextView textViewDate, textViewInfo, textViewTotal;
+    TextView textViewDate, textViewInfo, textViewTotal, tableToggler;
     boolean apiIdSelected;
     TableLayout table;
     ArrayList<Integer> tableValues = new ArrayList<>();
     ArrayList<String> tableWeekDays = new ArrayList<>();
+    boolean tableIsVisible = false;
 
     public VisitsWeekFragment()
     {
@@ -121,8 +122,12 @@ public class VisitsWeekFragment extends Fragment
         textViewDate = (TextView) rootView.findViewById(R.id.textViewDate);
         textViewInfo = (TextView) rootView.findViewById(R.id.textViewInfo);
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
+        tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
+
+        tableToggler.setOnClickListener(this);
 
         table = (TableLayout) rootView.findViewById(R.id.table);
+        table.setVisibility(View.GONE);
         tableWeekDays.add("Monday");
         tableWeekDays.add("Tuesday");
         tableWeekDays.add("Wednesday");
@@ -152,6 +157,7 @@ public class VisitsWeekFragment extends Fragment
         if(landscapeMode)
         {
             table.setVisibility(View.GONE);
+            tableToggler.setVisibility(View.GONE);
         }
         chart = (LineChart) rootView.findViewById(R.id.chart);
 
@@ -169,7 +175,6 @@ public class VisitsWeekFragment extends Fragment
         {
             TableRow[] tableRow = new TableRow[7];
             tableRow[i] = new TableRow(getActivity());
-            //tableRow[i].setBackgroundColor(Color.WHITE);
             tableRow[i].setPadding(40,40,40,40);
 
             TextView weekDay = new TextView(getActivity());
@@ -211,6 +216,20 @@ public class VisitsWeekFragment extends Fragment
         mListener = null;
     }
 
+    @Override
+    public void onClick(View v)
+    {
+        if(tableIsVisible)
+        {
+            table.setVisibility(View.GONE);
+            tableIsVisible = false;
+        }else
+        {
+            table.setVisibility(View.VISIBLE);
+            tableIsVisible = true;
+        }
+    }
+
     public interface OnFragmentInteractionListener
     {
         void onFragmentInteraction(Uri uri);
@@ -233,6 +252,53 @@ public class VisitsWeekFragment extends Fragment
         return haveConnectedWifi || haveConnectedMobile;
     }
 
+    private ArrayList<String> getXAxisValues()
+    {
+        ArrayList<String> xAxis = new ArrayList<>();
+
+        xAxis.add("Mon");
+        xAxis.add("Tue");
+        xAxis.add("Wed");
+        xAxis.add("Thu");
+        xAxis.add("Fri");
+        xAxis.add("Sat");
+        xAxis.add("Sun");
+
+        return xAxis;
+    }
+
+    private void drawGraph()
+    {
+        LineData data = new LineData(getXAxisValues(), dataSets);
+        Log.i("DATA SETS", dataSets.toString());
+        chart.setData(data);
+        chart.setDescription("");
+        chart.animateXY(2000, 2000);
+        chart.invalidate();
+        chart.setBackgroundColor(Color.rgb(68, 68, 68));
+        chart.setGridBackgroundColor(R.color.White);
+        chart.getLegend().setTextColor(Color.WHITE);
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setSpaceBetweenLabels(0);
+        xAxis.setAdjustXLabels(false);
+        xAxis.setTextColor(Color.WHITE);
+        if(landscapeMode)
+        {
+            data.setValueTextSize(0f);
+            chart.getAxisRight().setDrawLabels(false);
+            chart.getAxisLeft().setTextColor(Color.WHITE);
+        }else
+        {
+            data.setValueTextSize(0f);
+            chart.getAxisLeft().setDrawLabels(false);
+            chart.getAxisRight().setDrawLabels(false);
+        }
+    }
+
+    // ===============================
+    //        INTERNAL CLASS
+    // ===============================
     class RetrieveFeedTask extends AsyncTask<Void, Void, String> //This is a Class
     {
         private Exception exception;
@@ -274,50 +340,6 @@ public class VisitsWeekFragment extends Fragment
                 Log.e("ERROR", e.getMessage(), e);
                 return null;
             }
-        }
-
-        private ArrayList<String> getXAxisValues() {
-            ArrayList<String> xAxis = new ArrayList<>();
-
-            xAxis.add("Mon");
-            xAxis.add("Tue");
-            xAxis.add("Wed");
-            xAxis.add("Thu");
-            xAxis.add("Fri");
-            xAxis.add("Sat");
-            xAxis.add("Sun");
-
-            return xAxis;
-        }
-
-        private void drawGraph()
-        {
-            LineData data = new LineData(getXAxisValues(), dataSets);
-            Log.i("DATA SETS", dataSets.toString());
-            chart.setData(data);
-            chart.setDescription("");
-            chart.animateXY(2000, 2000);
-            chart.invalidate();
-            chart.setBackgroundColor(Color.rgb(68, 68, 68));
-            chart.setGridBackgroundColor(R.color.White);
-            chart.getLegend().setTextColor(Color.WHITE);
-            XAxis xAxis = chart.getXAxis();
-            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-            xAxis.setSpaceBetweenLabels(0);
-            xAxis.setAdjustXLabels(false);
-            xAxis.setTextColor(Color.WHITE);
-            if(landscapeMode)
-            {
-                data.setValueTextSize(0f);
-                chart.getAxisRight().setDrawLabels(false);
-                chart.getAxisLeft().setTextColor(Color.WHITE);
-            }else
-            {
-                data.setValueTextSize(0f);
-                chart.getAxisLeft().setDrawLabels(false);
-                chart.getAxisRight().setDrawLabels(false);
-            }
-
         }
 
         protected void onPostExecute(String response)
