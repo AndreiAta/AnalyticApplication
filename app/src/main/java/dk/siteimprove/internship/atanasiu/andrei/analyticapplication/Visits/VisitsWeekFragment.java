@@ -58,7 +58,7 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
     String lastWeekCompareMonDate;
     DateTime startOfWeek;
     String lastSunday;
-    Boolean landscapeMode;
+    boolean landscapeMode;
     TextView textViewDate, textViewInfo, textViewTotal, tableToggler;
     boolean apiIdSelected;
     TableLayout table;
@@ -356,7 +356,6 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
                 JSONArray items = object.getJSONArray("items");
                 Integer thisMonDate = Integer.parseInt(thisWeekCompareMonDate);
                 Integer lastMonDate = Integer.parseInt(lastWeekCompareMonDate);
-                Log.i("COMPARECOUNTER", String.valueOf(thisMonDate));
                 int totalDays = items.length();
                 int placementOnXAxis = 0;
                 if(secondCall)
@@ -379,7 +378,7 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
                         int day_of_month = items.getJSONObject(i).getInt("day_of_month");
 
                         //Check if you are doing the current week or last week
-                        //then check if any entries are missing and create then
+                        //then check if any entries are missing and create them
                         if (secondCall)
                         {
                             //Last Week
@@ -456,7 +455,7 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
                         lineDataSet1.setFillAlpha(40);
                         dataSets.add(lineDataSet1);
                         textViewTotal.setText(totalVisits.toString());
-                        if(landscapeMode) //temp landscape
+                        if(landscapeMode)
                         {
                             secondCall = true;
                             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
@@ -465,7 +464,7 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
                         }else
                         {
                             createTable();
-                            drawGraph();//temp landscape
+                            drawGraph();
                         }
                     }
                 }
