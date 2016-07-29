@@ -469,7 +469,6 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
                         }
                     }
                 }
-
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (ClassCastException ce){

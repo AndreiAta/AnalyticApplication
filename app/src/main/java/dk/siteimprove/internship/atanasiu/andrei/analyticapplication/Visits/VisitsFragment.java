@@ -158,7 +158,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
 
         for (int i = 0; i < totalHours ; i++)
         {
-            TableRow[] tableRow = new TableRow[7];
+            TableRow[] tableRow = new TableRow[totalHours];
             tableRow[i] = new TableRow(getActivity());
             tableRow[i].setPadding(40, 40, 40, 40);
 
