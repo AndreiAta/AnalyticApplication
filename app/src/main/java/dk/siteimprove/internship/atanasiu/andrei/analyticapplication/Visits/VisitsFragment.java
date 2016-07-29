@@ -104,7 +104,10 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
 
         textViewDate.setText("0 - 0");
         textViewInfo.setText("VISITS TODAY");
-        tableToggler.setText("Visits today");
+        tableToggler.setText("Visits today ");
+        tableToggler.setGravity(Gravity.LEFT);
+        tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
         columnOne.setText("Hour of Day");
 
         tableToggler.setOnClickListener(this);
@@ -146,10 +149,14 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         {
             table.setVisibility(View.GONE);
             tableIsVisible = false;
+            tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
         }else
         {
             table.setVisibility(View.VISIBLE);
             tableIsVisible = true;
+            tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_36dp), null);
         }
     }
 
@@ -158,7 +165,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
 
         for (int i = 0; i < totalHours ; i++)
         {
-            TableRow[] tableRow = new TableRow[7];
+            TableRow[] tableRow = new TableRow[totalHours];
             tableRow[i] = new TableRow(getActivity());
             tableRow[i].setPadding(40, 40, 40, 40);
 
