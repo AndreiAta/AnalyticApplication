@@ -24,6 +24,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.joda.time.DateTime;
@@ -142,6 +143,9 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+// TODO Change The txtView to the current mail...
+//        TextView menuEmailTxt = (TextView) navigationView.getMenu().findViewById(R.id.menuMail);
+//        menuEmailTxt.setText(API_EMAIL);
     }
 
     private void writeToFile(String message)

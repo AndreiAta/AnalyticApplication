@@ -125,6 +125,8 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
 
         tableToggler.setOnClickListener(this);
+        tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
 
         table = (TableLayout) rootView.findViewById(R.id.table);
         table.setVisibility(View.GONE);
@@ -224,10 +226,14 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
         {
             table.setVisibility(View.GONE);
             tableIsVisible = false;
+            tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
         }else
         {
             table.setVisibility(View.VISIBLE);
             tableIsVisible = true;
+            tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_36dp), null);
         }
     }
 
