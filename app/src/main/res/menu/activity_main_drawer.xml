@@ -1,32 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_visibility_black_18dp"
-            android:title="Home Page"/>
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_share"
-            android:title="Visits"/>
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_share"
-            android:title="Social Media"/>
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_share"
-            android:title="Search Engines"/>
+    <group
+        android:id="@+id/menu_top"
+        android:checkableBehavior="single">
+        android:id="@+id/menu_top"
+
+            <item
+                android:id="@+id/visits"
+                android:icon="@drawable/ic_person_white_18dp"
+                android:title="Visits"/>
+            <item
+                android:id="@+id/pageViews"
+                android:icon="@drawable/ic_visibility_white_18dp"
+                android:title="PAGE VIEWS"
+                android:visible="false"/>
+            <item
+                android:id="@+id/popularPages"
+                android:icon="@drawable/ic_favorite_white_18dp"
+                android:title="MOST POPULAR PAGES"
+                android:visible="false"/>
+            <item
+                android:id="@+id/trafficSources"
+                android:icon="@drawable/ic_keyboard_tab_white_18dp"
+                android:title="TRAFFIC SOURCES"
+                android:visible="false"/>
+            <item
+                android:id="@+id/entryPages"
+                android:icon="@drawable/ic_exit_to_app_white_18dp"
+                android:title="ENTRY PAGES"
+                android:visible="false"/>
+            <item
+                android:id="@+id/socialMedia"
+                android:icon="@drawable/ic_share_white_18dp"
+                android:title="Social Media"/>
+            <item
+                android:id="@+id/searchEngines"
+                android:icon="@drawable/ic_search_white_18dp"
+                android:title="Search Engines"/>
+            <item
+                android:id="@+id/countries"
+                android:icon="@drawable/ic_public_white_18dp"
+                android:title="COUNTRIES"
+                android:visible="false"/>
+
     </group>
 
-    <item android:title="Settings">
-        <menu>
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Change User"/>
-        </menu>
-    </item>
+    <group
+        android:id="@+id/menu_bottom">
+        <item
+            android:id="@+id/chooseSite"
+            android:title="Choose Site"/>
+        <item
+            android:id="@+id/nav_send"
+            android:title="Change User"/>
 
+    </group>
 </menu>

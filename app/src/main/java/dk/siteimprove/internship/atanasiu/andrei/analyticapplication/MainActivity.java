@@ -2,10 +2,6 @@ package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 
 
 import android.app.Dialog;
-import android.content.Context;
-import android.content.res.Configuration;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,19 +12,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -36,10 +26,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesMainFragment;
@@ -142,6 +128,9 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+// TODO Change The txtView to the current mail...
+//        TextView menuEmailTxt = (TextView) navigationView.getMenu().findViewById(R.id.menuMail);
+//        menuEmailTxt.setText(API_EMAIL);
     }
 
     private void writeToFile(String message)
@@ -235,24 +224,43 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = null;
         Class fragmentClass = null;
 
-        if (id == R.id.nav_camera)
+        if (id == R.id.chooseSite)
         {
             fragmentClass = HomePageFragment.class;
-
-        } else if (id == R.id.nav_gallery)
+        }
+        else if (id == R.id.visits)
         {
             fragmentClass = MainVisitsFragment.class;
-
-        } else if (id == R.id.nav_slideshow)
+        }
+        else if (id == R.id.pageViews)
+        {
+            //TODO Handle page views request
+        }
+        else if (id == R.id.popularPages)
+        {
+            //TODO Handle popular pages request
+        }
+        else if (id == R.id.trafficSources)
+        {
+            //TODO Handle traffic sources request
+        }
+        else if (id == R.id.entryPages)
+        {
+            //TODO Handle entry pages request
+        }
+        else if (id == R.id.socialMedia)
         {
             fragmentClass = SocialMediaMainFragment.class;
-
-
-        } else if (id == R.id.nav_manage)
+        }
+        else if (id == R.id.searchEngines)
         {
             fragmentClass = SearchEnginesMainFragment.class;
-
-        }else if (id == R.id.nav_send)
+        }
+        else if (id == R.id.countries)
+        {
+            //TODO Handle countries request
+        }
+        else if (id == R.id.nav_send)
         {
 
         }
