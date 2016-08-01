@@ -27,5 +27,4 @@
         app:itemIconTint="@color/JavaBlue"
         app:colorControlHighlight="@color/JavaBlue"/>
 
-
 </android.support.v4.widget.DrawerLayout>

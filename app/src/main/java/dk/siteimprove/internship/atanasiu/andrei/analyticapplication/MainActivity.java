@@ -2,6 +2,7 @@ package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 
 
 import android.app.Dialog;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -65,6 +67,7 @@ public class MainActivity extends AppCompatActivity
     public static String API_KEY;
     EditText emailText;
     EditText apiKeyText;
+    TextView headerTxt;
     public static String initialLogin;
     public Toolbar toolbar;
 
@@ -73,8 +76,12 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FontsOverride.setDefaultFont(this, "MONOSPACE", "Helvetica.otf");
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //Typeface tf = Typeface.createFromAsset(getAssets(), "Helvetica.otf");
 
         if (initialLogin == null)
         {
@@ -86,7 +93,14 @@ public class MainActivity extends AppCompatActivity
 
             emailText = (EditText) dialog.findViewById(R.id.emailTextField);
             apiKeyText = (EditText) dialog.findViewById(R.id.apiKeyTextField);
+            headerTxt = (TextView) dialog.findViewById(R.id.headerTxt);
             Button button = (Button) dialog.findViewById(R.id.Button01);
+
+//            emailText.setTypeface(tf);
+//            apiKeyText.setTypeface(tf);
+//            headerTxt.setTypeface(tf);
+//            button.setTypeface(tf);
+
             readFromFile();
             button.setOnClickListener(new View.OnClickListener()
             {
@@ -103,6 +117,7 @@ public class MainActivity extends AppCompatActivity
                 }
             });
             dialog.show();
+
         }
 
         if (savedInstanceState == null) {

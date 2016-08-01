@@ -27,6 +27,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -107,6 +108,13 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
         table = (TableLayout) rootView.findViewById(R.id.table);
         table.setVisibility(View.GONE);
         totalVisits = 0;
+
+        //Get date period for text view
+        int dayOfYear = new DateTime().getDayOfYear();
+        DateTime firstDayOfMonth = new DateTime().minusDays(dayOfYear - 1);
+        DateTime today = new DateTime();
+        String textDatePeriod = firstDayOfMonth.toString("MMMMM") + " to " + today.toString("MMMMM");
+        textViewDate.setText(textDatePeriod);
 
         if(haveNetworkConnection())
         {
@@ -374,7 +382,6 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
                         {
                             while (month_of_year != compareCounter)
                             {
-
                                 int stopValue = compareCounter;
                                 for (int j = stopValue; j < month_of_year; j++)
                                 {
@@ -384,7 +391,6 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
                                     compareCounter++;
                                     placementOnXAxis++;
                                 }
-
                             }
                             if (month_of_year == compareCounter)
                             {
@@ -396,8 +402,6 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
                                 totalVisits = totalVisits + visits;
                             }
                         }
-
-
                     }
 
                     if(secondCall)
@@ -422,8 +426,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
                         lineDataSet1.setFillAlpha(40);
                         dataSets.add(lineDataSet1);
 
-                        // Setting Header Text to match VisitsToday Fragment.
-                        textViewDate.setText("1 - " + String.valueOf(totalMonths - 1));
+                        // Setting Header Text to match VisitsYear Fragment.
                         textViewTotal.setText(String.valueOf(totalVisits));
 
                         if(landscapeMode)
