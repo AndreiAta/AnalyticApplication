@@ -77,11 +77,13 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FontsOverride.setDefaultFont(this, "MONOSPACE", "Helvetica.otf");
+        Typeface tf = Typeface.createFromAsset(getAssets(), "Helvetica.otf");
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //Typeface tf = Typeface.createFromAsset(getAssets(), "Helvetica.otf");
+        TextView myTitle = (TextView) toolbar.getChildAt(0);
+        myTitle.setTypeface(tf);
 
         if (initialLogin == null)
         {
