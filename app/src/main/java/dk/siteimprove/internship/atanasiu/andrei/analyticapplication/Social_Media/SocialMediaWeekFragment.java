@@ -1,17 +1,25 @@
 package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -35,7 +43,7 @@ import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivit
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 
 
-public class SocialMediaWeekFragment extends Fragment
+public class SocialMediaWeekFragment extends Fragment implements View.OnClickListener
 {
     HorizontalBarChart chart;
     ArrayList<BarDataSet> dataSets;
@@ -43,6 +51,16 @@ public class SocialMediaWeekFragment extends Fragment
     ProgressBar progressBar;
     String API_URL = "";
     private OnFragmentInteractionListener mListener;
+    TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
+    TableLayout table;
+    ArrayList<Integer> tableValues = new ArrayList<>();
+    ArrayList<String> tableWeekDays = new ArrayList<>();
+    ArrayList<BarEntry> valueSet1;
+    ArrayList<BarEntry> valueSet2;
+    boolean secondCall = false;
+    boolean tableIsVisible = false;
+    boolean landscapeMode, apiIdSelected;
+    int totalVisits, totalSocialMedia;
 
     public SocialMediaWeekFragment()
     {
@@ -53,6 +71,14 @@ public class SocialMediaWeekFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+            landscapeMode = true;
+        }
+        else
+        {
+            landscapeMode = false;
+        }
     }
 
     @Override
@@ -73,17 +99,102 @@ public class SocialMediaWeekFragment extends Fragment
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=" + period;
+            apiIdSelected = true;
         }else
         {
-            //TODO error message no Site selected
+            apiIdSelected = false;
         }
         View rootView = inflater.inflate(R.layout.fragment_social_media, container, false); // Inflate the layout for this fragment
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);
+        textViewDate = (TextView) rootView.findViewById(R.id.textViewDate);
+        textViewInfo = (TextView) rootView.findViewById(R.id.textViewInfo);
+        textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
+        tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
 
-        new RetrieveFeedTask().execute();
-        return rootView;
+        tableToggler.setOnClickListener(this);
+        tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
+
+        tableToggler.setOnClickListener(this);
+        table.setVisibility(View.GONE);
+
+        if(haveNetworkConnection())
+        {
+            if(apiIdSelected)
+            {
+                new RetrieveFeedTask().execute();
+            }
+            else
+            {
+                Toast.makeText(getActivity().getApplicationContext(), "PLEASE SELECT A SITE!!", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else
+        {
+            Toast.makeText(getActivity().getApplicationContext(), "YOU HAVE NO INTERNET!", Toast.LENGTH_SHORT).show();
+        }
+        if(landscapeMode)
+        {
+            table.setVisibility(View.GONE);
+            tableToggler.setVisibility(View.GONE);
+        }
+
+        chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);
+        return  rootView;
     }
+
+    public boolean haveNetworkConnection()
+    {
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
+
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                if (ni.isConnected())
+                    haveConnectedWifi = true;
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (ni.isConnected())
+                    haveConnectedMobile = true;
+        }
+        return haveConnectedWifi || haveConnectedMobile;
+    }
+
+    public void createTable()
+    {
+        for (int i = tableValues.size(); i < 7; i++)
+        {
+            tableValues.add(0);
+        }
+
+        for (int i = 0; i <7 ; i++)
+        {
+            TableRow[] tableRow = new TableRow[7];
+            tableRow[i] = new TableRow(getActivity());
+            tableRow[i].setPadding(40,40,40,40);
+
+
+            TextView weekDay = new TextView(getActivity());
+            weekDay.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            weekDay.setText(tableWeekDays.get(i));
+            weekDay.setTextColor(Color.WHITE);
+
+            TextView visits = new TextView(getActivity());
+            visits.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            visits.setGravity(Gravity.RIGHT);
+            visits.setText(tableValues.get(i).toString());
+            visits.setTextColor(Color.WHITE);
+
+            tableRow[i].addView(weekDay);
+            tableRow[i].addView(visits);
+            table.addView(tableRow[i]);
+        }
+
+    }
+
+
 
     @Override
     public void onAttach(Context context)
@@ -104,6 +215,24 @@ public class SocialMediaWeekFragment extends Fragment
     {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onClick(View v)
+    {
+        if(tableIsVisible)
+        {
+            table.setVisibility(View.GONE);
+            tableIsVisible = false;
+            tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
+        }else
+        {
+            table.setVisibility(View.VISIBLE);
+            tableIsVisible = true;
+            tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_36dp), null);
+        }
     }
 
     public interface OnFragmentInteractionListener
@@ -189,7 +318,7 @@ public class SocialMediaWeekFragment extends Fragment
 
                 }
                 BarDataSet barDataSet1 = new BarDataSet(valueSet1, "VISITS");
-                barDataSet1.setColor(Color.rgb(49, 79, 79));
+                barDataSet1.setColor(Color.rgb(5, 184, 198));
                 barDataSet1.setBarSpacePercent(50f);
                 dataSets = new ArrayList<>();
                 dataSets.add(barDataSet1);
