@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -113,6 +115,13 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
 
         totalVisits = 0;
 
+        //Get date period for text view
+        int dayOfYear = new DateTime().getDayOfYear();
+        DateTime firstDayOfMonth = new DateTime().minusDays(dayOfYear - 1);
+        DateTime today = new DateTime();
+        String textDatePeriod = firstDayOfMonth.toString("MMMMM") + " to " + today.toString("MMMMM");
+        textViewDate.setText(textDatePeriod);
+
         if(haveNetworkConnection())
         {
             if(apiIdSelected)
@@ -134,7 +143,6 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
             tableToggler.setVisibility(View.GONE);
         }
 
-        new RetrieveFeedTask().execute();
         return rootView;
     }
 
@@ -195,6 +203,32 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
         }
     }
 
+    public void createTable()
+    {
+
+        for (int i = 0; i < xAxis.size() ; i++)
+        {
+            TableRow[] tableRow = new TableRow[xAxis.size()];
+            tableRow[i] = new TableRow(getActivity());
+            tableRow[i].setPadding(40, 40, 40, 40);
+
+            TextView hourOfDayTxt = new TextView(getActivity());
+            hourOfDayTxt.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            hourOfDayTxt.setText(xAxis.get(i).toString());
+            hourOfDayTxt.setTextColor(Color.WHITE);
+
+            TextView visitsTxt = new TextView(getActivity());
+            visitsTxt.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            visitsTxt.setGravity(Gravity.RIGHT);
+            visitsTxt.setText(tableValues.get(i).toString());
+            visitsTxt.setTextColor(Color.WHITE);
+
+            tableRow[i].addView(hourOfDayTxt);
+            tableRow[i].addView(visitsTxt);
+            table.addView(tableRow[i]);
+        }
+    }
+
     public interface OnFragmentInteractionListener
     {
         // TODO: Update argument type and name
@@ -208,12 +242,32 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
         chart.setDescription("");
         chart.animateXY(2000, 2000);
         chart.invalidate();
+        chart.setBackgroundColor(Color.rgb(68, 68, 68));
+        chart.setGridBackgroundColor(R.color.White);
+        chart.getLegend().setTextColor(Color.WHITE);
+        chart.getAxisLeft().setDrawLabels(false);
+        chart.getAxisRight().setDrawLabels(false);
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);
-        data.setValueTextSize(10f);
+        xAxis.setTextColor(Color.WHITE);
+        data.setValueTextSize(0f);
+        if(landscapeMode)
+        {
+            data.setValueTextSize(0f);
+            chart.getAxisRight().setDrawLabels(false);
+            chart.getAxisLeft().setTextColor(Color.WHITE);
+        }else
+        {
+            data.setValueTextSize(0f);
+            chart.getAxisLeft().setDrawLabels(false);
+            chart.getAxisRight().setDrawLabels(false);
+        }
     }
 
+    // ===============================
+    //        INTERNAL CLASS
+    // ===============================
     class RetrieveFeedTask extends AsyncTask<Void, Void, String> // THIS IS A CLASS
     {
         private Exception exception;
@@ -265,29 +319,80 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
             {
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
-                ArrayList<BarEntry> valueSet1 = new ArrayList<>();
-                xAxis = new ArrayList<>();
+                totalSocialMedia = items.length();
                 int numberorg = 0;
-                for(int i = 0; i < items.length(); i++)
+
+                if(secondCall)
+                {
+                    valueSet2 = new ArrayList<>();
+                }else
+                {
+                    valueSet1 = new ArrayList<>();
+                    xAxis = new ArrayList<>();
+                }
+
+                for(int i = 0; i < totalSocialMedia; i++)
                 {
                     Integer visits = items.getJSONObject(i).getInt("visits");
                     String organisation = items.getJSONObject(i).getString("organisation");
 
-                    BarEntry entry = new BarEntry((float)visits, numberorg);
-                    valueSet1.add(entry);
-                    xAxis.add(organisation);
-                    numberorg = numberorg + 1;
+                    if(secondCall) //LAST MONTH
+                    {
+                        BarEntry entry = new BarEntry((float)visits, numberorg);
+                        valueSet2.add(entry);
+                        //TODO CHECK OTHER DAYS
+                        if(!xAxis.contains(organisation))
+                        {
+                            xAxis.add(organisation);
+                        }
+                        numberorg++;
+                    }else //THIS MONTH
+                    {
+                        BarEntry entry = new BarEntry((float)visits, numberorg);
+                        valueSet1.add(entry);
+                        xAxis.add(organisation);
+                        numberorg++;
+                        tableValues.add(visits);
+                        totalVisits = totalVisits + visits;
+                    }
 
                 }
-                BarDataSet barDataSet1 = new BarDataSet(valueSet1, "VISITS");
-                barDataSet1.setColor(Color.rgb(49, 79, 79));
-                barDataSet1.setBarSpacePercent(50f);
-                dataSets = new ArrayList<>();
-                dataSets.add(barDataSet1);
 
-                drawGraph();
+                if(secondCall)
+                {
+                    BarDataSet barDataSet2 = new BarDataSet(valueSet2, "LAST YEAR");
+                    barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
+                    barDataSet2.setBarSpacePercent(50f);
+                    dataSets.add(barDataSet2);
+                    drawGraph();
+
+                    secondCall = false;
+                }else
+                {
+                    dataSets = new ArrayList<>();
+                    BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS YEAR");
+                    barDataSet1.setColor(Color.rgb(5, 184, 198));
+                    barDataSet1.setBarSpacePercent(50f);
+                    dataSets.add(barDataSet1);
+                    textViewTotal.setText(String.valueOf(totalVisits));
+
+                    if(landscapeMode)
+                    {
+                        secondCall = true;
+                        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                                "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=20150101_20151231";
+                        new RetrieveFeedTask().execute();
+                    }else
+                    {
+                        createTable();
+                        drawGraph();
+                    }
+                }
+
             } catch (JSONException e) {
                 e.printStackTrace();
+            } catch (ClassCastException ce){
+                Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
             }
         }
     }
