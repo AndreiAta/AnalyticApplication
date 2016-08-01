@@ -1,6 +1,7 @@
 package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ public class SocialMediaMainFragment extends Fragment
     private FragmentTabHost mTabHost;
     private OnFragmentInteractionListener mListener;
     View rootView;
+    boolean landscapeMode;
 
     public SocialMediaMainFragment()
     {
@@ -32,7 +34,15 @@ public class SocialMediaMainFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
+        int currentOrientation = getResources().getConfiguration().orientation;
+        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+            landscapeMode = true;
+        }
+        else
+        {
+            landscapeMode = false;
+        }
     }
 
     @Override
@@ -78,6 +88,11 @@ public class SocialMediaMainFragment extends Fragment
             }
             mTabHost.getTabWidget().getChildAt(i).getLayoutParams().height = 175;
 
+        }
+        mTabHost.getTabWidget().setDividerDrawable(null);
+        if(landscapeMode)
+        {
+            mTabHost.getTabWidget().setVisibility(View.GONE);
         }
         return mTabHost;
 

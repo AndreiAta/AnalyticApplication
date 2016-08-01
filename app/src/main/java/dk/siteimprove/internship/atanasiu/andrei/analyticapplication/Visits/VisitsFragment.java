@@ -133,7 +133,6 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         }
 
         chart = (LineChart) rootView.findViewById(R.id.chart);
-
         return  rootView;
 
     }
@@ -209,7 +208,8 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         void onFragmentInteraction(Uri uri);
     }
 
-    public boolean haveNetworkConnection() {
+    public boolean haveNetworkConnection()
+    {
         boolean haveConnectedWifi = false;
         boolean haveConnectedMobile = false;
 
