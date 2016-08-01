@@ -2,6 +2,7 @@ package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 
 
 import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -112,7 +113,6 @@ public class MainActivity extends AppCompatActivity
                 }
             });
             dialog.show();
-
         }
 
         if (savedInstanceState == null) {
@@ -138,9 +138,10 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-// TODO Change The txtView to the current mail...
-//        TextView menuEmailTxt = (TextView) navigationView.getMenu().findViewById(R.id.menuMail);
-//        menuEmailTxt.setText(API_EMAIL);
+        // TODO Change The txtView to the current mail...
+        View header = navigationView.getHeaderView(0);
+        TextView menuEmailTxt = (TextView) header.findViewById(R.id.menuMail);
+        menuEmailTxt.setText(API_EMAIL);
     }
 
     private void writeToFile(String message)
