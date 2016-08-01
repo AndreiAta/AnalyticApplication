@@ -88,18 +88,11 @@ public class MainActivity extends AppCompatActivity
             final Dialog dialog = new Dialog(this,R.style.full_screen_dialog);
             dialog.setContentView(R.layout.popup);
             dialog.setCancelable(false);
-            Window window = dialog.getWindow();
-           // dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
             emailText = (EditText) dialog.findViewById(R.id.emailTextField);
             apiKeyText = (EditText) dialog.findViewById(R.id.apiKeyTextField);
             headerTxt = (TextView) dialog.findViewById(R.id.headerTxt);
             Button button = (Button) dialog.findViewById(R.id.Button01);
-
-//            emailText.setTypeface(tf);
-//            apiKeyText.setTypeface(tf);
-//            headerTxt.setTypeface(tf);
-//            button.setTypeface(tf);
 
             readFromFile();
             button.setOnClickListener(new View.OnClickListener()
