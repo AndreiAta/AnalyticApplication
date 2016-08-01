@@ -88,6 +88,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
         {
             apiIdSelected = false;
         }
+
         View rootView = inflater.inflate(R.layout.fragment_social_media, container, false); // Inflate the layout for this fragment
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);
@@ -108,6 +109,8 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
 
         tableToggler.setOnClickListener(this);
         table.setVisibility(View.GONE);
+
+        totalVisits = 0;
 
         if(haveNetworkConnection())
         {
@@ -130,7 +133,6 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
             tableToggler.setVisibility(View.GONE);
         }
 
-        chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);
         return  rootView;
     }
 

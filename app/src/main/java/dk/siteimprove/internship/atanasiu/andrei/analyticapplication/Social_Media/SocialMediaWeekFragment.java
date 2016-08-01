@@ -95,6 +95,10 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
         mondayDate = mondayDate.replace("-","");
         String period = mondayDate + "_" + currentDate;
 
+        //Get Time Period for the Text View
+        String textDatePeriod = startOfWeek.toString("dd-MMMM") + " to " + currentDay.toString("dd-MMMM");
+        textDatePeriod = textDatePeriod.replace("-", " ");
+
         if(MainActivity.API_ID != null)
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
@@ -111,13 +115,19 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
         textViewInfo = (TextView) rootView.findViewById(R.id.textViewInfo);
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
+        table = (TableLayout) rootView.findViewById(R.id.table);
+        columnOne = (TextView) rootView.findViewById(R.id.columnOne);
 
         tableToggler.setOnClickListener(this);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
+        columnOne.setText("Social Media");
+        textViewDate.setText(textDatePeriod);
 
         tableToggler.setOnClickListener(this);
         table.setVisibility(View.GONE);
+
+        totalVisits = 0;
 
         if(haveNetworkConnection())
         {
@@ -164,34 +174,27 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
 
     public void createTable()
     {
-        for (int i = tableValues.size(); i < 7; i++)
+        for (int i = 0; i < xAxis.size() ; i++)
         {
-            tableValues.add(0);
-        }
-
-        for (int i = 0; i <7 ; i++)
-        {
-            TableRow[] tableRow = new TableRow[7];
+            TableRow[] tableRow = new TableRow[xAxis.size()];
             tableRow[i] = new TableRow(getActivity());
-            tableRow[i].setPadding(40,40,40,40);
+            tableRow[i].setPadding(40, 40, 40, 40);
 
+            TextView hourOfDayTxt = new TextView(getActivity());
+            hourOfDayTxt.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            hourOfDayTxt.setText(xAxis.get(i).toString());
+            hourOfDayTxt.setTextColor(Color.WHITE);
 
-            TextView weekDay = new TextView(getActivity());
-            weekDay.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-            weekDay.setText(tableWeekDays.get(i));
-            weekDay.setTextColor(Color.WHITE);
+            TextView visitsTxt = new TextView(getActivity());
+            visitsTxt.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            visitsTxt.setGravity(Gravity.RIGHT);
+            visitsTxt.setText(tableValues.get(i).toString());
+            visitsTxt.setTextColor(Color.WHITE);
 
-            TextView visits = new TextView(getActivity());
-            visits.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-            visits.setGravity(Gravity.RIGHT);
-            visits.setText(tableValues.get(i).toString());
-            visits.setTextColor(Color.WHITE);
-
-            tableRow[i].addView(weekDay);
-            tableRow[i].addView(visits);
+            tableRow[i].addView(hourOfDayTxt);
+            tableRow[i].addView(visitsTxt);
             table.addView(tableRow[i]);
         }
-
     }
 
 
@@ -248,12 +251,32 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
         chart.setDescription("");
         chart.animateXY(2000, 2000);
         chart.invalidate();
+        chart.setBackgroundColor(Color.rgb(68, 68, 68));
+        chart.setGridBackgroundColor(R.color.White);
+        chart.getLegend().setTextColor(Color.WHITE);
+        chart.getAxisLeft().setDrawLabels(false);
+        chart.getAxisRight().setDrawLabels(false);
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);
-        data.setValueTextSize(10f);
+        xAxis.setTextColor(Color.WHITE);
+        data.setValueTextSize(0f);
+        if(landscapeMode)
+        {
+            data.setValueTextSize(0f);
+            chart.getAxisRight().setDrawLabels(false);
+            chart.getAxisLeft().setTextColor(Color.WHITE);
+        }else
+        {
+            data.setValueTextSize(0f);
+            chart.getAxisLeft().setDrawLabels(false);
+            chart.getAxisRight().setDrawLabels(false);
+        }
     }
 
+    // ===============================
+    //        INTERNAL CLASS
+    // ===============================
     class RetrieveFeedTask extends AsyncTask<Void, Void, String> // THIS IS A CLASS
     {
         private Exception exception;
@@ -305,27 +328,80 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
             {
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
-                ArrayList<BarEntry> valueSet1 = new ArrayList<>();
-                xAxis = new ArrayList<>();
-                for(int i = 0; i < items.length(); i++)
+                totalSocialMedia = items.length();
+                int numberorg = 0;
+
+                if(secondCall)
+                {
+                    valueSet2 = new ArrayList<>();
+                }else
+                {
+                    valueSet1 = new ArrayList<>();
+                    xAxis = new ArrayList<>();
+                }
+
+                for(int i = 0; i < totalSocialMedia; i++)
                 {
                     Integer visits = items.getJSONObject(i).getInt("visits");
                     String organisation = items.getJSONObject(i).getString("organisation");
 
-                    BarEntry entry = new BarEntry((float)visits, i);
-                    valueSet1.add(entry);
-                    xAxis.add(organisation);
+                    if(secondCall) //Last Month
+                    {
+                        BarEntry entry = new BarEntry((float)visits, numberorg);
+                        valueSet2.add(entry);
+                        //TODO CHECK OTHER DAYS
+                        if(!xAxis.contains(organisation))
+                        {
+                            xAxis.add(organisation);
+                        }
+                        numberorg++;
+                    }else //This Month
+                    {
+                        BarEntry entry = new BarEntry((float)visits, numberorg);
+                        valueSet1.add(entry);
+                        xAxis.add(organisation);
+                        numberorg++;
+                        tableValues.add(visits);
+                        totalVisits = totalVisits + visits;
+                    }
 
                 }
-                BarDataSet barDataSet1 = new BarDataSet(valueSet1, "VISITS");
-                barDataSet1.setColor(Color.rgb(5, 184, 198));
-                barDataSet1.setBarSpacePercent(50f);
-                dataSets = new ArrayList<>();
-                dataSets.add(barDataSet1);
 
-                drawGraph();
+                if(secondCall)
+                {
+                    BarDataSet barDataSet2 = new BarDataSet(valueSet2, "LAST MONTH");
+                    barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
+                    barDataSet2.setBarSpacePercent(50f);
+                    dataSets.add(barDataSet2);
+                    drawGraph();
+
+                    secondCall = false;
+                }else
+                {
+                    dataSets = new ArrayList<>();
+                    BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS MONTH");
+                    barDataSet1.setColor(Color.rgb(5, 184, 198));
+                    barDataSet1.setBarSpacePercent(50f);
+                    dataSets.add(barDataSet1);
+                    textViewTotal.setText(String.valueOf(totalVisits));
+
+                    if(landscapeMode)
+                    {
+                        secondCall = true;
+                        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                                "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=lastweek";
+                        new RetrieveFeedTask().execute();
+                    }else
+                    {
+                        createTable();
+                        drawGraph();
+                    }
+                }
+
             } catch (JSONException e) {
                 e.printStackTrace();
+            } catch (ClassCastException ce){
+                Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
             }
         }
     }
