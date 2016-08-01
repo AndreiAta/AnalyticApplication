@@ -53,7 +53,7 @@
             android:id="@+id/chooseSite"
             android:title="Choose Site"/>
         <item
-            android:id="@+id/nav_send"
+            android:id="@+id/signOut"
             android:title="Change User"/>
 
     </group>
