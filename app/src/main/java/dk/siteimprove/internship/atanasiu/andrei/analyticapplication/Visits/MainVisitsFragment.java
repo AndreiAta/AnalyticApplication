@@ -1,6 +1,5 @@
 package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -11,9 +10,7 @@ import android.support.v4.app.FragmentTabHost;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 
@@ -49,7 +46,7 @@ public class MainVisitsFragment extends Fragment
     {
         getActivity().setTitle("Visits");
         mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), getChildFragmentManager(), R.layout.fragment_main_visits);
+        mTabHost.setup(getActivity(), getChildFragmentManager(), R.layout.fragment_visits_main);
 
         Bundle arg1 = new Bundle();
         arg1.putInt("Arg for Frag1", 1);

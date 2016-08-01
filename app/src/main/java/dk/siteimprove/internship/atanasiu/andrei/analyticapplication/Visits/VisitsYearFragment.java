@@ -88,7 +88,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
         {
             apiIdSelected = false;
         }
-        View rootView = inflater.inflate(R.layout.fragment_visits_week, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_visits, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         table = (TableLayout) rootView.findViewById(R.id.table);
         textViewDate = (TextView) rootView.findViewById(R.id.textViewDate);

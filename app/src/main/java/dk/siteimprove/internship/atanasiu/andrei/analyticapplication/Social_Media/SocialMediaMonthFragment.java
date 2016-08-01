@@ -66,7 +66,7 @@ public class SocialMediaMonthFragment extends Fragment
         {
             //TODO error message no Site selected
         }
-        View rootView = inflater.inflate(R.layout.fragment_social_media_month, container, false); // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_social_media, container, false); // Inflate the layout for this fragment
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);
 
