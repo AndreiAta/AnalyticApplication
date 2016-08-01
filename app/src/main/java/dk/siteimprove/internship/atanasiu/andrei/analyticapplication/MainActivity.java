@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity
     TextView headerTxt;
     public static String initialLogin;
     public Toolbar toolbar;
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -108,7 +109,11 @@ public class MainActivity extends AppCompatActivity
                     API_KEY = apiKeyText.getText().toString();
                     String totalString = API_EMAIL + "=-==-" + API_KEY;
                     writeToFile(totalString);
-                    readFromFile();
+
+                    // Sets drawer menuMail textview to current user mail.
+                    View header = navigationView.getHeaderView(0);
+                    TextView menuEmailTxt = (TextView) header.findViewById(R.id.menuMail);
+                    menuEmailTxt.setText(API_EMAIL);
                     dialog.dismiss();
                 }
             });
@@ -135,13 +140,8 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        // TODO Change The txtView to the current mail...
-        View header = navigationView.getHeaderView(0);
-        TextView menuEmailTxt = (TextView) header.findViewById(R.id.menuMail);
-        menuEmailTxt.setText(API_EMAIL);
     }
 
     private void writeToFile(String message)
