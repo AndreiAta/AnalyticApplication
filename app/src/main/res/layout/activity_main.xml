@@ -22,7 +22,10 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer"
-        android:background="@color/TuataraGrey"/>
+        android:background="@color/TuataraGrey"
+        app:itemTextColor="@color/White"
+        app:itemIconTint="@color/JavaBlue"
+        app:colorControlHighlight="@color/JavaBlue"/>
 
 
 </android.support.v4.widget.DrawerLayout>

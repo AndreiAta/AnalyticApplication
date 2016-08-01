@@ -9,14 +9,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTabHost;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -33,10 +31,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -94,7 +90,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         {
             apiIdSelected = false;
         }
-        View rootView = inflater.inflate(R.layout.fragment_visits_week, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_visits, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         textViewDate = (TextView) rootView.findViewById(R.id.textViewDate);
         textViewInfo = (TextView) rootView.findViewById(R.id.textViewInfo);
