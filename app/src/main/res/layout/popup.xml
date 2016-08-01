@@ -12,7 +12,7 @@
             >
 
             <TextView android:text="Sign In"
-                      android:id="@+id/TextView01"
+                      android:id="@+id/headerTxt"
                       android:layout_width="match_parent"
                       android:layout_height="475dp"
                       android:textSize="25dp"
