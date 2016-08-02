@@ -101,7 +101,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
         columnOne.setText("Month of Year");
         textViewInfo.setText("VISITS THIS YEAR");
         tableToggler.setOnClickListener(this);
-        tableToggler.setText("Visits this year");
+//        tableToggler.setText("Visits this year");
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
 
