@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -52,6 +53,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
     ArrayList<BarDataSet> dataSets;
     ArrayList<String> xAxis;
     ArrayList<Integer> tableValues = new ArrayList<>();
+    int[] tempValSet2 = new int[10];
 
     HorizontalBarChart chart;
     ProgressBar progressBar;
@@ -232,14 +234,16 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
         chart.getLegend().setTextColor(Color.WHITE);
         chart.getAxisLeft().setDrawLabels(false);
         chart.getAxisRight().setDrawLabels(false);
-        XAxis xAxis = chart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setSpaceBetweenLabels(0);
-        xAxis.setTextColor(Color.WHITE);
+        XAxis chartXAxis = chart.getXAxis();
+        chartXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        chartXAxis.setSpaceBetweenLabels(0);
+        chartXAxis.setTextColor(Color.WHITE);
+        chartXAxis.setTextSize(0f);
         data.setValueTextSize(0f);
         if(landscapeMode)
         {
-            data.setValueTextSize(0f);
+            data.setValueTextSize(10f);
+            data.setValueTextColor(Color.WHITE);
             chart.getAxisRight().setDrawLabels(false);
             chart.getAxisLeft().setTextColor(Color.WHITE);
         }else
@@ -305,54 +309,59 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
                 totalPopPages = items.length();
-                int numberorg = 0;
 
-                if(secondCall)
+                if (secondCall)
                 {
                     valueSet2 = new ArrayList<>();
-                }else
+                    //Filling the array with 0
+                    for (int i = 0; i < 10 ; i++)
+                    {
+                        tempValSet2[i] = 0;
+                    }
+
+                } else
                 {
                     valueSet1 = new ArrayList<>();
                     xAxis = new ArrayList<>();
                 }
 
-                for(int i = 0; i < totalPopPages; i++)
+                for (int i = 0; i < totalPopPages; i++)
                 {
-                    Integer visits = items.getJSONObject(i).getInt("visits");
-                    String tempTitle = items.getJSONObject(i).getString("title");
-                    String title = tempTitle.substring(0,5);
+                    Integer visits = items.getJSONObject(i).getInt("page_views");
+                    String title = items.getJSONObject(i).getString("url");
 
-                    if(i < 5)
+                    if (secondCall) //Yesterday
                     {
-                        if(secondCall) //Yesterday
-                        {
-                            BarEntry entry = new BarEntry((float)visits, numberorg);
-                            valueSet2.add(entry);
 
-                            if(!xAxis.contains(title))
-                            {
-                                xAxis.add(title);
-                            }
-                            numberorg++;
-                        }else //Today
+                        if (xAxis.contains(title))
                         {
-                            BarEntry entry = new BarEntry((float)visits, numberorg);
+                            tempValSet2[xAxis.indexOf(title)] = visits;
+                        }
+                        if(i == totalPopPages - 1)
+                        {
+                            for (int j = 0; j < tempValSet2.length; j++)
+                            {
+                                BarEntry entry = new BarEntry(tempValSet2[j], j);
+                                valueSet2.add(entry);
+                            }
+                        }
+                    } else //Today
+                    {
+                        if (i < 10)
+                        {
+                            BarEntry entry = new BarEntry((float) visits, i);
                             valueSet1.add(entry);
                             xAxis.add(title);
-                            numberorg++;
                             tableValues.add(visits);
                             totalVisits = totalVisits + visits;
-                        }
-                    }
-                    else
-                    {
-                        if(!secondCall)
+                        } else
                         {
-                            totalVisits = totalVisits + visits;
+                            if (!secondCall)
+                            {
+                                totalVisits = totalVisits + visits;
+                            }
                         }
                     }
-
-
                 }
 
                 if(secondCall)
@@ -361,6 +370,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                     barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
                     barDataSet2.setBarSpacePercent(50f);
                     dataSets.add(barDataSet2);
+                    Log.i("IMPORT2", barDataSet2.toString());
                     drawGraph();
 
                     secondCall = false;
@@ -371,6 +381,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                     barDataSet1.setColor(Color.rgb(5, 184, 198));
                     barDataSet1.setBarSpacePercent(50f);
                     dataSets.add(barDataSet1);
+                    Log.i("IMPORT1", barDataSet1.toString());
                     textViewTotal.setText(String.valueOf(totalVisits));
 
                     if(landscapeMode)
