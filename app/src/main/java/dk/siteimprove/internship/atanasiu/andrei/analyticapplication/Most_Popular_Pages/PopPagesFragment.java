@@ -322,19 +322,21 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                     String tempTitle = items.getJSONObject(i).getString("title");
                     String title = tempTitle.substring(0,5);
 
-                    if(i < 5)
+                    if(i < 10)
                     {
                         if(secondCall) //Yesterday
                         {
                             BarEntry entry = new BarEntry((float)visits, numberorg);
                             valueSet2.add(entry);
 
-                            if(!xAxis.contains(title))
+                            if(!xAxis.contains(title) && xAxis.size() < 10)
                             {
                                 xAxis.add(title);
+                                Log.i("LOOK AT THIS INSIDE!", xAxis.toString());
                             }
                             numberorg++;
-                        }else //Today
+                        }
+                        else //Today
                         {
                             BarEntry entry = new BarEntry((float)visits, numberorg);
                             valueSet1.add(entry);
@@ -351,8 +353,6 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                             totalVisits = totalVisits + visits;
                         }
                     }
-
-
                 }
 
                 if(secondCall)
@@ -361,6 +361,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                     barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
                     barDataSet2.setBarSpacePercent(50f);
                     dataSets.add(barDataSet2);
+                    Log.i("LOOK AT THIS!", xAxis.toString());
                     drawGraph();
 
                     secondCall = false;
@@ -381,6 +382,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                         new RetrieveFeedTask().execute();
                     }else
                     {
+                        Log.i("LOOK AT THIS!", xAxis.toString());
                         createTable();
                         drawGraph();
                     }
