@@ -28,6 +28,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages.PopPagesFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages.PopPagesMainFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesMainFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesWeekFragment;
@@ -57,7 +59,9 @@ public class MainActivity extends AppCompatActivity
         VisitsWeekFragment.OnFragmentInteractionListener,
         VisitsMonthFragment.OnFragmentInteractionListener,
         VisitsFragment.OnFragmentInteractionListener,
-        VisitsYearFragment.OnFragmentInteractionListener
+        VisitsYearFragment.OnFragmentInteractionListener,
+        PopPagesMainFragment.OnFragmentInteractionListener,
+        PopPagesFragment.OnFragmentInteractionListener
 
 
 {
@@ -248,7 +252,7 @@ public class MainActivity extends AppCompatActivity
         }
         else if (id == R.id.popularPages)
         {
-            //TODO Handle popular pages request
+            fragmentClass = PopPagesMainFragment.class;
         }
         else if (id == R.id.trafficSources)
         {

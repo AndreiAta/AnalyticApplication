@@ -1,4 +1,4 @@
-package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media;
+package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -31,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -40,26 +41,27 @@ import java.util.ArrayList;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 
-public class SocialMediaFragment extends Fragment implements View.OnClickListener
+public class PopPagesFragment extends Fragment implements View.OnClickListener
 {
-    HorizontalBarChart chart;
+    String API_URL = "";
+    boolean landscapeMode, apiIdSelected;
+    boolean tableIsVisible = false;
+    boolean secondCall = false;
+    int totalVisits, totalPopPages;
+    ArrayList<BarEntry> valueSet1, valueSet2;
     ArrayList<BarDataSet> dataSets;
     ArrayList<String> xAxis;
+    ArrayList<Integer> tableValues = new ArrayList<>();
+
+    HorizontalBarChart chart;
     ProgressBar progressBar;
-    String API_URL = "";
     TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     TableLayout table;
-    ArrayList<Integer> tableValues = new ArrayList<>();
-    ArrayList<BarEntry> valueSet1;
-    ArrayList<BarEntry> valueSet2;
-    boolean secondCall = false;
-    boolean tableIsVisible = false;
-    boolean landscapeMode, apiIdSelected;
-    int totalVisits, totalSocialMedia;
 
     private OnFragmentInteractionListener mListener;
 
-    public SocialMediaFragment() { } //Required empty constructor
+
+    public PopPagesFragment() { } //Required empty constructor
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,18 +80,17 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-
         if(MainActivity.API_ID != null)
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=Today";
+                    "/analytics/content/most_popular_pages?page=1&page_size=10&period=today";
             apiIdSelected = true;
         }else
         {
             apiIdSelected = false;
         }
 
-        View rootView = inflater.inflate(R.layout.fragment_social_media, container, false); // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_popular_pages, container, false);// Inflate the layout for this fragment
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);
         textViewDate = (TextView) rootView.findViewById(R.id.textViewDate);
@@ -133,7 +134,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
             tableToggler.setVisibility(View.GONE);
         }
 
-        return  rootView;
+        return rootView;
     }
 
     public boolean haveNetworkConnection()
@@ -188,7 +189,6 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
         super.onDetach();
         mListener = null;
     }
-
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
@@ -304,7 +304,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
             {
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
-                totalSocialMedia = items.length();
+                totalPopPages = items.length();
                 int numberorg = 0;
 
                 if(secondCall)
@@ -316,30 +316,42 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                     xAxis = new ArrayList<>();
                 }
 
-                for(int i = 0; i < totalSocialMedia; i++)
+                for(int i = 0; i < totalPopPages; i++)
                 {
                     Integer visits = items.getJSONObject(i).getInt("visits");
-                    String organisation = items.getJSONObject(i).getString("organisation");
+                    String tempTitle = items.getJSONObject(i).getString("title");
+                    String title = tempTitle.substring(0,5);
 
-                    if(secondCall) //Yesterday
+                    if(i < 5)
                     {
-                        BarEntry entry = new BarEntry((float)visits, numberorg);
-                        valueSet2.add(entry);
-                        //TODO CHECK OTHER DAYS
-                        if(!xAxis.contains(organisation))
+                        if(secondCall) //Yesterday
                         {
-                            xAxis.add(organisation);
+                            BarEntry entry = new BarEntry((float)visits, numberorg);
+                            valueSet2.add(entry);
+
+                            if(!xAxis.contains(title))
+                            {
+                                xAxis.add(title);
+                            }
+                            numberorg++;
+                        }else //Today
+                        {
+                            BarEntry entry = new BarEntry((float)visits, numberorg);
+                            valueSet1.add(entry);
+                            xAxis.add(title);
+                            numberorg++;
+                            tableValues.add(visits);
+                            totalVisits = totalVisits + visits;
                         }
-                        numberorg++;
-                    }else //Today
-                    {
-                        BarEntry entry = new BarEntry((float)visits, numberorg);
-                        valueSet1.add(entry);
-                        xAxis.add(organisation);
-                        numberorg++;
-                        tableValues.add(visits);
-                        totalVisits = totalVisits + visits;
                     }
+                    else
+                    {
+                        if(!secondCall)
+                        {
+                            totalVisits = totalVisits + visits;
+                        }
+                    }
+
 
                 }
 
@@ -365,7 +377,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                     {
                         secondCall = true;
                         API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=Yesterday";
+                                "/analytics/content/most_popular_pages?page=1&page_size=10&period=yesterday";
                         new RetrieveFeedTask().execute();
                     }else
                     {
