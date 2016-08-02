@@ -53,7 +53,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
     ArrayList<BarDataSet> dataSets;
     ArrayList<String> xAxis;
     ArrayList<Integer> tableValues = new ArrayList<>();
-    int[] tempValSet2 = new int[10];
+    int[] tempValSet2 = new int[100];
 
     HorizontalBarChart chart;
     ProgressBar progressBar;
@@ -314,7 +314,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                 {
                     valueSet2 = new ArrayList<>();
                     //Filling the array with 0
-                    for (int i = 0; i < 10 ; i++)
+                    for (int i = 0; i < totalPopPages ; i++)
                     {
                         tempValSet2[i] = 0;
                     }
@@ -336,6 +336,10 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                         if (xAxis.contains(title))
                         {
                             tempValSet2[xAxis.indexOf(title)] = visits;
+                        }else if(!xAxis.contains(title) && xAxis.size() < 10)
+                        {
+                            xAxis.add(title);
+                            tempValSet2[i] = visits;
                         }
                         if(i == totalPopPages - 1)
                         {

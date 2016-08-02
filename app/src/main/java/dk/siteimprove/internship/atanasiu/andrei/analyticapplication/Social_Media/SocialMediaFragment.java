@@ -52,6 +52,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
     ArrayList<Integer> tableValues = new ArrayList<>();
     ArrayList<BarEntry> valueSet1;
     ArrayList<BarEntry> valueSet2;
+    int[] tempValSet2 = new int[100];
     boolean secondCall = false;
     boolean tableIsVisible = false;
     boolean landscapeMode, apiIdSelected;
@@ -310,6 +311,12 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                 if(secondCall)
                 {
                     valueSet2 = new ArrayList<>();
+                    //Filling the array with 0
+                    for (int i = 0; i < totalSocialMedia ; i++)
+                    {
+                        tempValSet2[i] = 0;
+                    }
+
                 }else
                 {
                     valueSet1 = new ArrayList<>();
@@ -321,17 +328,27 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                     Integer visits = items.getJSONObject(i).getInt("visits");
                     String organisation = items.getJSONObject(i).getString("organisation");
 
-                    if(secondCall) //Yesterday
+                    if (secondCall) //Yesterday
                     {
-                        BarEntry entry = new BarEntry((float)visits, numberorg);
-                        valueSet2.add(entry);
-                        //TODO CHECK OTHER DAYS
-                        if(!xAxis.contains(organisation))
+
+                        if (xAxis.contains(organisation))
+                        {
+                            tempValSet2[xAxis.indexOf(organisation)] = visits;
+                        }else if(!xAxis.contains(organisation) && xAxis.size() < 10)
                         {
                             xAxis.add(organisation);
+                            tempValSet2[i] = visits;
                         }
-                        numberorg++;
-                    }else //Today
+                        if (i == totalSocialMedia - 1)
+                        {
+                            for (int j = 0; j < totalSocialMedia; j++)
+                            {
+                                BarEntry entry = new BarEntry(tempValSet2[j], j);
+                                valueSet2.add(entry);
+                            }
+                        }
+                    }
+                    else //Today
                     {
                         BarEntry entry = new BarEntry((float)visits, numberorg);
                         valueSet1.add(entry);
