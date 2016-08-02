@@ -19,8 +19,7 @@
             <item
                 android:id="@+id/popularPages"
                 android:icon="@drawable/ic_favorite_white_18dp"
-                android:title="MOST POPULAR PAGES"
-                android:visible="false"/>
+                android:title="Most popular pages"/>
             <item
                 android:id="@+id/trafficSources"
                 android:icon="@drawable/ic_keyboard_tab_white_18dp"
