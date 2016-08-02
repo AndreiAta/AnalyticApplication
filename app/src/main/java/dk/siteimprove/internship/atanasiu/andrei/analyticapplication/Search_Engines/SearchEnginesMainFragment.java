@@ -1,6 +1,7 @@
 package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ public class SearchEnginesMainFragment extends Fragment
 {
     private FragmentTabHost mTabHost;
     private OnFragmentInteractionListener mListener;
+    boolean landscapeMode;
 
     public SearchEnginesMainFragment()
     {
@@ -31,6 +33,15 @@ public class SearchEnginesMainFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        int currentOrientation = getResources().getConfiguration().orientation;
+        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+            landscapeMode = true;
+        }
+        else
+        {
+            landscapeMode = false;
+        }
 
     }
 
@@ -50,6 +61,14 @@ public class SearchEnginesMainFragment extends Fragment
         arg2.putInt("Arg for Frag2", 2);
         mTabHost.addTab(mTabHost.newTabSpec("Tab2").setIndicator("Week"), SearchEnginesWeekFragment.class, arg2);
 
+        Bundle arg3 = new Bundle();
+        arg3.putInt("Arg for Frag3", 3);
+        mTabHost.addTab(mTabHost.newTabSpec("Tab3").setIndicator("Month"), SearchEnginesMonthFragment.class, arg3);
+
+        Bundle arg4 = new Bundle();
+        arg4.putInt("Arg for Frag4", 4);
+        mTabHost.addTab(mTabHost.newTabSpec("Tab4").setIndicator("Year"), SearchEnginesYearFragment.class, arg4);
+
         for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++) {
 
             mTabHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.rgb(49, 79, 79));
@@ -67,6 +86,11 @@ public class SearchEnginesMainFragment extends Fragment
             }
             mTabHost.getTabWidget().getChildAt(i).getLayoutParams().height = 175;
 
+        }
+        mTabHost.getTabWidget().setDividerDrawable(null);
+        if(landscapeMode)
+        {
+            mTabHost.getTabWidget().setVisibility(View.GONE);
         }
         return mTabHost;
 

@@ -70,21 +70,12 @@ public class SearchEnginesWeekFragment extends Fragment
         {
             //TODO error message no Site selected
         }
-        View rootView = inflater.inflate(R.layout.fragment_search_engines_week, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_search_engines, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);
         new RetrieveFeedTask().execute();
         // Inflate the layout for this fragment
         return rootView;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri)
-    {
-        if (mListener != null)
-        {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
