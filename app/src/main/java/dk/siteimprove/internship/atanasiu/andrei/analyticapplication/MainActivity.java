@@ -33,7 +33,9 @@ import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popula
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages.PopPagesMainFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesMainFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesMonthFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesWeekFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesYearFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaMainFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaMonthFragment;
@@ -55,6 +57,8 @@ public class MainActivity extends AppCompatActivity
         SocialMediaYearFragment.OnFragmentInteractionListener,
         SearchEnginesFragment.OnFragmentInteractionListener,
         SearchEnginesWeekFragment.OnFragmentInteractionListener,
+        SearchEnginesMonthFragment.OnFragmentInteractionListener,
+        SearchEnginesYearFragment.OnFragmentInteractionListener,
         SearchEnginesMainFragment.OnFragmentInteractionListener,
         MainVisitsFragment.OnFragmentInteractionListener,
         VisitsWeekFragment.OnFragmentInteractionListener,
