@@ -14,8 +14,7 @@
             <item
                 android:id="@+id/pageViews"
                 android:icon="@drawable/ic_visibility_white_18dp"
-                android:title="PAGE VIEWS"
-                android:visible="false"/>
+                android:title="Page Views"/>
             <item
                 android:id="@+id/popularPages"
                 android:icon="@drawable/ic_favorite_white_18dp"
@@ -54,6 +53,14 @@
         <item
             android:id="@+id/signOut"
             android:title="Change User"/>
+        <item
+            android:id="@+id/spinnerTest"
+            android:icon="@drawable/ic_public_white_18dp"
+            android:title=""
+            android:width="0dp"
+            app:actionLayout="@layout/spinner"
+            android:visible="false"
+            />
 
     </group>
 </menu>
