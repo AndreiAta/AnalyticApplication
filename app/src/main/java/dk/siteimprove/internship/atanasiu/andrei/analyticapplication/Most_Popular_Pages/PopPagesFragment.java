@@ -51,13 +51,13 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
     int totalVisits, totalPopPages;
     ArrayList<BarEntry> valueSet1, valueSet2;
     ArrayList<BarDataSet> dataSets;
-    ArrayList<String> xAxis;
+    ArrayList<String> xAxis, xAxisLabels;
     ArrayList<Integer> tableValues = new ArrayList<>();
     int[] tempValSet2 = new int[100];
 
     HorizontalBarChart chart;
     ProgressBar progressBar;
-    TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
+    TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne, columnTwo;
     TableLayout table;
 
     private OnFragmentInteractionListener mListener;
@@ -100,15 +100,16 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
+        columnTwo = (TextView) rootView.findViewById(R.id.columnTwo);
         table = (TableLayout) rootView.findViewById(R.id.table);
 
         textViewDate.setText("0 - 0");
-        textViewInfo.setText("VISITS TODAY");
-        tableToggler.setText("Visits today ");
+        textViewInfo.setText("PAGE VIEWS TODAY");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
-        columnOne.setText("Social Media");
+        columnOne.setText("Popular Pages");
+        columnTwo.setText("Page Views");
 
         tableToggler.setOnClickListener(this);
         table.setVisibility(View.GONE);
@@ -199,7 +200,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
 
     public void createTable()
     {
-        for (int i = 0; i < xAxis.size() ; i++)
+        for (int i = 0; i < xAxisLabels.size() ; i++)
         {
             TableRow[] tableRow = new TableRow[xAxis.size()];
             tableRow[i] = new TableRow(getActivity());
@@ -207,7 +208,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
 
             TextView hourOfDayTxt = new TextView(getActivity());
             hourOfDayTxt.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-            hourOfDayTxt.setText(xAxis.get(i).toString());
+            hourOfDayTxt.setText(xAxisLabels.get(i).toString());
             hourOfDayTxt.setTextColor(Color.WHITE);
 
             TextView visitsTxt = new TextView(getActivity());
@@ -224,7 +225,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
 
     private void drawGraph()
     {
-        BarData data = new BarData(xAxis, dataSets);
+        BarData data = new BarData(xAxisLabels, dataSets);
         chart.setData(data);
         chart.setDescription("");
         chart.animateXY(2000, 2000);
@@ -242,7 +243,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
         data.setValueTextSize(0f);
         if(landscapeMode)
         {
-            data.setValueTextSize(10f);
+            data.setValueTextSize(0f);
             data.setValueTextColor(Color.WHITE);
             chart.getAxisRight().setDrawLabels(false);
             chart.getAxisLeft().setTextColor(Color.WHITE);
@@ -323,12 +324,13 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                 {
                     valueSet1 = new ArrayList<>();
                     xAxis = new ArrayList<>();
+                    xAxisLabels = new ArrayList<>();
                 }
 
                 for (int i = 0; i < totalPopPages; i++)
                 {
                     Integer visits = items.getJSONObject(i).getInt("page_views");
-                    String title = items.getJSONObject(i).getString("url");
+                    String title = items.getJSONObject(i).getString("title");
 
                     if (secondCall) //Yesterday
                     {
@@ -339,6 +341,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                         }else if(!xAxis.contains(title) && xAxis.size() < 10)
                         {
                             xAxis.add(title);
+                            if(title.length() > 20) { xAxisLabels.add(title.substring(0,19) + "..."); }
                             tempValSet2[i] = visits;
                         }
                         if(i == totalPopPages - 1)
@@ -356,6 +359,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                             BarEntry entry = new BarEntry((float) visits, i);
                             valueSet1.add(entry);
                             xAxis.add(title);
+                            if(title.length() > 20) { xAxisLabels.add(title.substring(0,19) + "..."); }
                             tableValues.add(visits);
                             totalVisits = totalVisits + visits;
                         } else
