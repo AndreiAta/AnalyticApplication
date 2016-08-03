@@ -30,6 +30,9 @@ import java.io.InputStreamReader;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages.PopPagesFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages.PopPagesMainFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages.PopPagesMonthFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages.PopPagesWeekFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages.PopPagesYearFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesMonthFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesMainFragment;
@@ -65,7 +68,10 @@ public class MainActivity extends AppCompatActivity
         VisitsFragment.OnFragmentInteractionListener,
         VisitsYearFragment.OnFragmentInteractionListener,
         PopPagesMainFragment.OnFragmentInteractionListener,
-        PopPagesFragment.OnFragmentInteractionListener
+        PopPagesFragment.OnFragmentInteractionListener,
+        PopPagesWeekFragment.OnFragmentInteractionListener,
+        PopPagesMonthFragment.OnFragmentInteractionListener,
+        PopPagesYearFragment.OnFragmentInteractionListener
 
 
 {
