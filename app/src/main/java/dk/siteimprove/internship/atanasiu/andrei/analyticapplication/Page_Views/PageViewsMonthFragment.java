@@ -1,4 +1,4 @@
-package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits;
+package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Page_Views;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 
-public class VisitsMonthFragment extends Fragment implements View.OnClickListener
+public class PageViewsMonthFragment extends Fragment implements View.OnClickListener
 {
     ProgressBar progressBar;
     LineChart chart;
@@ -62,7 +62,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
     boolean secondCall = false;
     int totalDays;
 
-    public VisitsMonthFragment()
+    public PageViewsMonthFragment()
     {
         // Required empty public constructor
     }
@@ -104,7 +104,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
 
         columnOne.setText("Day of Month");
-        textViewInfo.setText("VISITS THIS MONTH");
+        textViewInfo.setText("PAGE VIEWS THIS MONTH");
         tableToggler.setOnClickListener(this);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
@@ -351,7 +351,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
                     for (Integer i = 0; i < totalDays; i++)
                     {
                         int day_of_month = items.getJSONObject(i).getInt("day_of_month");
-                        int visits = items.getJSONObject(i).getInt("visits");
+                        int visits = items.getJSONObject(i).getInt("page_views");
 
 
                         if(secondCall)

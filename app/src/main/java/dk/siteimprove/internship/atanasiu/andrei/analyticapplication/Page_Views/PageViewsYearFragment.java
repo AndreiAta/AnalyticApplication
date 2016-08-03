@@ -1,4 +1,4 @@
-package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits;
+package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Page_Views;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -42,36 +42,30 @@ import java.util.ArrayList;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 
-public class VisitsMonthFragment extends Fragment implements View.OnClickListener
+public class PageViewsYearFragment extends Fragment implements View.OnClickListener
 {
     ProgressBar progressBar;
     LineChart chart;
     ArrayList<LineDataSet> dataSets;
     ArrayList<Entry> valueSet1;
     ArrayList<Entry> valueSet2;
-    String API_URL = "";
-    private OnFragmentInteractionListener mListener;
-    Integer totalMonthDays = 0, totalVisits;
-    boolean landscapeMode;
-    TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
-    boolean apiIdSelected;
-    TableLayout table;
     ArrayList<Integer> tableValues = new ArrayList<>();
-    ArrayList<String> tableWeekDays = new ArrayList<>();
-    boolean tableIsVisible = false;
+    boolean landscapeMode, apiIdSelected;
     boolean secondCall = false;
-    int totalDays;
+    boolean tableIsVisible = false;
+    private OnFragmentInteractionListener mListener;
+    String API_URL = "";
+    String lastYear;
+    TableLayout table;
+    TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
+    int totalVisits, totalMonths;
 
-    public VisitsMonthFragment()
-    {
-        // Required empty public constructor
-    }
+    public PageViewsYearFragment() {    }  // Required empty public constructor
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
         {
             landscapeMode = true;
@@ -86,38 +80,43 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        if(MainActivity.API_ID != null)
+        DateTime thisYear = new DateTime().minusYears(1);
+        lastYear = thisYear.toString("yyyy");
+
+        if(!MainActivity.API_ID.equalsIgnoreCase("test")) //Check if the user has selected a website
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=ThisMonth";
+                    "/analytics/overview/history?period=thisyear";
             apiIdSelected = true;
+
         }else
         {
             apiIdSelected = false;
         }
         View rootView = inflater.inflate(R.layout.fragment_visits, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+        table = (TableLayout) rootView.findViewById(R.id.table);
         textViewDate = (TextView) rootView.findViewById(R.id.textViewDate);
         textViewInfo = (TextView) rootView.findViewById(R.id.textViewInfo);
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
 
-        columnOne.setText("Day of Month");
-        textViewInfo.setText("VISITS THIS MONTH");
+        columnOne.setText("Month of Year");
+        textViewInfo.setText("PAGE VIEWS THIS YEAR");
         tableToggler.setOnClickListener(this);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
 
         table = (TableLayout) rootView.findViewById(R.id.table);
         table.setVisibility(View.GONE);
-
         totalVisits = 0;
+
         //Get date period for text view
-        int daysOfMonth = new DateTime().getDayOfMonth();
-        DateTime firstDayOfMonth = new DateTime().minusDays(daysOfMonth - 1);
-        DateTime today = new DateTime().minusDays(1);
-        String textDatePeriod = firstDayOfMonth.toString("dd-MMMM") + " to " + today.toString("dd-MMMM");
+        int dayOfYear = new DateTime().getDayOfYear();
+        DateTime firstDayOfMonth = new DateTime().minusDays(dayOfYear - 1);
+        DateTime today = new DateTime();
+        String textDatePeriod = firstDayOfMonth.toString("MMMMM") + " to " + today.toString("MMMMM");
         textViewDate.setText(textDatePeriod);
 
         if(haveNetworkConnection())
@@ -142,16 +141,32 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         }
 
         chart = (LineChart) rootView.findViewById(R.id.chart);
+        return rootView;
+    }
 
-        return  rootView;
 
+    public boolean haveNetworkConnection() {
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
+
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                if (ni.isConnected())
+                    haveConnectedWifi = true;
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (ni.isConnected())
+                    haveConnectedMobile = true;
+        }
+        return haveConnectedWifi || haveConnectedMobile;
     }
 
     public void createTable()
     {
-        for (int i = 0; i <totalDays ; i++)
+        for (int i = 0; i <totalMonths ; i++)
         {
-            TableRow[] tableRow = new TableRow[totalDays];
+            TableRow[] tableRow = new TableRow[totalMonths];
             tableRow[i] = new TableRow(getActivity());
             tableRow[i].setPadding(40,40,40,40);
 
@@ -172,42 +187,6 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
             table.addView(tableRow[i]);
         }
     }
-
-    @Override
-    public void onClick(View v)
-    {
-        if(tableIsVisible)
-        {
-            table.setVisibility(View.GONE);
-            tableIsVisible = false;
-            tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
-        }else
-        {
-            table.setVisibility(View.VISIBLE);
-            tableIsVisible = true;
-            tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_36dp), null);
-        }
-    }
-
-    public boolean haveNetworkConnection() {
-        boolean haveConnectedWifi = false;
-        boolean haveConnectedMobile = false;
-
-        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
-        for (NetworkInfo ni : netInfo) {
-            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
-                if (ni.isConnected())
-                    haveConnectedWifi = true;
-            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
-                if (ni.isConnected())
-                    haveConnectedMobile = true;
-        }
-        return haveConnectedWifi || haveConnectedMobile;
-    }
-
     @Override
     public void onAttach(Context context)
     {
@@ -229,6 +208,24 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         mListener = null;
     }
 
+    @Override
+    public void onClick(View v)
+    {
+        if(tableIsVisible)
+        {
+            table.setVisibility(View.GONE);
+            tableIsVisible = false;
+            tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
+        }else
+        {
+            table.setVisibility(View.VISIBLE);
+            tableIsVisible = true;
+            tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_36dp), null);
+        }
+    }
+
     public interface OnFragmentInteractionListener
     {
         // TODO: Update argument type and name
@@ -238,7 +235,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
     private ArrayList<String> getXAxisValues() {
         ArrayList<String> xAxis = new ArrayList<>();
 
-        for (Integer i = 1; i <= 31 ; i++)
+        for (Integer i = 1; i <= 12 ; i++)
         {
             xAxis.add(i.toString());
         }
@@ -257,9 +254,12 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         chart.setBackgroundColor(Color.rgb(68, 68, 68));
         chart.setGridBackgroundColor(R.color.White);
         chart.getLegend().setTextColor(Color.WHITE);
+        chart.getAxisLeft().setDrawLabels(false);
+        chart.getAxisRight().setDrawLabels(false);
+        chart.setTouchEnabled(true);
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setAdjustXLabels(true);
+        xAxis.setSpaceBetweenLabels(0);
         xAxis.setTextColor(Color.WHITE);
         if(landscapeMode)
         {
@@ -268,7 +268,6 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
             chart.getAxisLeft().setTextColor(Color.WHITE);
         }else
         {
-            xAxis.setSpaceBetweenLabels(1);
             data.setValueTextSize(0f);
             chart.getAxisLeft().setDrawLabels(false);
             chart.getAxisRight().setDrawLabels(false);
@@ -319,7 +318,6 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
                 return null;
             }
         }
-
         protected void onPostExecute(String response)
         {
             if(response == null) {
@@ -333,8 +331,9 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
                 int compareCounter = 1;
-                totalDays = items.length();
+                totalMonths = items.length();
                 int placementOnXAxis = 0;
+
                 if(secondCall)
                 {
                     valueSet2 = new ArrayList<>();
@@ -342,74 +341,75 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
                 {
                     valueSet1 = new ArrayList<>();
                 }
-                if(totalDays == 0)
+                if(totalMonths == 0)
                 {
                     Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
-                    totalVisits = 0;
                 }else
                 {
-                    for (Integer i = 0; i < totalDays; i++)
+                    for (Integer i = 0; i < totalMonths; i++)
                     {
-                        int day_of_month = items.getJSONObject(i).getInt("day_of_month");
-                        int visits = items.getJSONObject(i).getInt("visits");
+                        String timestamp = items.getJSONObject(i).getString("timestamp");
+                        int visits = items.getJSONObject(i).getInt("page_views");
+                        String tempString = timestamp.substring(5, 7);
+                        int month_of_year = Integer.parseInt(tempString);
 
-
-                        if(secondCall)
+                        if(secondCall) //Last Year
                         {
-                            while(day_of_month != compareCounter)
+                            while(month_of_year != compareCounter)
                             {
-                                int startValue = compareCounter;
-                                for(int j = startValue; j < day_of_month; j++)
+                                int stopValue = compareCounter;
+                                for (int j = stopValue; j < month_of_year; j++)
                                 {
                                     Entry entry = new Entry(0, placementOnXAxis);
                                     valueSet2.add(entry);
-                                    compareCounter++;
                                     placementOnXAxis++;
+                                    compareCounter++;
                                 }
                             }
-                            if(day_of_month == compareCounter)
+                            if(compareCounter == month_of_year)
                             {
                                 Entry entry = new Entry((float)visits, placementOnXAxis);
                                 valueSet2.add(entry);
                                 compareCounter++;
                                 placementOnXAxis++;
                             }
-                            while(compareCounter <= 31 && i == (totalDays - 1))
+
+                            while(compareCounter <= 12 && i == (totalMonths - 1))
                             {
                                 Entry entry = new Entry(0, placementOnXAxis);
                                 valueSet2.add(entry);
-                                placementOnXAxis++;
                                 compareCounter++;
+                                placementOnXAxis++;
                             }
-                        }else
+                        }else //Current Year
                         {
-                            while (day_of_month != compareCounter)
+                            while (month_of_year != compareCounter)
                             {
                                 int stopValue = compareCounter;
-                                for (int j = stopValue; j < day_of_month; j++)
+                                for (int j = stopValue; j < month_of_year; j++)
                                 {
                                     Entry entry = new Entry(0, placementOnXAxis);
                                     valueSet1.add(entry);
                                     tableValues.add(0);
-                                    placementOnXAxis++;
                                     compareCounter++;
+                                    placementOnXAxis++;
                                 }
                             }
-                            if (day_of_month == compareCounter)
+                            if (month_of_year == compareCounter)
                             {
                                 Entry entry = new Entry((float) visits, placementOnXAxis);
                                 valueSet1.add(entry);
                                 tableValues.add(visits);
-                                placementOnXAxis++;
                                 compareCounter++;
+                                placementOnXAxis++;
                                 totalVisits = totalVisits + visits;
                             }
                         }
                     }
 
-                    if (secondCall)
+                    if(secondCall)
                     {
-                        LineDataSet lineDataSet2 = new LineDataSet(valueSet2, "LAST MONTH");
+                        LineDataSet lineDataSet2 = new LineDataSet(valueSet2, "LAST YEAR");
                         lineDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
                         lineDataSet2.setDrawFilled(true);
                         lineDataSet2.setFillColor(Color.rgb(181, 0, 97));
@@ -418,37 +418,41 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
                         drawGraph();
 
                         secondCall = false;
-                    } else
+
+                    }else
                     {
                         dataSets = new ArrayList<>();
-                        LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "THIS MONTH");
+                        LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "THIS YEAR");
                         lineDataSet1.setColor(Color.rgb(5, 184, 198));
                         lineDataSet1.setDrawFilled(true);
                         lineDataSet1.setFillColor(Color.rgb(5, 184, 198));
                         lineDataSet1.setFillAlpha(40);
                         dataSets.add(lineDataSet1);
-                        Log.i("Total VISISTS", totalVisits.toString());
-                        textViewTotal.setText(totalVisits.toString());
+
+                        // Setting Header Text to match VisitsYear Fragment.
+                        textViewTotal.setText(String.valueOf(totalVisits));
+
                         if(landscapeMode)
                         {
                             secondCall = true;
                             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                    "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=LastMonth";
+                                    "/analytics/overview/history?period=" + lastYear + "0101_" + lastYear + "1231";
                             new RetrieveFeedTask().execute();
                         }else
                         {
-                            Log.i("I AM CALLEDNOLANDSCAPE","XXXXXX");
-                            createTable();
                             drawGraph();
+                            createTable();
                         }
                     }
+
                 }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (ClassCastException ce){
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
             }
-
         }
     }
 }
+

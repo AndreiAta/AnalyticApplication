@@ -16,8 +16,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,12 +30,18 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages.PopPagesFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages.PopPagesMainFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages.PopPagesMonthFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages.PopPagesWeekFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages.PopPagesYearFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Page_Views.PageViewsFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Page_Views.PageViewsMainFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Page_Views.PageViewsMonthFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Page_Views.PageViewsWeekFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Page_Views.PageViewsYearFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesMonthFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesMainFragment;
@@ -71,7 +80,12 @@ public class MainActivity extends AppCompatActivity
         PopPagesFragment.OnFragmentInteractionListener,
         PopPagesWeekFragment.OnFragmentInteractionListener,
         PopPagesMonthFragment.OnFragmentInteractionListener,
-        PopPagesYearFragment.OnFragmentInteractionListener
+        PopPagesYearFragment.OnFragmentInteractionListener,
+        PageViewsMainFragment.OnFragmentInteractionListener,
+        PageViewsFragment.OnFragmentInteractionListener,
+        PageViewsWeekFragment.OnFragmentInteractionListener,
+        PageViewsMonthFragment.OnFragmentInteractionListener,
+        PageViewsYearFragment.OnFragmentInteractionListener
 
 
 {
@@ -86,10 +100,14 @@ public class MainActivity extends AppCompatActivity
     NavigationView navigationView;
     DrawerLayout drawer;
 
+    ArrayList<String> spinnerList = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        spinnerList.add("Site 1");
+        spinnerList.add("Site 2");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FontsOverride.setDefaultFont(this, "MONOSPACE", "Helvetica.otf");
@@ -100,6 +118,8 @@ public class MainActivity extends AppCompatActivity
 
         TextView myTitle = (TextView) toolbar.getChildAt(0);
         myTitle.setTypeface(tf);
+
+
 
         if (initialLogin == null)
         {
@@ -156,6 +176,23 @@ public class MainActivity extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        Spinner spinner = (Spinner) navigationView.getMenu().findItem(R.id.spinnerTest).getActionView();
+     //   Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinnerList));
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                Toast.makeText(MainActivity.this, "Something", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+            }
+        });
     }
 
     private void writeToFile(String message)
@@ -242,7 +279,7 @@ public class MainActivity extends AppCompatActivity
         }
         else if (id == R.id.pageViews)
         {
-            //TODO Handle page views request
+            fragmentClass = PageViewsMainFragment.class;
         }
         else if (id == R.id.popularPages)
         {
