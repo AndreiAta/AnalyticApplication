@@ -22,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -53,15 +52,13 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
     ArrayList<BarDataSet> dataSets;
     ArrayList<String> xAxis, xAxisLabels;
     ArrayList<Integer> tableValues = new ArrayList<>();
-    int[] tempValSet2 = new int[100];
+    int[] tempValSet2 = new int[100]; // This should be instantiated in RetriveFeedTask or simply use ArrayList instead?
 
     HorizontalBarChart chart;
     ProgressBar progressBar;
     TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne, columnTwo;
     TableLayout table;
-
     private OnFragmentInteractionListener mListener;
-
 
     public PopPagesFragment() { } //Required empty constructor
 
@@ -298,8 +295,6 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
 
         protected void onPostExecute(String response)
         {
-            Log.i("ERROR", response);
-
             if(response == null) {
                 response = "THERE WAS AN ERROR";
             }
@@ -311,7 +306,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                 JSONArray items = object.getJSONArray("items");
                 totalPopPages = items.length();
 
-                if (secondCall)
+                if (secondCall) // second time we call the API, prepare lists, and fill tempArray with 0's
                 {
                     valueSet2 = new ArrayList<>();
                     //Filling the array with 0
@@ -320,14 +315,14 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                         tempValSet2[i] = 0;
                     }
 
-                } else
+                } else // first time we call API, prepare lists
                 {
                     valueSet1 = new ArrayList<>();
                     xAxis = new ArrayList<>();
                     xAxisLabels = new ArrayList<>();
                 }
 
-                for (int i = 0; i < totalPopPages; i++)
+                for (int i = 0; i < totalPopPages; i++) // Loop through all the items in the JSON Array
                 {
                     Integer visits = items.getJSONObject(i).getInt("page_views");
                     String title = items.getJSONObject(i).getString("title");
@@ -335,16 +330,18 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                     if (secondCall) //Yesterday
                     {
 
-                        if (xAxis.contains(title))
+                        if (xAxis.contains(title)) // If the name is already in list, don't add it again.
                         {
                             tempValSet2[xAxis.indexOf(title)] = visits;
-                        }else if(!xAxis.contains(title) && xAxis.size() < 10)
+                        }
+                        else if(!xAxis.contains(title) && xAxis.size() < 10) // if it isn't in list, and there is space - add it
                         {
                             xAxis.add(title);
                             if(title.length() > 20) { xAxisLabels.add(title.substring(0,19) + "..."); }
+                            else{ xAxisLabels.add(title); }
                             tempValSet2[i] = visits;
                         }
-                        if(i == totalPopPages - 1)
+                        if(i == totalPopPages - 1) // last time through the loop, move from tempArray to valueSet2.
                         {
                             for (int j = 0; j < totalPopPages; j++)
                             {
@@ -354,17 +351,18 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                         }
                     } else //Today
                     {
-                        if (i < 10)
+                        if (i < 10) // we only want top 10
                         {
                             BarEntry entry = new BarEntry((float) visits, i);
                             valueSet1.add(entry);
                             xAxis.add(title);
                             if(title.length() > 20) { xAxisLabels.add(title.substring(0,19) + "..."); }
+                            else{ xAxisLabels.add(title); }
                             tableValues.add(visits);
                             totalVisits = totalVisits + visits;
                         } else
                         {
-                            if (!secondCall)
+                            if (!secondCall) // calculating the totalVisits (after top 10)
                             {
                                 totalVisits = totalVisits + visits;
                             }
