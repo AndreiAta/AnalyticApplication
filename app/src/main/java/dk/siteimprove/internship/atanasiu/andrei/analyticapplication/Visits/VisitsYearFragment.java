@@ -55,6 +55,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
     boolean tableIsVisible = false;
     private OnFragmentInteractionListener mListener;
     String API_URL = "";
+    String lastYear;
     TableLayout table;
     TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     int totalVisits, totalMonths;
@@ -79,6 +80,9 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        DateTime thisYear = new DateTime().minusYears(1);
+        lastYear = thisYear.toString("yyyy");
+
         if(!MainActivity.API_ID.equalsIgnoreCase("test")) //Check if the user has selected a website
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
@@ -101,7 +105,6 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
         columnOne.setText("Month of Year");
         textViewInfo.setText("VISITS THIS YEAR");
         tableToggler.setOnClickListener(this);
-//        tableToggler.setText("Visits this year");
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
 
@@ -433,7 +436,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
                         {
                             secondCall = true;
                             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                    "/analytics/overview/history?period=20150101_20151231";
+                                    "/analytics/overview/history?period=" + lastYear + "0101_" + lastYear + "1231";
                             new RetrieveFeedTask().execute();
                         }else
                         {

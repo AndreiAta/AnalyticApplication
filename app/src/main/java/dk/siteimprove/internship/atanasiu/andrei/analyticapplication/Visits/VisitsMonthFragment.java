@@ -106,7 +106,6 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         columnOne.setText("Day of Month");
         textViewInfo.setText("VISITS THIS MONTH");
         tableToggler.setOnClickListener(this);
-        tableToggler.setText("Visits this month");
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
 

@@ -90,7 +90,7 @@
                     android:id="@+id/tableToggler"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Visits this week "
+                    android:text="More Info "
                     android:textSize="20dp"
                     android:textColor="@color/White"
                     android:layout_marginLeft="10dp"/>

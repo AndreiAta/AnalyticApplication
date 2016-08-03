@@ -2,7 +2,6 @@ package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 
 
 import android.app.Dialog;
-import android.content.Context;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,8 +31,8 @@ import java.io.InputStreamReader;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages.PopPagesFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages.PopPagesMainFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesMainFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesMonthFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesMainFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesWeekFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesYearFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaFragment;

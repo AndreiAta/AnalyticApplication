@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaWeekFragment;
 
 
 public class SearchEnginesMainFragment extends Fragment

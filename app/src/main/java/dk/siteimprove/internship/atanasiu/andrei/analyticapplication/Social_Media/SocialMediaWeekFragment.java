@@ -47,7 +47,7 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
 {
     HorizontalBarChart chart;
     ArrayList<BarDataSet> dataSets;
-    ArrayList<String> xAxis;
+    ArrayList<String> xAxis, xAxisLabels;
     ProgressBar progressBar;
     String API_URL = "";
     private OnFragmentInteractionListener mListener;
@@ -61,6 +61,7 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
     boolean tableIsVisible = false;
     boolean landscapeMode, apiIdSelected;
     int totalVisits, totalSocialMedia;
+    int[] tempValSet2 = new int[100];
 
     public SocialMediaWeekFragment()
     {
@@ -197,8 +198,6 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
         }
     }
 
-
-
     @Override
     public void onAttach(Context context)
     {
@@ -246,7 +245,7 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
 
     private void drawGraph()
     {
-        BarData data = new BarData(xAxis, dataSets);
+        BarData data = new BarData(xAxisLabels, dataSets);
         chart.setData(data);
         chart.setDescription("");
         chart.animateXY(2000, 2000);
@@ -334,10 +333,16 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
                 if(secondCall)
                 {
                     valueSet2 = new ArrayList<>();
+                    //Filling the array with 0
+                    for (int i = 0; i < totalSocialMedia ; i++)
+                    {
+                        tempValSet2[i] = 0;
+                    }
                 }else
                 {
                     valueSet1 = new ArrayList<>();
                     xAxis = new ArrayList<>();
+                    xAxisLabels = new ArrayList<>();
                 }
 
                 for(int i = 0; i < totalSocialMedia; i++)
@@ -345,31 +350,51 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
                     Integer visits = items.getJSONObject(i).getInt("visits");
                     String organisation = items.getJSONObject(i).getString("organisation");
 
-                    if(secondCall) //Last Month
+                    if(secondCall) //Last Week
                     {
-                        BarEntry entry = new BarEntry((float)visits, numberorg);
-                        valueSet2.add(entry);
-                        //TODO CHECK OTHER DAYS
-                        if(!xAxis.contains(organisation))
+                        if (xAxis.contains(organisation))
+                        {
+                            tempValSet2[xAxis.indexOf(organisation)] = visits;
+                        }else if(!xAxis.contains(organisation) && xAxis.size() < 10)
                         {
                             xAxis.add(organisation);
+                            if(organisation.length() > 20) { xAxisLabels.add(organisation.substring(0,19) + "..."); }
+                            else{ xAxisLabels.add(organisation); }
+                            tempValSet2[i] = visits;
                         }
-                        numberorg++;
-                    }else //This Month
+                        if(i == totalSocialMedia - 1)
+                        {
+                            for (int j = 0; j < totalSocialMedia; j++)
+                            {
+                                BarEntry entry = new BarEntry(tempValSet2[j], j);
+                                valueSet2.add(entry);
+                            }
+                        }
+                    }else //This Week
                     {
-                        BarEntry entry = new BarEntry((float)visits, numberorg);
-                        valueSet1.add(entry);
-                        xAxis.add(organisation);
-                        numberorg++;
-                        tableValues.add(visits);
-                        totalVisits = totalVisits + visits;
+                        if(i < 10)
+                        {
+                            BarEntry entry = new BarEntry((float)visits, numberorg);
+                            valueSet1.add(entry);
+                            xAxis.add(organisation);
+                            if(organisation.length() > 20) { xAxisLabels.add(organisation.substring(0,19) + "..."); }
+                            else{ xAxisLabels.add(organisation); }
+                            numberorg++;
+                            tableValues.add(visits);
+                            totalVisits = totalVisits + visits;
+                        }else
+                        {
+                            if(!secondCall)
+                            {
+                                totalVisits = totalVisits + visits;
+                            }
+                        }
                     }
-
                 }
 
                 if(secondCall)
                 {
-                    BarDataSet barDataSet2 = new BarDataSet(valueSet2, "LAST MONTH");
+                    BarDataSet barDataSet2 = new BarDataSet(valueSet2, "LAST WEEK");
                     barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
                     barDataSet2.setBarSpacePercent(50f);
                     dataSets.add(barDataSet2);
@@ -379,7 +404,7 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
                 }else
                 {
                     dataSets = new ArrayList<>();
-                    BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS MONTH");
+                    BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS WEEK");
                     barDataSet1.setColor(Color.rgb(5, 184, 198));
                     barDataSet1.setBarSpacePercent(50f);
                     dataSets.add(barDataSet1);

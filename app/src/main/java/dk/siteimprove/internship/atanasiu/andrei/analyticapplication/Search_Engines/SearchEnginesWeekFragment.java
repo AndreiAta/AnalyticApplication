@@ -1,25 +1,35 @@
 package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,52 +40,141 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 
 
-public class SearchEnginesWeekFragment extends Fragment
+public class SearchEnginesWeekFragment extends Fragment implements View.OnClickListener
 {
-
     HorizontalBarChart chart;
     ArrayList<BarDataSet> dataSets;
-    ArrayList<String> xAxis;
+    ArrayList<String> xAxis, xAxisLabels;
     ProgressBar progressBar;
-    static final String API_KEY = "ebd8cdc10745831de07c286a9c6d967d";
     String API_URL = "";
+    TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
+    TableLayout table;
+    ArrayList<Integer> tableValues = new ArrayList<>();
+    ArrayList<BarEntry> valueSet1;
+    ArrayList<BarEntry> valueSet2;
+    boolean secondCall = false;
+    boolean tableIsVisible = false;
+    boolean landscapeMode, apiIdSelected;
+    int totalVisits, totalSearchEngines;
+    int[] tempValSet2 = new int[100];
+
     private OnFragmentInteractionListener mListener;
 
-    public SearchEnginesWeekFragment()
-    {
-        // Required empty public constructor
-    }
+    public SearchEnginesWeekFragment() {  }    // Required empty public constructor
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+            landscapeMode = true;
+        }
+        else
+        {
+            landscapeMode = false;
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        int dayOfWeek = new DateTime().getDayOfWeek();
+        DateTime currentDay = new DateTime();
+        String currentDate = currentDay.toString("yyyy-MM-dd");
+        currentDate = currentDate.replace("-","");
+
+        DateTime startOfWeek = new DateTime().minusDays(dayOfWeek - 1);
+        String mondayDate = startOfWeek.toString("yyyy-MM-dd");
+        mondayDate = mondayDate.replace("-","");
+        String period = mondayDate + "_" + currentDate;
+
+        //Get Time Period for the Text View
+        String textDatePeriod = startOfWeek.toString("dd-MMMM") + " to " + currentDay.toString("dd-MMMM");
+        textDatePeriod = textDatePeriod.replace("-", " ");
+
         if(MainActivity.API_ID != null)
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/traffic_sources/search_engines?page=1&page_size=10&period=LastSevenDays";
+                    "/analytics/traffic_sources/search_engines?page=1&page_size=10&period=" + period;
+            apiIdSelected = true;
         }else
         {
-            //TODO error message no Site selected
+            apiIdSelected = false;
         }
         View rootView = inflater.inflate(R.layout.fragment_search_engines, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);
-        new RetrieveFeedTask().execute();
-        // Inflate the layout for this fragment
-        return rootView;
+        textViewDate = (TextView) rootView.findViewById(R.id.textViewDate);
+        textViewInfo = (TextView) rootView.findViewById(R.id.textViewInfo);
+        textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
+        tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
+        columnOne = (TextView) rootView.findViewById(R.id.columnOne);
+        table = (TableLayout) rootView.findViewById(R.id.table);
+
+        textViewDate.setText(textDatePeriod);
+        textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS THIS WEEK");
+        tableToggler.setGravity(Gravity.LEFT);
+        tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
+        columnOne.setText("Search Engine");
+
+        tableToggler.setOnClickListener(this);
+        table.setVisibility(View.GONE);
+
+        totalVisits = 0;
+
+        if(haveNetworkConnection())
+        {
+            if(apiIdSelected)
+            {
+                new RetrieveFeedTask().execute();
+            }
+            else
+            {
+                Toast.makeText(getActivity().getApplicationContext(), "PLEASE SELECT A SITE!!", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else
+        {
+            Toast.makeText(getActivity().getApplicationContext(), "YOU HAVE NO INTERNET!", Toast.LENGTH_SHORT).show();
+        }
+        if(landscapeMode)
+        {
+            table.setVisibility(View.GONE);
+            tableToggler.setVisibility(View.GONE);
+        }
+
+        return  rootView;
+    }
+
+    public boolean haveNetworkConnection()
+    {
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
+
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                if (ni.isConnected())
+                    haveConnectedWifi = true;
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (ni.isConnected())
+                    haveConnectedMobile = true;
+        }
+        return haveConnectedWifi || haveConnectedMobile;
     }
 
     @Override
@@ -99,26 +198,90 @@ public class SearchEnginesWeekFragment extends Fragment
         mListener = null;
     }
 
+    @Override
+    public void onClick(View v)
+    {
+        if(tableIsVisible)
+        {
+            table.setVisibility(View.GONE);
+            tableIsVisible = false;
+            tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
+        }else
+        {
+            table.setVisibility(View.VISIBLE);
+            tableIsVisible = true;
+            tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_36dp), null);
+        }
+    }
+
     public interface OnFragmentInteractionListener
     {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    public void createTable()
+    {
+
+        for (int i = 0; i < xAxis.size() ; i++)
+        {
+            TableRow[] tableRow = new TableRow[xAxis.size()];
+            tableRow[i] = new TableRow(getActivity());
+            tableRow[i].setPadding(40, 40, 40, 40);
+
+            TextView hourOfDayTxt = new TextView(getActivity());
+            hourOfDayTxt.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            hourOfDayTxt.setText(xAxis.get(i).toString());
+            hourOfDayTxt.setTextColor(Color.WHITE);
+
+            TextView visitsTxt = new TextView(getActivity());
+            visitsTxt.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            visitsTxt.setGravity(Gravity.RIGHT);
+            visitsTxt.setText(tableValues.get(i).toString());
+            visitsTxt.setTextColor(Color.WHITE);
+
+            tableRow[i].addView(hourOfDayTxt);
+            tableRow[i].addView(visitsTxt);
+            table.addView(tableRow[i]);
+        }
+    }
+
     private void drawGraph()
     {
-        BarData data = new BarData(xAxis, dataSets);
-        Log.i("DATA SETS", dataSets.toString());
+        BarData data = new BarData(xAxisLabels, dataSets);
         chart.setData(data);
         chart.setDescription("");
-        chart.animateY(2000);
+        chart.animateXY(2000, 2000);
         chart.invalidate();
+        chart.setBackgroundColor(Color.rgb(68, 68, 68));
+        chart.setGridBackgroundColor(R.color.White);
+        chart.getLegend().setTextColor(Color.WHITE);
+        chart.getAxisLeft().setDrawLabels(false);
+        chart.getAxisRight().setDrawLabels(false);
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);
-        data.setValueTextSize(10f);
+        xAxis.setTextColor(Color.WHITE);
+        data.setValueTextSize(0f);
+        if(landscapeMode)
+        {
+            data.setValueTextSize(0f);
+            chart.getAxisRight().setDrawLabels(false);
+            chart.getAxisLeft().setTextColor(Color.WHITE);
+        }else
+        {
+            data.setValueTextSize(0f);
+            chart.getAxisLeft().setDrawLabels(false);
+            chart.getAxisRight().setDrawLabels(false);
+        }
 
     }
 
+    // ===============================
+    //        INTERNAL CLASS
+    // ===============================
     class RetrieveFeedTask extends AsyncTask<Void, Void, String>
     {
 
@@ -167,43 +330,109 @@ public class SearchEnginesWeekFragment extends Fragment
             progressBar.setVisibility(View.GONE);
             Log.i("INFO", response);
 
-            try {
-
-
+            try
+            {
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
-                ArrayList<BarEntry> valueSet1 = new ArrayList<>();
-                xAxis = new ArrayList<>();
-                int numberSearch = 0;
-                for(int i = 0; i < items.length(); i++)
-                {
+                totalSearchEngines = items.length();
+                int numberSearchEngines = 0;
 
-                    //Integer pages = items.getJSONObject(i).getInt("pages");
+                if(secondCall)
+                {
+                    valueSet2 = new ArrayList<>();
+                    //Filling the array with 0
+                    for (int i = 0; i < totalSearchEngines ; i++)
+                    {
+                        tempValSet2[i] = 0;
+                    }
+                }else
+                {
+                    valueSet1 = new ArrayList<>();
+                    xAxis = new ArrayList<>();
+                    xAxisLabels = new ArrayList<>();
+                }
+                for(int i = 0; i < totalSearchEngines; i++)
+                {
                     Integer visits = items.getJSONObject(i).getInt("visits");
                     String search_engine = items.getJSONObject(i).getString("search_engine");
 
-                    BarEntry entry = new BarEntry((float)visits, numberSearch);
-                    valueSet1.add(entry);
-                    xAxis.add(search_engine);
-                    numberSearch = numberSearch + 1;
+                    if(secondCall) //Yesterday
+                    {
+                        if (xAxis.contains(search_engine))
+                        {
+                            tempValSet2[xAxis.indexOf(search_engine)] = visits;
+                        }else if(!xAxis.contains(search_engine) && xAxis.size() < 10)
+                        {
+                            xAxis.add(search_engine);
+                            if(search_engine.length() > 15) { xAxisLabels.add(search_engine.substring(0,14) + "..."); }
+                            else{ xAxisLabels.add(search_engine); }
+                            tempValSet2[i] = visits;
+                        }
+                        if (i == totalSearchEngines - 1)
+                        {
+                            for (int j = 0; j < totalSearchEngines; j++)
+                            {
+                                BarEntry entry = new BarEntry(tempValSet2[j], j);
+                                valueSet2.add(entry);
+                            }
+                        }
+                    }else //Today
+                    {
+                        if(i < 10)
+                        {
+                            BarEntry entry = new BarEntry((float)visits, numberSearchEngines);
+                            valueSet1.add(entry);
+                            xAxis.add(search_engine);
+                            if(search_engine.length() > 15) { xAxisLabels.add(search_engine.substring(0,14) + "..."); }
+                            else{ xAxisLabels.add(search_engine); }
+                            numberSearchEngines++;
+                            tableValues.add(visits);
+                            totalVisits = totalVisits + visits;
+                        }else
+                        {
+                            if(!secondCall)
+                            {
+                                totalVisits = totalVisits + visits;
+                            }
+                        }
 
-
+                    }
                 }
+                if(secondCall)
+                {
+                    BarDataSet barDataSet2 = new BarDataSet(valueSet2, "LAST WEEK");
+                    barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
+                    barDataSet2.setBarSpacePercent(50f);
+                    dataSets.add(barDataSet2);
+                    drawGraph();
 
-                BarDataSet barDataSet1 = new BarDataSet(valueSet1, "VISITS");
-                barDataSet1.setColor(Color.rgb(49, 79, 49));
-                barDataSet1.setBarSpacePercent(50f);
-                dataSets = new ArrayList<>();
-                dataSets.add(barDataSet1);
+                    secondCall = false;
+                }else
+                {
+                    dataSets = new ArrayList<>();
+                    BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS WEEK");
+                    barDataSet1.setColor(Color.rgb(5, 184, 198));
+                    barDataSet1.setBarSpacePercent(50f);
+                    dataSets.add(barDataSet1);
+                    textViewTotal.setText(String.valueOf(totalVisits));
 
-                drawGraph();
-
-
+                    if(landscapeMode)
+                    {
+                        secondCall = true;
+                        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                                "/analytics/traffic_sources/search_engines?page=1&page_size=10&period=lastweek";
+                        new RetrieveFeedTask().execute();
+                    }else
+                    {
+                        createTable();
+                        drawGraph();
+                    }
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
+            }catch (ClassCastException ce){
+                Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
             }
-
         }
     }
-
 }

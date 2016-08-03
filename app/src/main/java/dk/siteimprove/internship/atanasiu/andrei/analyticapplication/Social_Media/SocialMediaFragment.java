@@ -44,7 +44,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
 {
     HorizontalBarChart chart;
     ArrayList<BarDataSet> dataSets;
-    ArrayList<String> xAxis;
+    ArrayList<String> xAxis, xAxisLabels;
     ProgressBar progressBar;
     String API_URL = "";
     TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
@@ -102,7 +102,6 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
 
         textViewDate.setText("0 - 0");
         textViewInfo.setText("VISITS TODAY");
-        tableToggler.setText("Visits today ");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
@@ -223,7 +222,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
 
     private void drawGraph()
     {
-        BarData data = new BarData(xAxis, dataSets);
+        BarData data = new BarData(xAxisLabels, dataSets);
         chart.setData(data);
         chart.setDescription("");
         chart.animateXY(2000, 2000);
@@ -321,6 +320,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                 {
                     valueSet1 = new ArrayList<>();
                     xAxis = new ArrayList<>();
+                    xAxisLabels = new ArrayList<>();
                 }
 
                 for(int i = 0; i < totalSocialMedia; i++)
@@ -330,13 +330,14 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
 
                     if (secondCall) //Yesterday
                     {
-
                         if (xAxis.contains(organisation))
                         {
                             tempValSet2[xAxis.indexOf(organisation)] = visits;
                         }else if(!xAxis.contains(organisation) && xAxis.size() < 10)
                         {
                             xAxis.add(organisation);
+                            if(organisation.length() > 20) { xAxisLabels.add(organisation.substring(0,19) + "..."); }
+                            else{ xAxisLabels.add(organisation); }
                             tempValSet2[i] = visits;
                         }
                         if (i == totalSocialMedia - 1)
@@ -350,12 +351,24 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                     }
                     else //Today
                     {
-                        BarEntry entry = new BarEntry((float)visits, numberorg);
-                        valueSet1.add(entry);
-                        xAxis.add(organisation);
-                        numberorg++;
-                        tableValues.add(visits);
-                        totalVisits = totalVisits + visits;
+                        if(i < 10)
+                        {
+                            BarEntry entry = new BarEntry((float)visits, numberorg);
+                            valueSet1.add(entry);
+                            xAxis.add(organisation);
+                            if(organisation.length() > 20) { xAxisLabels.add(organisation.substring(0,19) + "..."); }
+                            else{ xAxisLabels.add(organisation); }
+                            numberorg++;
+                            tableValues.add(visits);
+                            totalVisits = totalVisits + visits;
+                        }else
+                        {
+                            if(!secondCall)
+                            {
+                                totalVisits = totalVisits + visits;
+                            }
+                        }
+
                     }
 
                 }

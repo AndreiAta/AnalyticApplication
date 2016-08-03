@@ -47,7 +47,7 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
 {
     HorizontalBarChart chart;
     ArrayList<BarDataSet> dataSets;
-    ArrayList<String> xAxis;
+    ArrayList<String> xAxis, xAxisLabels;
     ProgressBar progressBar;
     String API_URL = "";
     private OnFragmentInteractionListener mListener;
@@ -60,6 +60,8 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
     boolean tableIsVisible = false;
     boolean landscapeMode, apiIdSelected;
     int totalVisits, totalSocialMedia;
+    int[] tempValSet2 = new int[100];
+    String lastYear;
 
     public SocialMediaYearFragment()
     {
@@ -84,6 +86,9 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        DateTime thisYear = new DateTime().minusYears(1);
+        lastYear = thisYear.toString("yyyy");
+
         if(MainActivity.API_ID != null)
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
@@ -105,7 +110,6 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
 
         textViewDate.setText("0 - 0");
         textViewInfo.setText("VISITS THIS YEAR");
-        tableToggler.setText("Visits this Year ");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
@@ -237,7 +241,7 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
 
     private void drawGraph()
     {
-        BarData data = new BarData(xAxis, dataSets);
+        BarData data = new BarData(xAxisLabels, dataSets);
         chart.setData(data);
         chart.setDescription("");
         chart.animateXY(2000, 2000);
@@ -325,10 +329,16 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
                 if(secondCall)
                 {
                     valueSet2 = new ArrayList<>();
+                    //Filling the array with 0
+                    for (int i = 0; i < totalSocialMedia ; i++)
+                    {
+                        tempValSet2[i] = 0;
+                    }
                 }else
                 {
                     valueSet1 = new ArrayList<>();
                     xAxis = new ArrayList<>();
+                    xAxisLabels = new ArrayList<>();
                 }
 
                 for(int i = 0; i < totalSocialMedia; i++)
@@ -336,26 +346,56 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
                     Integer visits = items.getJSONObject(i).getInt("visits");
                     String organisation = items.getJSONObject(i).getString("organisation");
 
-                    if(secondCall) //LAST MONTH
+                    if(secondCall) //LAST YEAR
                     {
-                        BarEntry entry = new BarEntry((float)visits, numberorg);
-                        valueSet2.add(entry);
-                        //TODO CHECK OTHER DAYS
-                        if(!xAxis.contains(organisation))
+                        if (xAxis.contains(organisation))
+                        {
+                            tempValSet2[xAxis.indexOf(organisation)] = visits;
+                        } else if (!xAxis.contains(organisation) && xAxis.size() < 10)
                         {
                             xAxis.add(organisation);
+                            if (organisation.length() > 20)
+                            {
+                                xAxisLabels.add(organisation.substring(0, 19) + "...");
+                            } else
+                            {
+                                xAxisLabels.add(organisation);
+                            }
+                            tempValSet2[i] = visits;
                         }
-                        numberorg++;
-                    }else //THIS MONTH
+                        if (i == totalSocialMedia - 1)
+                        {
+                            for (int j = 0; j < totalSocialMedia; j++)
+                            {
+                                BarEntry entry = new BarEntry(tempValSet2[j], j);
+                                valueSet2.add(entry);
+                            }
+                        }
+                    }else //THIS YEAR
                     {
-                        BarEntry entry = new BarEntry((float)visits, numberorg);
-                        valueSet1.add(entry);
-                        xAxis.add(organisation);
-                        numberorg++;
-                        tableValues.add(visits);
-                        totalVisits = totalVisits + visits;
+                        if(i < 10)
+                        {
+                            BarEntry entry = new BarEntry((float)visits, numberorg);
+                            valueSet1.add(entry);
+                            xAxis.add(organisation);
+                            if (organisation.length() > 20)
+                            {
+                                xAxisLabels.add(organisation.substring(0, 19) + "...");
+                            } else
+                            {
+                                xAxisLabels.add(organisation);
+                            }
+                            numberorg++;
+                            tableValues.add(visits);
+                            totalVisits = totalVisits + visits;
+                        }else
+                        {
+                            if(!secondCall)
+                            {
+                                totalVisits = totalVisits + visits;
+                            }
+                        }
                     }
-
                 }
 
                 if(secondCall)
@@ -380,7 +420,8 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
                     {
                         secondCall = true;
                         API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=20150101_20151231";
+                                "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                                + lastYear + "0101_" + lastYear + "1231";
                         new RetrieveFeedTask().execute();
                     }else
                     {

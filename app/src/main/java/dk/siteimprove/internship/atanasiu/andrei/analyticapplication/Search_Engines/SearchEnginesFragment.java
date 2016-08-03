@@ -53,7 +53,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
 {
     HorizontalBarChart chart;
     ArrayList<BarDataSet> dataSets;
-    ArrayList<String> xAxis;
+    ArrayList<String> xAxis, xAxisLabels;
     ProgressBar progressBar;
     static final String API_KEY = "ebd8cdc10745831de07c286a9c6d967d";
     String API_URL = "";
@@ -66,6 +66,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
     boolean tableIsVisible = false;
     boolean landscapeMode, apiIdSelected;
     int totalVisits, totalSearchEngines;
+    int[] tempValSet2 = new int[100];
 
     private OnFragmentInteractionListener mListener;
 
@@ -110,7 +111,6 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
 
         textViewDate.setText("0 - 0");
         textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS TODAY");
-        tableToggler.setText("More Info ");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
@@ -236,7 +236,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
 
     private void drawGraph()
     {
-        BarData data = new BarData(xAxis, dataSets);
+        BarData data = new BarData(xAxisLabels, dataSets);
         chart.setData(data);
         chart.setDescription("");
         chart.animateXY(2000, 2000);
@@ -326,46 +326,64 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
                 if(secondCall)
                 {
                     valueSet2 = new ArrayList<>();
+                    //Filling the array with 0
+                    for (int i = 0; i < totalSearchEngines ; i++)
+                    {
+                        tempValSet2[i] = 0;
+                    }
                 }else
                 {
                     valueSet1 = new ArrayList<>();
                     xAxis = new ArrayList<>();
+                    xAxisLabels = new ArrayList<>();
                 }
                 for(int i = 0; i < totalSearchEngines; i++)
                 {
                     Integer visits = items.getJSONObject(i).getInt("visits");
                     String search_engine = items.getJSONObject(i).getString("search_engine");
 
-                    if(i <= 10) // We want only Top 10
-                    {
                         if(secondCall) //Yesterday
                         {
-                            BarEntry entry = new BarEntry((float)visits, numberSearchEngines);
-                            valueSet2.add(entry);
-                            //TODO CHECK OTHER DAYS
-                            if(!xAxis.contains(search_engine))
+                            if (xAxis.contains(search_engine))
+                            {
+                                tempValSet2[xAxis.indexOf(search_engine)] = visits;
+                            }else if(!xAxis.contains(search_engine) && xAxis.size() < 10)
                             {
                                 xAxis.add(search_engine);
+                                if(search_engine.length() > 15) { xAxisLabels.add(search_engine.substring(0,14) + "..."); }
+                                else{ xAxisLabels.add(search_engine); }
+                                tempValSet2[i] = visits;
                             }
-                            numberSearchEngines++;
+                            if (i == totalSearchEngines - 1)
+                            {
+                                for (int j = 0; j < totalSearchEngines; j++)
+                                {
+                                    BarEntry entry = new BarEntry(tempValSet2[j], j);
+                                    valueSet2.add(entry);
+                                }
+                            }
                         }else //Today
                         {
-                            BarEntry entry = new BarEntry((float)visits, numberSearchEngines);
-                            valueSet1.add(entry);
-                            xAxis.add(search_engine);
-                            numberSearchEngines++;
-                            tableValues.add(visits);
-                            totalVisits = totalVisits + visits;
-                        }
-                    }else
-                    {
-                        if(!secondCall) //Only total visits of today
-                        {
-                            totalVisits = totalVisits + visits;
-                        }
-                    }
-                }
+                            if(i < 10)
+                            {
+                                BarEntry entry = new BarEntry((float)visits, numberSearchEngines);
+                                valueSet1.add(entry);
+                                xAxis.add(search_engine);
+                                if(search_engine.length() > 15) { xAxisLabels.add(search_engine.substring(0,14) + "..."); }
+                                else{ xAxisLabels.add(search_engine); }
+                                numberSearchEngines++;
+                                tableValues.add(visits);
+                                totalVisits = totalVisits + visits;
+                            }else
+                            {
+                                if(!secondCall)
+                                {
+                                    totalVisits = totalVisits + visits;
+                                }
+                            }
 
+                        }
+                }
                 if(secondCall)
                 {
                     BarDataSet barDataSet2 = new BarDataSet(valueSet2, "YESTERDAY");

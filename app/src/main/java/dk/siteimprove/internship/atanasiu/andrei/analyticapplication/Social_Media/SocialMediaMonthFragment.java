@@ -47,7 +47,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
 {
     HorizontalBarChart chart;
     ArrayList<BarDataSet> dataSets;
-    ArrayList<String> xAxis;
+    ArrayList<String> xAxis, xAxisLabels;
     ProgressBar progressBar;
     String API_URL = "";
     private OnFragmentInteractionListener mListener;
@@ -60,6 +60,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
     boolean tableIsVisible = false;
     boolean landscapeMode, apiIdSelected;
     int totalVisits, totalSocialMedia;
+    int[] tempValSet2 = new int[100];
 
     public SocialMediaMonthFragment()
     {
@@ -106,7 +107,6 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
 
         textViewDate.setText("0 - 0");
         textViewInfo.setText("VISITS THIS MONTH");
-        tableToggler.setText("Visits this Month ");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
@@ -237,7 +237,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
 
     private void drawGraph()
     {
-        BarData data = new BarData(xAxis, dataSets);
+        BarData data = new BarData(xAxisLabels, dataSets);
         chart.setData(data);
         chart.setDescription("");
         chart.animateXY(2000, 2000);
@@ -325,10 +325,16 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                 if(secondCall)
                 {
                     valueSet2 = new ArrayList<>();
+
+                    for (int i = 0; i < totalSocialMedia ; i++)
+                    {
+                        tempValSet2[i] = 0;
+                    }
                 }else
                 {
                     valueSet1 = new ArrayList<>();
                     xAxis = new ArrayList<>();
+                    xAxisLabels = new ArrayList<>();
                 }
 
                 for(int i = 0; i < totalSocialMedia; i++)
@@ -338,19 +344,31 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
 
                     if(secondCall) //LAST MONTH
                     {
-                        BarEntry entry = new BarEntry((float)visits, numberorg);
-                        valueSet2.add(entry);
-                        //TODO CHECK OTHER DAYS
-                        if(!xAxis.contains(organisation))
+                        if (xAxis.contains(organisation))
+                        {
+                            tempValSet2[xAxis.indexOf(organisation)] = visits;
+                        }else if(!xAxis.contains(organisation) && xAxis.size() < 10)
                         {
                             xAxis.add(organisation);
+                            if(organisation.length() > 20) { xAxisLabels.add(organisation.substring(0,19) + "..."); }
+                            else{ xAxisLabels.add(organisation); }
+                            tempValSet2[i] = visits;
                         }
-                        numberorg++;
+                        if(i == totalSocialMedia - 1)
+                        {
+                            for (int j = 0; j < totalSocialMedia; j++)
+                            {
+                                BarEntry entry = new BarEntry(tempValSet2[j], j);
+                                valueSet2.add(entry);
+                            }
+                        }
                     }else //THIS MONTH
                     {
                         BarEntry entry = new BarEntry((float)visits, numberorg);
                         valueSet1.add(entry);
                         xAxis.add(organisation);
+                        if(organisation.length() > 20) { xAxisLabels.add(organisation.substring(0,19) + "..."); }
+                        else{ xAxisLabels.add(organisation); }
                         numberorg++;
                         tableValues.add(visits);
                         totalVisits = totalVisits + visits;
