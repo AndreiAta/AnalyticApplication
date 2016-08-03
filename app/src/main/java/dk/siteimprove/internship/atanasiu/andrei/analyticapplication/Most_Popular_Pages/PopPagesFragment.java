@@ -343,7 +343,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                         }
                         if(i == totalPopPages - 1)
                         {
-                            for (int j = 0; j < tempValSet2.length; j++)
+                            for (int j = 0; j < totalPopPages; j++)
                             {
                                 BarEntry entry = new BarEntry(tempValSet2[j], j);
                                 valueSet2.add(entry);
