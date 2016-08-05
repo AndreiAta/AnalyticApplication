@@ -352,7 +352,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
                                 xAxis.add(search_engine);
                                 if(search_engine.length() > 15) { xAxisLabels.add(search_engine.substring(0,14) + "..."); }
                                 else{ xAxisLabels.add(search_engine); }
-                                tempValSet2[i] = visits;
+                                tempValSet2[xAxis.indexOf(search_engine)] = visits;
                             }
                             if (i == totalSearchEngines - 1)
                             {
