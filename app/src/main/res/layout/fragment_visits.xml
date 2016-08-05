@@ -5,7 +5,6 @@
              tools:context=".Visits.VisitsWeekFragment"
              android:background="@color/TuataraGrey">
 
-    <!-- TODO: Update blank fragment layout -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,8 +15,7 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -90,7 +88,7 @@
             android:id="@+id/tableToggler"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Visits this week "
+            android:text="More Info "
             android:textSize="20dp"
             android:textColor="@color/White"
             android:layout_marginLeft="10dp"/>
@@ -103,6 +101,8 @@
                      android:layout_height="wrap_content"
                      android:layout_marginTop="10dp"
                      android:padding="5dp"
+                     android:divider="?android:attr/dividerHorizontal"
+                     android:showDividers="middle"
                      android:background="@color/TuataraGrey">
 
             <TableRow

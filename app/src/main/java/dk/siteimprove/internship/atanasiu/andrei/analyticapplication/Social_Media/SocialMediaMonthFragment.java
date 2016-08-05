@@ -352,7 +352,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                             xAxis.add(organisation);
                             if(organisation.length() > 20) { xAxisLabels.add(organisation.substring(0,19) + "..."); }
                             else{ xAxisLabels.add(organisation); }
-                            tempValSet2[i] = visits;
+                            tempValSet2[xAxis.indexOf(organisation)] = visits;
                         }
                         if(i == totalSocialMedia - 1)
                         {
