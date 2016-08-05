@@ -37,6 +37,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.CustomMarkerView;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 
@@ -52,7 +53,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
     boolean apiIdSelected, landscapeMode;
     boolean secondCall = false;
     boolean tableIsVisible = false;
-    TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
+    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     TableLayout table;
     ArrayList<Integer> tableValues = new ArrayList<>();
 
@@ -250,6 +251,9 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         chart.getAxisLeft().setDrawLabels(false);
         chart.getAxisRight().setDrawLabels(false);
         chart.setTouchEnabled(true);
+        CustomMarkerView mv = new CustomMarkerView(getActivity().getApplicationContext(), R.layout.custom_marker_view);
+        chart.setMarkerView(mv);
+
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);

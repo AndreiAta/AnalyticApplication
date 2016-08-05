@@ -35,6 +35,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Time;
 import java.util.ArrayList;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
@@ -109,6 +110,9 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
 
         tableToggler.setOnClickListener(this);
         table.setVisibility(View.GONE);
+
+        int hours = new Time(System.currentTimeMillis()).getHours();
+        textViewDate.setText("0 - " + hours);
 
         totalVisits = 0;
 
