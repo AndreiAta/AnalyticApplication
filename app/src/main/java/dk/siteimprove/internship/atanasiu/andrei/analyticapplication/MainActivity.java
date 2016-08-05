@@ -4,6 +4,7 @@ package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 import android.app.Dialog;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -102,9 +103,10 @@ public class MainActivity extends AppCompatActivity
     public static String API_ID; // Should perhaps have some getter/setter?
     public static String API_EMAIL;
     public static String API_KEY;
-    EditText emailText;
+    public static EditText emailText;
     EditText apiKeyText;
     TextView headerTxt;
+    public static TextView menuEmailTxt;
     public static String initialLogin;
     public Toolbar toolbar;
     NavigationView navigationView;
@@ -128,6 +130,9 @@ public class MainActivity extends AppCompatActivity
 
         TextView myTitle = (TextView) toolbar.getChildAt(0);
         myTitle.setTypeface(tf);
+
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
 
 
@@ -156,12 +161,18 @@ public class MainActivity extends AppCompatActivity
 
                     // Sets drawer menuMail textview to current user mail.
                     View header = navigationView.getHeaderView(0);
-                    TextView menuEmailTxt = (TextView) header.findViewById(R.id.menuMail);
+                    menuEmailTxt = (TextView) header.findViewById(R.id.menuMail);
                     menuEmailTxt.setText(API_EMAIL);
                     dialog.dismiss();
                 }
             });
             dialog.show();
+        }
+        else
+        {
+            View header = navigationView.getHeaderView(0);
+            menuEmailTxt = (TextView) header.findViewById(R.id.menuMail);
+            menuEmailTxt.setText(API_EMAIL);
         }
 
         if (savedInstanceState == null) {
@@ -184,8 +195,6 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
         Spinner spinner = (Spinner) navigationView.getMenu().findItem(R.id.spinnerTest).getActionView();
      //   Spinner spinner = (Spinner) findViewById(R.id.spinner);

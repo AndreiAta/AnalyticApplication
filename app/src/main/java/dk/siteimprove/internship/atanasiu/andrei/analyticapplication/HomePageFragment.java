@@ -156,6 +156,7 @@ public class HomePageFragment extends Fragment
             }
             Log.i("INFO", response);
 
+
             try {
 
 
