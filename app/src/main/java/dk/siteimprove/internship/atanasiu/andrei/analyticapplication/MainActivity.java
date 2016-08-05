@@ -52,6 +52,7 @@ import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Medi
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaMonthFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaWeekFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaYearFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Traffic_Sources.TrafficSourcesFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.MainVisitsFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.VisitsFragment;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.VisitsMonthFragment;
@@ -85,7 +86,8 @@ public class MainActivity extends AppCompatActivity
         PageViewsFragment.OnFragmentInteractionListener,
         PageViewsWeekFragment.OnFragmentInteractionListener,
         PageViewsMonthFragment.OnFragmentInteractionListener,
-        PageViewsYearFragment.OnFragmentInteractionListener
+        PageViewsYearFragment.OnFragmentInteractionListener,
+        TrafficSourcesFragment.OnFragmentInteractionListener
 
 
 {
@@ -287,7 +289,7 @@ public class MainActivity extends AppCompatActivity
         }
         else if (id == R.id.trafficSources)
         {
-            //TODO Handle traffic sources request
+            fragmentClass = TrafficSourcesFragment.class;
         }
         else if (id == R.id.entryPages)
         {

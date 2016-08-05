@@ -368,9 +368,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                                 totalVisits = totalVisits + visits;
                             }
                         }
-
                     }
-
                 }
 
                 if(secondCall)
