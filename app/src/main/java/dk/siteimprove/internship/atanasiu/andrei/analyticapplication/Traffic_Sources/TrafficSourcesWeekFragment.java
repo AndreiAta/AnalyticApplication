@@ -27,6 +27,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,13 +42,14 @@ import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivit
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaFragment;
 
-public class TrafficSourcesFragment extends Fragment implements View.OnClickListener
+public class TrafficSourcesWeekFragment extends Fragment implements View.OnClickListener
 {
     HorizontalBarChart chart;
     ArrayList<BarDataSet> dataSets;
     ArrayList<String> xAxisLabels;
     ProgressBar progressBar;
     String API_URL = "";
+    String period;
     TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     TableLayout table;
     ArrayList<Integer> tableValues = new ArrayList<>();
@@ -55,13 +57,13 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
     ArrayList<BarEntry> valueSet2;
     boolean secondCall = false;
     boolean tableIsVisible = false;
-    boolean landscapeMode, apiIdSelected, madeAllApiCalls;
+    boolean landscapeMode, apiIdSelected,madeAllApiCalls;
     int visitsAmount, totalItems, xAxisPlacement, totalVisits;
     BarEntry entry;
 
     private OnFragmentInteractionListener mListener;
 
-    public TrafficSourcesFragment() { } //Required empty constructor
+    public TrafficSourcesWeekFragment() { } //Required empty constructor
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,10 +82,24 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        int dayOfWeek = new DateTime().getDayOfWeek();
+        DateTime currentDay = new DateTime();
+        String currentDate = currentDay.toString("yyyy-MM-dd");
+        currentDate = currentDate.replace("-","");
+
+        DateTime startOfWeek = new DateTime().minusDays(dayOfWeek - 1);
+        String mondayDate = startOfWeek.toString("yyyy-MM-dd");
+        mondayDate = mondayDate.replace("-","");
+        period = mondayDate + "_" + currentDate;
+
+        //Get Time Period for the Text View
+        String textDatePeriod = startOfWeek.toString("dd-MMMM") + " to " + currentDay.toString("dd-MMMM");
+        textDatePeriod = textDatePeriod.replace("-", " ");
+
         if(MainActivity.API_ID != null)
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/traffic_sources/direct_traffic_entry_pages?page=1&page_size=10&period=today";
+                    "/analytics/traffic_sources/direct_traffic_entry_pages?page=1&page_size=10&period=" + period;
             apiIdSelected = true;
         }else
         {
@@ -101,7 +117,7 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
         table = (TableLayout) rootView.findViewById(R.id.table);
 
         textViewDate.setText("0 - 0");
-        textViewInfo.setText("VISITS TODAY");
+        textViewInfo.setText("VISITS THIS WEEK");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
@@ -109,6 +125,7 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
 
         tableToggler.setOnClickListener(this);
         table.setVisibility(View.GONE);
+        textViewDate.setText(textDatePeriod);
 
         xAxisLabels = new ArrayList<>();
         dataSets = new ArrayList<>();
@@ -340,19 +357,19 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
                             if (xAxisPlacement == 0)
                             {
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
-                                        + "/analytics/traffic_sources/search_engines?page=1&page_size=10&period=yesterday";
+                                        + "/analytics/traffic_sources/search_engines?page=1&page_size=10&period=lastweek";
                                 entry = new BarEntry(visitsAmount, xAxisPlacement);
                                 valueSet2.add(entry);
                             } else if (xAxisPlacement == 1)
                             {
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
-                                        + "/analytics/traffic_sources/external_referring_domains?page=1&page_size=10&period=yesterday";
+                                        + "/analytics/traffic_sources/external_referring_domains?page=1&page_size=10&period=lastweek";
                                 entry = new BarEntry(visitsAmount, xAxisPlacement);
                                 valueSet2.add(entry);
                             } else if (xAxisPlacement == 2)
                             {
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
-                                        + "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=yesterday";
+                                        + "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=lastweek";
                                 entry = new BarEntry(visitsAmount, xAxisPlacement);
                                 valueSet2.add(entry);
                             } else if (xAxisPlacement == 3)
@@ -372,21 +389,21 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
                             if (xAxisPlacement == 0)
                             {
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
-                                        + "/analytics/traffic_sources/search_engines?page=1&page_size=10&period=today";
+                                        + "/analytics/traffic_sources/search_engines?page=1&page_size=10&period=" + period;
                                 entry = new BarEntry(visitsAmount, xAxisPlacement);
                                 valueSet1.add(entry);
                                 totalVisits = totalVisits + visitsAmount;
                             } else if (xAxisPlacement == 1)
                             {
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
-                                        + "/analytics/traffic_sources/external_referring_domains?page=1&page_size=10&period=Today";
+                                        + "/analytics/traffic_sources/external_referring_domains?page=1&page_size=10&period=" + period;
                                 entry = new BarEntry(visitsAmount, xAxisPlacement);
                                 valueSet1.add(entry);
                                 totalVisits = totalVisits + visitsAmount;
                             } else if (xAxisPlacement == 2)
                             {
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
-                                        + "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=Today";
+                                        + "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=" + period;
                                 entry = new BarEntry(visitsAmount, xAxisPlacement);
                                 valueSet1.add(entry);
                                 totalVisits = totalVisits + visitsAmount;
@@ -405,7 +422,7 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
                 {
                     if(secondCall)
                     {
-                        BarDataSet barDataSet2 = new BarDataSet(valueSet2, "YESTERDAY");
+                        BarDataSet barDataSet2 = new BarDataSet(valueSet2, "LAST WEEK");
                         barDataSet2.setColor(Color.rgb(181, 0, 97));
                         barDataSet2.setBarSpacePercent(50f);
                         dataSets.add(barDataSet2);
@@ -414,7 +431,7 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
                         secondCall = false;
                     }else
                     {
-                        BarDataSet barDataSet1 = new BarDataSet(valueSet1, "TODAY");
+                        BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS WEEK");
                         barDataSet1.setColor(Color.rgb(5, 184, 198));
                         barDataSet1.setBarSpacePercent(50f);
                         dataSets.add(barDataSet1);
@@ -429,7 +446,7 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
                             Log.i("Important", "inside the else");
                             secondCall = true;
                             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                    "/analytics/traffic_sources/direct_traffic_entry_pages?page=1&page_size=10&period=yesterday";
+                                    "/analytics/traffic_sources/direct_traffic_entry_pages?page=1&page_size=10&period=lastweek";
                             xAxisPlacement = 0;
                             madeAllApiCalls = false;
                             new RetrieveFeedTask().execute();

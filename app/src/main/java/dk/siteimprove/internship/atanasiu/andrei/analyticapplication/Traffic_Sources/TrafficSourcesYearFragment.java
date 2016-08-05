@@ -27,6 +27,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,13 +42,14 @@ import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivit
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaFragment;
 
-public class TrafficSourcesFragment extends Fragment implements View.OnClickListener
+public class TrafficSourcesYearFragment extends Fragment implements View.OnClickListener
 {
     HorizontalBarChart chart;
     ArrayList<BarDataSet> dataSets;
     ArrayList<String> xAxisLabels;
     ProgressBar progressBar;
     String API_URL = "";
+    String lastYear;
     TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     TableLayout table;
     ArrayList<Integer> tableValues = new ArrayList<>();
@@ -61,7 +63,7 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
 
     private OnFragmentInteractionListener mListener;
 
-    public TrafficSourcesFragment() { } //Required empty constructor
+    public TrafficSourcesYearFragment() { } //Required empty constructor
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,10 +82,13 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        DateTime thisYear = new DateTime().minusYears(1);
+        lastYear = thisYear.toString("yyyy");
+
         if(MainActivity.API_ID != null)
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/traffic_sources/direct_traffic_entry_pages?page=1&page_size=10&period=today";
+                    "/analytics/traffic_sources/direct_traffic_entry_pages?page=1&page_size=10&period=thisyear";
             apiIdSelected = true;
         }else
         {
@@ -101,7 +106,7 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
         table = (TableLayout) rootView.findViewById(R.id.table);
 
         textViewDate.setText("0 - 0");
-        textViewInfo.setText("VISITS TODAY");
+        textViewInfo.setText("VISITS THIS YEAR");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
@@ -109,6 +114,13 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
 
         tableToggler.setOnClickListener(this);
         table.setVisibility(View.GONE);
+
+        //Get date period for text view
+        int dayOfYear = new DateTime().getDayOfYear();
+        DateTime firstDayOfMonth = new DateTime().minusDays(dayOfYear - 1);
+        DateTime today = new DateTime();
+        String textDatePeriod = firstDayOfMonth.toString("MMMMM") + " to " + today.toString("MMMMM");
+        textViewDate.setText(textDatePeriod);
 
         xAxisLabels = new ArrayList<>();
         dataSets = new ArrayList<>();
@@ -340,19 +352,22 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
                             if (xAxisPlacement == 0)
                             {
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
-                                        + "/analytics/traffic_sources/search_engines?page=1&page_size=10&period=yesterday";
+                                        + "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
+                                        + lastYear + "0101_" + lastYear + "1231";
                                 entry = new BarEntry(visitsAmount, xAxisPlacement);
                                 valueSet2.add(entry);
                             } else if (xAxisPlacement == 1)
                             {
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
-                                        + "/analytics/traffic_sources/external_referring_domains?page=1&page_size=10&period=yesterday";
+                                        + "/analytics/traffic_sources/external_referring_domains?page=1&page_size=10&period="
+                                        + lastYear + "0101_" + lastYear + "1231";
                                 entry = new BarEntry(visitsAmount, xAxisPlacement);
                                 valueSet2.add(entry);
                             } else if (xAxisPlacement == 2)
                             {
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
-                                        + "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=yesterday";
+                                        + "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                                        + lastYear + "0101_" + lastYear + "1231";
                                 entry = new BarEntry(visitsAmount, xAxisPlacement);
                                 valueSet2.add(entry);
                             } else if (xAxisPlacement == 3)
@@ -372,21 +387,21 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
                             if (xAxisPlacement == 0)
                             {
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
-                                        + "/analytics/traffic_sources/search_engines?page=1&page_size=10&period=today";
+                                        + "/analytics/traffic_sources/search_engines?page=1&page_size=10&period=thisyear";
                                 entry = new BarEntry(visitsAmount, xAxisPlacement);
                                 valueSet1.add(entry);
                                 totalVisits = totalVisits + visitsAmount;
                             } else if (xAxisPlacement == 1)
                             {
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
-                                        + "/analytics/traffic_sources/external_referring_domains?page=1&page_size=10&period=Today";
+                                        + "/analytics/traffic_sources/external_referring_domains?page=1&page_size=10&period=thisyear";
                                 entry = new BarEntry(visitsAmount, xAxisPlacement);
                                 valueSet1.add(entry);
                                 totalVisits = totalVisits + visitsAmount;
                             } else if (xAxisPlacement == 2)
                             {
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
-                                        + "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=Today";
+                                        + "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=thisyear";
                                 entry = new BarEntry(visitsAmount, xAxisPlacement);
                                 valueSet1.add(entry);
                                 totalVisits = totalVisits + visitsAmount;
@@ -429,7 +444,8 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
                             Log.i("Important", "inside the else");
                             secondCall = true;
                             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                    "/analytics/traffic_sources/direct_traffic_entry_pages?page=1&page_size=10&period=yesterday";
+                                    "/analytics/traffic_sources/direct_traffic_entry_pages?page=1&page_size=10&period="
+                                    + lastYear + "0101_" + lastYear + "1231";
                             xAxisPlacement = 0;
                             madeAllApiCalls = false;
                             new RetrieveFeedTask().execute();

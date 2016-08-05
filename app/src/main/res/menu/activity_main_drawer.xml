@@ -23,7 +23,7 @@
             <item
                 android:id="@+id/trafficSources"
                 android:icon="@drawable/ic_keyboard_tab_white_18dp"
-                android:title="TRAFFIC SOURCES"
+                android:title="Traffic Sources"
                 android:visible="true"/>
             <item
                 android:id="@+id/entryPages"
