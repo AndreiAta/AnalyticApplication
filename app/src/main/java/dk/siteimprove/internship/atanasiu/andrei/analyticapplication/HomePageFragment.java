@@ -1,6 +1,7 @@
 package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -54,9 +55,10 @@ public class HomePageFragment extends Fragment
         siteNames.add("Select Site");
         siteIds.add("Test");
         spinner = (Spinner) rootView.findViewById(R.id.spinner1);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, siteNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), R.layout.my_spinner_item, siteNames);
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinner.setAdapter(adapter);
+        spinner.getBackground().setColorFilter(getResources().getColor(R.color.White), PorterDuff.Mode.SRC_ATOP);
         textView = (TextView) rootView.findViewById(R.id.homePageText);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
