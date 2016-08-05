@@ -108,8 +108,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        spinnerList.add("Site 1");
-        spinnerList.add("Site 2");
+        spinnerList.add("Siteimproving.com");
+        spinnerList.add("Somethingelse.dk.uk.");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FontsOverride.setDefaultFont(this, "MONOSPACE", "Helvetica.otf");
@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity
 
         Spinner spinner = (Spinner) navigationView.getMenu().findItem(R.id.spinnerTest).getActionView();
      //   Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinnerList));
+        spinner.setAdapter(new ArrayAdapter<String>(this, R.layout.my_spinner_item, spinnerList));
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             @Override

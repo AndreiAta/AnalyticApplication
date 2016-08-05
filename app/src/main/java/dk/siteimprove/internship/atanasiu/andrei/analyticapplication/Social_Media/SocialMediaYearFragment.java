@@ -361,7 +361,7 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
                             {
                                 xAxisLabels.add(organisation);
                             }
-                            tempValSet2[i] = visits;
+                            tempValSet2[xAxis.indexOf(organisation)] = visits;
                         }
                         if (i == totalSocialMedia - 1)
                         {

@@ -340,25 +340,27 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
                     xAxisLabels = new ArrayList<>();
                 }
 
-                for (int i = 0; i < totalPopPages; i++)
+                for (int i = 0; i < totalPopPages; i++) // Loop through all the items in the JSON Array
                 {
-                    Integer visits = items.getJSONObject(i).getInt("page_views");
+                    Integer pageViews = items.getJSONObject(i).getInt("page_views");
                     String title = items.getJSONObject(i).getString("title");
+                    String url = items.getJSONObject(i).getString("url");
 
-                    if (secondCall) //Last week
+                    if (secondCall) //Yesterday
                     {
 
-                        if (xAxis.contains(title))
+                        if (xAxis.contains(url)) // If the name is already in list, don't add it again.
                         {
-                            tempValSet2[xAxis.indexOf(title)] = visits;
-                        }else if(!xAxis.contains(title) && xAxis.size() < 10)
+                            tempValSet2[xAxis.indexOf(url)] = pageViews;
+                        }
+                        else if(!xAxis.contains(url) && xAxis.size() < 10) // if it isn't in list, and there is space - add it
                         {
-                            xAxis.add(title);
+                            xAxis.add(url);
                             if(title.length() > 20) { xAxisLabels.add(title.substring(0,19) + "..."); }
                             else{ xAxisLabels.add(title); }
-                            tempValSet2[i] = visits;
+                            tempValSet2[xAxis.indexOf(url)] = pageViews;
                         }
-                        if(i == totalPopPages - 1)
+                        if(i == totalPopPages - 1) // last time through the loop, move from tempArray to valueSet2.
                         {
                             for (int j = 0; j < totalPopPages; j++)
                             {
@@ -366,22 +368,22 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
                                 valueSet2.add(entry);
                             }
                         }
-                    } else //This week
+                    } else //Today
                     {
-                        if (i < 10)
+                        if (i < 10) // we only want top 10
                         {
-                            BarEntry entry = new BarEntry((float) visits, i);
+                            BarEntry entry = new BarEntry((float) pageViews, i);
                             valueSet1.add(entry);
-                            xAxis.add(title);
+                            xAxis.add(url);
                             if(title.length() > 20) { xAxisLabels.add(title.substring(0,19) + "..."); }
                             else{ xAxisLabels.add(title); }
-                            tableValues.add(visits);
-                            totalVisits = totalVisits + visits;
+                            tableValues.add(pageViews);
+                            totalVisits = totalVisits + pageViews;
                         } else
                         {
-                            if (!secondCall)
+                            if (!secondCall) // calculating the totalVisits (after top 10)
                             {
-                                totalVisits = totalVisits + visits;
+                                totalVisits = totalVisits + pageViews;
                             }
                         }
                     }
