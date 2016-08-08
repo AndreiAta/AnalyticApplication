@@ -103,6 +103,8 @@
                          android:layout_height="wrap_content"
                          android:layout_marginTop="10dp"
                          android:padding="5dp"
+                         android:divider="?android:attr/dividerHorizontal"
+                         android:showDividers="middle"
                          android:background="@color/TuataraGrey">
 
                 <TableRow

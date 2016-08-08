@@ -293,7 +293,6 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);
-        xAxis.setAdjustXLabels(false);
         xAxis.setTextColor(Color.WHITE);
         if(landscapeMode)
         {

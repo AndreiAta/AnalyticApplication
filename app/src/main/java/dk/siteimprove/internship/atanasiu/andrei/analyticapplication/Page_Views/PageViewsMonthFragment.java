@@ -259,7 +259,6 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
         chart.getLegend().setTextColor(Color.WHITE);
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setAdjustXLabels(true);
         xAxis.setTextColor(Color.WHITE);
         if(landscapeMode)
         {

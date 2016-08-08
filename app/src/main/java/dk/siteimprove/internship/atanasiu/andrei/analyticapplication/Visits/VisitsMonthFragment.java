@@ -264,7 +264,6 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
 
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setAdjustXLabels(true);
         xAxis.setTextColor(Color.WHITE);
         if(landscapeMode)
         {

@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
@@ -23,7 +24,7 @@ public class CustomMarkerViewVisits extends MarkerView
     }
 
     @Override
-    public void refreshContent(Entry e, int dataSetIndex)
+    public void refreshContent(Entry e, Highlight highlight)
     {
         tvContent.setText("" + e.getVal()); // set the entry-value as the display text
 
@@ -44,8 +45,8 @@ public class CustomMarkerViewVisits extends MarkerView
             VisitsYearFragment.textViewInfo.setText("Month " + e.getXIndex());
             VisitsYearFragment.textViewTotal.setText(e.getVal() + " Visits");
         }
-
     }
+
 
 
     @Override

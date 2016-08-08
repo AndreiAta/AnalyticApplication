@@ -289,7 +289,6 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);
-        xAxis.setAdjustXLabels(false);
         xAxis.setTextColor(Color.WHITE);
         if(landscapeMode)
         {

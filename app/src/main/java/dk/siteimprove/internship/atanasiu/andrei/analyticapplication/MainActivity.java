@@ -100,12 +100,12 @@ public class MainActivity extends AppCompatActivity
         TrafficSourcesMonthFragment.OnFragmentInteractionListener,
         TrafficSourcesYearFragment.OnFragmentInteractionListener
 
-
 {
     public static String API_ID; // Should perhaps have some getter/setter?
     public static String API_EMAIL;
     public static String API_KEY;
     public static EditText emailText;
+    public static String currentFragment;
     EditText apiKeyText;
     TextView headerTxt;
     public static TextView menuEmailTxt;
@@ -113,7 +113,6 @@ public class MainActivity extends AppCompatActivity
     public Toolbar toolbar;
     NavigationView navigationView;
     DrawerLayout drawer;
-    public static String currentFragment;
 
     ArrayList<String> spinnerList = new ArrayList<>();
 
