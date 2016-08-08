@@ -47,11 +47,12 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
 {
     HorizontalBarChart chart;
     ArrayList<BarDataSet> dataSets;
-    ArrayList<String> xAxis, xAxisLabels;
+    ArrayList<String> xAxis;
+    public static ArrayList<String> xAxisLabels;
     ProgressBar progressBar;
     String API_URL = "";
     private OnFragmentInteractionListener mListener;
-    TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
+    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     TableLayout table;
     ArrayList<Integer> tableValues = new ArrayList<>();
     ArrayList<String> tableWeekDays = new ArrayList<>();
@@ -62,6 +63,7 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
     boolean landscapeMode, apiIdSelected;
     int totalVisits, totalSocialMedia;
     int[] tempValSet2 = new int[100];
+    CustomMarkerViewSocial mv;
 
     public SocialMediaWeekFragment()
     {
@@ -86,6 +88,8 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        MainActivity.currentFragment = "Week";
+
         int dayOfWeek = new DateTime().getDayOfWeek();
         DateTime currentDay = new DateTime();
         String currentDate = currentDay.toString("yyyy-MM-dd");
@@ -118,6 +122,7 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         table = (TableLayout) rootView.findViewById(R.id.table);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
+        mv = new CustomMarkerViewSocial(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         tableToggler.setOnClickListener(this);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
@@ -255,6 +260,9 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
         chart.getLegend().setTextColor(Color.WHITE);
         chart.getAxisLeft().setDrawLabels(false);
         chart.getAxisRight().setDrawLabels(false);
+        chart.setDoubleTapToZoomEnabled(false);
+        chart.setMarkerView(mv);
+
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);

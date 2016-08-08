@@ -47,11 +47,12 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
 {
     HorizontalBarChart chart;
     ArrayList<BarDataSet> dataSets;
-    ArrayList<String> xAxis, xAxisLabels;
+    ArrayList<String> xAxis;
+    public static ArrayList<String> xAxisLabels;
     ProgressBar progressBar;
     String API_URL = "";
     private OnFragmentInteractionListener mListener;
-    TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
+    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     TableLayout table;
     ArrayList<Integer> tableValues = new ArrayList<>();
     ArrayList<BarEntry> valueSet1;
@@ -61,6 +62,8 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
     boolean landscapeMode, apiIdSelected;
     int totalVisits, totalSocialMedia;
     int[] tempValSet2 = new int[100];
+    CustomMarkerViewSocial mv;
+
 
     public SocialMediaMonthFragment()
     {
@@ -85,6 +88,8 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        MainActivity.currentFragment = "Month";
+
         if(MainActivity.API_ID != null)
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
@@ -104,6 +109,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        mv = new CustomMarkerViewSocial(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         textViewDate.setText("0 - 0");
         textViewInfo.setText("VISITS THIS MONTH");
@@ -247,6 +253,9 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         chart.getLegend().setTextColor(Color.WHITE);
         chart.getAxisLeft().setDrawLabels(false);
         chart.getAxisRight().setDrawLabels(false);
+        chart.setDoubleTapToZoomEnabled(false);
+        chart.setMarkerView(mv);
+
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);

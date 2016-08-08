@@ -65,6 +65,7 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
     ArrayList<Integer> tableValues = new ArrayList<>();
     ArrayList<String> tableWeekDays = new ArrayList<>();
     boolean tableIsVisible = false;
+    CustomMarkerViewVisits mv;
 
     public VisitsWeekFragment()
     {
@@ -125,6 +126,7 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
         textViewInfo = (TextView) rootView.findViewById(R.id.textViewInfo);
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
+        mv = new CustomMarkerViewVisits(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         tableToggler.setOnClickListener(this);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
@@ -287,7 +289,7 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
         chart.setBackgroundColor(Color.rgb(68, 68, 68));
         chart.setGridBackgroundColor(R.color.White);
         chart.getLegend().setTextColor(Color.WHITE);
-        CustomMarkerViewVisits mv = new CustomMarkerViewVisits(getActivity().getApplicationContext(), R.layout.custom_marker_view);
+        chart.setDoubleTapToZoomEnabled(false);
         chart.setMarkerView(mv);
 
         XAxis xAxis = chart.getXAxis();

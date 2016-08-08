@@ -59,6 +59,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
     TableLayout table;
     public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     int totalVisits, totalMonths;
+    CustomMarkerViewVisits mv;
 
     public VisitsYearFragment() {    }  // Required empty public constructor
 
@@ -103,6 +104,8 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
+        mv = new CustomMarkerViewVisits(getActivity().getApplicationContext(), R.layout.custom_marker_view);
+
 
         columnOne.setText("Month of Year");
         textViewInfo.setText("VISITS THIS YEAR");
@@ -259,7 +262,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
         chart.getAxisLeft().setDrawLabels(false);
         chart.getAxisRight().setDrawLabels(false);
         chart.setTouchEnabled(true);
-        CustomMarkerViewVisits mv = new CustomMarkerViewVisits(getActivity().getApplicationContext(), R.layout.custom_marker_view);
+        chart.setDoubleTapToZoomEnabled(false);
         chart.setMarkerView(mv);
 
         XAxis xAxis = chart.getXAxis();

@@ -53,11 +53,12 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
 {
     HorizontalBarChart chart;
     ArrayList<BarDataSet> dataSets;
-    ArrayList<String> xAxis, xAxisLabels;
+    ArrayList<String> xAxis;
+    public static ArrayList<String> xAxisLabels;
     ProgressBar progressBar;
     static final String API_KEY = "ebd8cdc10745831de07c286a9c6d967d";
     String API_URL = "";
-    TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
+    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     TableLayout table;
     ArrayList<Integer> tableValues = new ArrayList<>();
     ArrayList<BarEntry> valueSet1;
@@ -246,6 +247,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
         chart.getLegend().setTextColor(Color.WHITE);
         chart.getAxisLeft().setDrawLabels(false);
         chart.getAxisRight().setDrawLabels(false);
+        chart.setDoubleTapToZoomEnabled(false);
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);

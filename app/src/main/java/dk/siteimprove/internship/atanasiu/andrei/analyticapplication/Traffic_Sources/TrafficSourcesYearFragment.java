@@ -50,7 +50,7 @@ public class TrafficSourcesYearFragment extends Fragment implements View.OnClick
     ProgressBar progressBar;
     String API_URL = "";
     String lastYear;
-    TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
+    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     TableLayout table;
     ArrayList<Integer> tableValues = new ArrayList<>();
     ArrayList<BarEntry> valueSet1;
@@ -255,6 +255,7 @@ public class TrafficSourcesYearFragment extends Fragment implements View.OnClick
         chart.getLegend().setTextColor(Color.WHITE);
         chart.getAxisLeft().setDrawLabels(false);
         chart.getAxisRight().setDrawLabels(false);
+        chart.setDoubleTapToZoomEnabled(false);
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);

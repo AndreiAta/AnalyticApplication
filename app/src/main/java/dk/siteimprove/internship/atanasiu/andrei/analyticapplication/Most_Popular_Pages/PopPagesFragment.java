@@ -232,6 +232,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
         chart.getLegend().setTextColor(Color.WHITE);
         chart.getAxisLeft().setDrawLabels(false);
         chart.getAxisRight().setDrawLabels(false);
+        chart.setDoubleTapToZoomEnabled(false);
         XAxis chartXAxis = chart.getXAxis();
         chartXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         chartXAxis.setSpaceBetweenLabels(0);

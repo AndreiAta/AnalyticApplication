@@ -250,6 +250,7 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
         chart.getLegend().setTextColor(Color.WHITE);
         chart.getAxisLeft().setDrawLabels(false);
         chart.getAxisRight().setDrawLabels(false);
+        chart.setDoubleTapToZoomEnabled(false);
         XAxis chartXAxis = chart.getXAxis();
         chartXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         chartXAxis.setSpaceBetweenLabels(0);
