@@ -286,10 +286,10 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
         chart.setBackgroundColor(Color.rgb(68, 68, 68));
         chart.setGridBackgroundColor(R.color.White);
         chart.getLegend().setTextColor(Color.WHITE);
+        chart.setDoubleTapToZoomEnabled(false);
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);
-        xAxis.setAdjustXLabels(false);
         xAxis.setTextColor(Color.WHITE);
         if(landscapeMode)
         {

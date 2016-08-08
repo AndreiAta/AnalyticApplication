@@ -257,6 +257,7 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
         chart.getAxisLeft().setDrawLabels(false);
         chart.getAxisRight().setDrawLabels(false);
         chart.setTouchEnabled(true);
+        chart.setDoubleTapToZoomEnabled(false);
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);

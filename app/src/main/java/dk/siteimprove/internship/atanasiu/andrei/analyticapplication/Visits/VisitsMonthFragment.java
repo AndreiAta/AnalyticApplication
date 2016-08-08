@@ -61,6 +61,8 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
     boolean tableIsVisible = false;
     boolean secondCall = false;
     int totalDays;
+    CustomMarkerViewVisits mv;
+
 
     public VisitsMonthFragment()
     {
@@ -104,6 +106,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
+        mv = new CustomMarkerViewVisits(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         columnOne.setText("Day of Month");
         textViewInfo.setText("VISITS THIS MONTH");
@@ -259,12 +262,11 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         chart.setBackgroundColor(Color.rgb(68, 68, 68));
         chart.setGridBackgroundColor(R.color.White);
         chart.getLegend().setTextColor(Color.WHITE);
-        CustomMarkerViewVisits mv = new CustomMarkerViewVisits(getActivity().getApplicationContext(), R.layout.custom_marker_view);
+        chart.setDoubleTapToZoomEnabled(false);
         chart.setMarkerView(mv);
 
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setAdjustXLabels(true);
         xAxis.setTextColor(Color.WHITE);
         if(landscapeMode)
         {

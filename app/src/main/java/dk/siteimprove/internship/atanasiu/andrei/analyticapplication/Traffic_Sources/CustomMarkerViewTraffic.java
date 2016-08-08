@@ -1,24 +1,20 @@
-package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
+package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Traffic_Sources;
 
-import android.app.Activity;
+
 import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 
-import static dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R.id.textViewInfo;
-
-public class CustomMarkerView extends MarkerView
+public class CustomMarkerViewTraffic extends MarkerView
 {
-
     private TextView tvContent;
 
-    public CustomMarkerView (Context context, int layoutResource) {
+    public CustomMarkerViewTraffic (Context context, int layoutResource) {
         super(context, layoutResource);
         // this markerView only displays a textView
         tvContent = (TextView) findViewById(R.id.tvContent);
@@ -29,20 +25,6 @@ public class CustomMarkerView extends MarkerView
     public void refreshContent(Entry e, Highlight highlight)
     {
         tvContent.setText("" + e.getVal()); // set the entry-value as the display text
-
-        if(MainActivity.currentFragment.equals("Today"))
-        {
-
-        }else if(MainActivity.currentFragment.equals("Week"))
-        {
-
-        }else if(MainActivity.currentFragment.equals("Month"))
-        {
-
-        }else  if(MainActivity.currentFragment.equals("Year"))
-        {
-
-        }
 
     }
 
