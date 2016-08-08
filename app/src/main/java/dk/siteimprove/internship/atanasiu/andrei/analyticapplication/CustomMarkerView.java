@@ -13,7 +13,7 @@ public class CustomMarkerView extends MarkerView
 {
 
     private TextView tvContent;
-    public CustomMarkerView (Context context, int layoutResource) {
+    public CustomMarkerView(Context context, int layoutResource) {
         super(context, layoutResource);
         // this markerview only displays a textview
         tvContent = (TextView) findViewById(R.id.tvContent);
