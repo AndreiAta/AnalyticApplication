@@ -13,7 +13,7 @@
                      android:top="15dp"
                      android:right="10dp"
                      android:bottom="15dp" />
-            <stroke android:width="2dp" android:color="@color/JavaBlue" /><!--Tab Indicator Color -->
+            <stroke android:width="2dp" android:color="@color/MineshaftGrey" /><!--Tab Indicator Color -->
             <solid android:color="@color/MineshaftGrey" /><!--Background Color -->
 
         </shape>

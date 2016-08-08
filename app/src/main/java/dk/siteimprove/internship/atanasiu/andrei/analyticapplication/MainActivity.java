@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity
     public Toolbar toolbar;
     NavigationView navigationView;
     DrawerLayout drawer;
+    public static String currentFragment;
 
     ArrayList<String> spinnerList = new ArrayList<>();
 

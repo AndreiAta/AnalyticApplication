@@ -53,7 +53,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
     private OnFragmentInteractionListener mListener;
     Integer totalMonthDays = 0, totalVisits;
     boolean landscapeMode;
-    TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
+    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     boolean apiIdSelected;
     TableLayout table;
     ArrayList<Integer> tableValues = new ArrayList<>();
@@ -86,6 +86,8 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        MainActivity.currentFragment = "Month";
+
         if(MainActivity.API_ID != null)
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
@@ -257,6 +259,9 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         chart.setBackgroundColor(Color.rgb(68, 68, 68));
         chart.setGridBackgroundColor(R.color.White);
         chart.getLegend().setTextColor(Color.WHITE);
+        CustomMarkerViewVisits mv = new CustomMarkerViewVisits(getActivity().getApplicationContext(), R.layout.custom_marker_view);
+        chart.setMarkerView(mv);
+
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setAdjustXLabels(true);

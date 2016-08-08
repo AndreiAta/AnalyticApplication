@@ -81,6 +81,8 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
                              Bundle savedInstanceState)
     {
         totalVisits = 0;
+        MainActivity.currentFragment = "Today";
+
         if(!MainActivity.API_ID.equalsIgnoreCase("test"))
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
@@ -98,6 +100,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
+
 
         textViewDate.setText("0 - 0");
         textViewInfo.setText("VISITS TODAY");
@@ -153,6 +156,12 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
             tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_36dp), null);
         }
+    }
+
+    public void setMarkers(String value, String value2)
+    {
+        textViewInfo.setText(value);
+        textViewTotal.setText(value2);
     }
 
     public void createTable()
@@ -251,7 +260,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         chart.getAxisLeft().setDrawLabels(false);
         chart.getAxisRight().setDrawLabels(false);
         chart.setTouchEnabled(true);
-        CustomMarkerView mv = new CustomMarkerView(getActivity().getApplicationContext(), R.layout.custom_marker_view);
+        CustomMarkerViewVisits mv = new CustomMarkerViewVisits(getActivity().getApplicationContext(), R.layout.custom_marker_view);
         chart.setMarkerView(mv);
 
         XAxis xAxis = chart.getXAxis();
