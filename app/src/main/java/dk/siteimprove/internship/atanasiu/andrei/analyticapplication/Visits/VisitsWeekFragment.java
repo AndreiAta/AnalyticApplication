@@ -59,7 +59,7 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
     DateTime startOfWeek;
     String lastSunday;
     boolean landscapeMode;
-    TextView textViewDate, textViewInfo, textViewTotal, tableToggler;
+    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler;
     boolean apiIdSelected;
     TableLayout table;
     ArrayList<Integer> tableValues = new ArrayList<>();
@@ -90,6 +90,8 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        MainActivity.currentFragment = "Week";
+
         //Get time period for the API Call
         dayOfWeek = new DateTime().getDayOfWeek();
         DateTime currentDay = new DateTime();
@@ -285,6 +287,9 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
         chart.setBackgroundColor(Color.rgb(68, 68, 68));
         chart.setGridBackgroundColor(R.color.White);
         chart.getLegend().setTextColor(Color.WHITE);
+        CustomMarkerViewVisits mv = new CustomMarkerViewVisits(getActivity().getApplicationContext(), R.layout.custom_marker_view);
+        chart.setMarkerView(mv);
+
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);

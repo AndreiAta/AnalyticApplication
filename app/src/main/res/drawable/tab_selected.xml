@@ -13,7 +13,7 @@
                      android:top="15dp"
                      android:right="10dp"
                      android:bottom="15dp" />
-            <stroke android:width="6dp" android:color="@color/JavaBlue" />
+            <stroke android:width="2dp" android:color="@color/JavaBlue" />
             <solid android:color="@color/MineshaftGrey" />
         </shape>
     </item>

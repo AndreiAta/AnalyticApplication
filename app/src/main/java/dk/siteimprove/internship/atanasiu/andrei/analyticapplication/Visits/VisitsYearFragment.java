@@ -57,7 +57,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
     String API_URL = "";
     String lastYear;
     TableLayout table;
-    TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
+    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     int totalVisits, totalMonths;
 
     public VisitsYearFragment() {    }  // Required empty public constructor
@@ -80,6 +80,8 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        MainActivity.currentFragment = "Year";
+
         DateTime thisYear = new DateTime().minusYears(1);
         lastYear = thisYear.toString("yyyy");
 
@@ -257,6 +259,9 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
         chart.getAxisLeft().setDrawLabels(false);
         chart.getAxisRight().setDrawLabels(false);
         chart.setTouchEnabled(true);
+        CustomMarkerViewVisits mv = new CustomMarkerViewVisits(getActivity().getApplicationContext(), R.layout.custom_marker_view);
+        chart.setMarkerView(mv);
+
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);
