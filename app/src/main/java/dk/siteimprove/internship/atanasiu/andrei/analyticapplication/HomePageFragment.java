@@ -15,6 +15,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -154,7 +156,7 @@ public class HomePageFragment extends Fragment
             if(response == null) {
                 response = "THERE WAS AN ERROR";
             }
-            Log.i("INFO", response);
+            Log.i("IMPORTANT", response);
 
 
             try {
@@ -176,12 +178,12 @@ public class HomePageFragment extends Fragment
 
             } catch (JSONException e) {
                 e.printStackTrace();
+            }catch (ClassCastException ce)
+            {
+                Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
             }
-
         }
     }
-
-
 
 
 }

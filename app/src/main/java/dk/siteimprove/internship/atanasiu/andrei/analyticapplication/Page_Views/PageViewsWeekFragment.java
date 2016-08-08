@@ -59,12 +59,13 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
     DateTime startOfWeek;
     String lastSunday;
     boolean landscapeMode;
-    TextView textViewDate, textViewInfo, textViewTotal, tableToggler;
+    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler;
     boolean apiIdSelected;
     TableLayout table;
     ArrayList<Integer> tableValues = new ArrayList<>();
     ArrayList<String> tableWeekDays = new ArrayList<>();
     boolean tableIsVisible = false;
+    CustomMarkerViewPage mv;
 
     public PageViewsWeekFragment()
     {
@@ -90,6 +91,8 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        MainActivity.currentFragment = "Week";
+
         //Get time period for the API Call
         dayOfWeek = new DateTime().getDayOfWeek();
         DateTime currentDay = new DateTime();
@@ -123,6 +126,7 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
         textViewInfo = (TextView) rootView.findViewById(R.id.textViewInfo);
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
+        mv = new CustomMarkerViewPage(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         tableToggler.setOnClickListener(this);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
@@ -287,6 +291,7 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
         chart.setGridBackgroundColor(R.color.White);
         chart.getLegend().setTextColor(Color.WHITE);
         chart.setDoubleTapToZoomEnabled(false);
+        chart.setMarkerView(mv);
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);

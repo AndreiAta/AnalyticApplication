@@ -46,7 +46,7 @@ public class TrafficSourcesWeekFragment extends Fragment implements View.OnClick
 {
     HorizontalBarChart chart;
     ArrayList<BarDataSet> dataSets;
-    ArrayList<String> xAxisLabels;
+    public static ArrayList<String> xAxisLabels;
     ProgressBar progressBar;
     String API_URL = "";
     String period;
@@ -60,6 +60,7 @@ public class TrafficSourcesWeekFragment extends Fragment implements View.OnClick
     boolean landscapeMode, apiIdSelected,madeAllApiCalls;
     int visitsAmount, totalItems, xAxisPlacement, totalVisits;
     BarEntry entry;
+    CustomMarkerViewTraffic mv;
 
     private OnFragmentInteractionListener mListener;
 
@@ -82,6 +83,8 @@ public class TrafficSourcesWeekFragment extends Fragment implements View.OnClick
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        MainActivity.currentFragment = "Week";
+
         int dayOfWeek = new DateTime().getDayOfWeek();
         DateTime currentDay = new DateTime();
         String currentDate = currentDay.toString("yyyy-MM-dd");
@@ -115,6 +118,7 @@ public class TrafficSourcesWeekFragment extends Fragment implements View.OnClick
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        mv = new CustomMarkerViewTraffic(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         textViewDate.setText("0 - 0");
         textViewInfo.setText("VISITS THIS WEEK");
@@ -261,6 +265,7 @@ public class TrafficSourcesWeekFragment extends Fragment implements View.OnClick
         chart.getAxisLeft().setDrawLabels(false);
         chart.getAxisRight().setDrawLabels(false);
         chart.setDoubleTapToZoomEnabled(false);
+        chart.setMarkerView(mv);
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);

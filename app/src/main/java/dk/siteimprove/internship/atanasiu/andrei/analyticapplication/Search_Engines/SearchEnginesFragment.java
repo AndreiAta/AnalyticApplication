@@ -68,6 +68,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
     boolean landscapeMode, apiIdSelected;
     int totalVisits, totalSearchEngines;
     int[] tempValSet2 = new int[100];
+    CustomMarkerViewSearch mv;
 
     private OnFragmentInteractionListener mListener;
 
@@ -91,6 +92,8 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        MainActivity.currentFragment = "Today";
+
         if(MainActivity.API_ID != null)
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
@@ -109,6 +112,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        mv = new CustomMarkerViewSearch(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         textViewDate.setText("0 - 0");
         textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS TODAY");
@@ -248,6 +252,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
         chart.getAxisLeft().setDrawLabels(false);
         chart.getAxisRight().setDrawLabels(false);
         chart.setDoubleTapToZoomEnabled(false);
+        chart.setMarkerView(mv);
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);

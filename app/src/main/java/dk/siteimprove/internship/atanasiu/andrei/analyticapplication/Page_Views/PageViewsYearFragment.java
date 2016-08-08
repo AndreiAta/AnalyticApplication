@@ -57,8 +57,9 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
     String API_URL = "";
     String lastYear;
     TableLayout table;
-    TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
+    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     int totalVisits, totalMonths;
+    CustomMarkerViewPage mv;
 
     public PageViewsYearFragment() {    }  // Required empty public constructor
 
@@ -80,6 +81,8 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        MainActivity.currentFragment = "Year";
+
         DateTime thisYear = new DateTime().minusYears(1);
         lastYear = thisYear.toString("yyyy");
 
@@ -101,6 +104,7 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
+        mv = new CustomMarkerViewPage(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         columnOne.setText("Month of Year");
         textViewInfo.setText("PAGE VIEWS THIS YEAR");
@@ -258,6 +262,7 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
         chart.getAxisRight().setDrawLabels(false);
         chart.setTouchEnabled(true);
         chart.setDoubleTapToZoomEnabled(false);
+        chart.setMarkerView(mv);
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);

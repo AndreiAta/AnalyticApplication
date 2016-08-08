@@ -68,6 +68,7 @@ public class SearchEnginesMonthFragment extends Fragment implements View.OnClick
     boolean landscapeMode, apiIdSelected;
     int totalVisits, totalSearchEngines;
     int[] tempValSet2 = new int[100];
+    CustomMarkerViewSearch mv;
 
     private OnFragmentInteractionListener mListener;
 
@@ -91,6 +92,7 @@ public class SearchEnginesMonthFragment extends Fragment implements View.OnClick
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        MainActivity.currentFragment = "Month";
 
         if(MainActivity.API_ID != null)
         {
@@ -110,6 +112,7 @@ public class SearchEnginesMonthFragment extends Fragment implements View.OnClick
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        mv = new CustomMarkerViewSearch(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         textViewDate.setText("0 - 0");
         textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS THIS MONTH");
@@ -255,6 +258,7 @@ public class SearchEnginesMonthFragment extends Fragment implements View.OnClick
         chart.getAxisLeft().setDrawLabels(false);
         chart.getAxisRight().setDrawLabels(false);
         chart.setDoubleTapToZoomEnabled(false);
+        chart.setMarkerView(mv);
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);

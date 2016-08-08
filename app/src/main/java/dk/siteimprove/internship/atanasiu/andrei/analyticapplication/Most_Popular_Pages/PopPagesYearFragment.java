@@ -51,15 +51,16 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
     int totalVisits, totalPopPages;
     ArrayList<BarEntry> valueSet1, valueSet2;
     ArrayList<BarDataSet> dataSets;
-    ArrayList<String> xAxis, xAxisLabels;
+    public static ArrayList<String> xAxis, xAxisLabels;
     ArrayList<Integer> tableValues = new ArrayList<>();
     int[] tempValSet2 = new int[100]; // This should be instantiated in RetriveFeedTask or simply use ArrayList instead?
     String lastYear;
 
     HorizontalBarChart chart;
     ProgressBar progressBar;
-    TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne, columnTwo;
+    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne, columnTwo;
     TableLayout table;
+    CustomMarkerViewPopular mv;
     private OnFragmentInteractionListener mListener;
 
     public PopPagesYearFragment() { } //Required empty constructor
@@ -81,6 +82,8 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        MainActivity.currentFragment = "Year";
+
         if(MainActivity.API_ID != null)
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
@@ -101,6 +104,7 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         columnTwo = (TextView) rootView.findViewById(R.id.columnTwo);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        mv = new CustomMarkerViewPopular(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         textViewInfo.setText("PAGE VIEWS THIS YEAR");
         tableToggler.setGravity(Gravity.LEFT);
@@ -244,6 +248,7 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
         chart.getAxisLeft().setDrawLabels(false);
         chart.getAxisRight().setDrawLabels(false);
         chart.setDoubleTapToZoomEnabled(false);
+        chart.setMarkerView(mv);
         XAxis chartXAxis = chart.getXAxis();
         chartXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         chartXAxis.setSpaceBetweenLabels(0);

@@ -68,6 +68,7 @@ public class SearchEnginesWeekFragment extends Fragment implements View.OnClickL
     boolean landscapeMode, apiIdSelected;
     int totalVisits, totalSearchEngines;
     int[] tempValSet2 = new int[100];
+    CustomMarkerViewSearch mv;
 
     private OnFragmentInteractionListener mListener;
 
@@ -91,6 +92,8 @@ public class SearchEnginesWeekFragment extends Fragment implements View.OnClickL
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        MainActivity.currentFragment = "Week";
+
         int dayOfWeek = new DateTime().getDayOfWeek();
         DateTime currentDay = new DateTime();
         String currentDate = currentDay.toString("yyyy-MM-dd");
@@ -123,6 +126,7 @@ public class SearchEnginesWeekFragment extends Fragment implements View.OnClickL
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        mv = new CustomMarkerViewSearch(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         textViewDate.setText(textDatePeriod);
         textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS THIS WEEK");
@@ -262,6 +266,7 @@ public class SearchEnginesWeekFragment extends Fragment implements View.OnClickL
         chart.getAxisLeft().setDrawLabels(false);
         chart.getAxisRight().setDrawLabels(false);
         chart.setDoubleTapToZoomEnabled(false);
+        chart.setMarkerView(mv);
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);

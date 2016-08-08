@@ -7,7 +7,9 @@ import android.widget.TextView;
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.utils.Utils;
 
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 
 public class CustomMarkerViewTraffic extends MarkerView
@@ -24,7 +26,28 @@ public class CustomMarkerViewTraffic extends MarkerView
     @Override
     public void refreshContent(Entry e, Highlight highlight)
     {
-        tvContent.setText("" + e.getVal()); // set the entry-value as the display text
+        tvContent.setText("" + Utils.formatNumber(e.getVal(), 0, true)); // set the entry-value as the display text
+
+        if(MainActivity.currentFragment.equals("Today"))
+        {
+            TrafficSourcesFragment.textViewInfo.setText("" + TrafficSourcesFragment.xAxisLabels.get(e.getXIndex()));
+            TrafficSourcesFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+        }else if(MainActivity.currentFragment.equals("Week"))
+        {
+            TrafficSourcesWeekFragment.textViewInfo.setText("" + TrafficSourcesWeekFragment.xAxisLabels.get(e.getXIndex()));
+            TrafficSourcesWeekFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+
+        }else if(MainActivity.currentFragment.equals("Month"))
+        {
+            TrafficSourcesMonthFragment.textViewInfo.setText("" + TrafficSourcesMonthFragment.xAxisLabels.get(e.getXIndex()));
+            TrafficSourcesMonthFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+
+        }else  if(MainActivity.currentFragment.equals("Year"))
+        {
+            TrafficSourcesYearFragment.textViewInfo.setText("" + TrafficSourcesYearFragment.xAxisLabels.get(e.getXIndex()));
+            TrafficSourcesYearFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+
+        }
 
     }
 
