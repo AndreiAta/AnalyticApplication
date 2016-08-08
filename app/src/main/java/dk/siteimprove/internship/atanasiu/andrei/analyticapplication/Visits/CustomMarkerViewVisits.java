@@ -48,8 +48,8 @@ public class CustomMarkerViewVisits extends MarkerView
             VisitsYearFragment.textViewInfo.setText("Month " + (e.getXIndex() + 1));
             VisitsYearFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
         }
-
     }
+
 
 
     @Override

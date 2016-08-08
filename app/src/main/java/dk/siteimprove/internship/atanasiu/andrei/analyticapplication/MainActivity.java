@@ -2,6 +2,7 @@ package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 
 
 import android.app.Dialog;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -14,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -98,12 +100,12 @@ public class MainActivity extends AppCompatActivity
         TrafficSourcesMonthFragment.OnFragmentInteractionListener,
         TrafficSourcesYearFragment.OnFragmentInteractionListener
 
-
 {
     public static String API_ID; // Should perhaps have some getter/setter?
     public static String API_EMAIL;
     public static String API_KEY;
     public static EditText emailText;
+    public static String currentFragment;
     EditText apiKeyText;
     TextView headerTxt;
     public static TextView menuEmailTxt;
@@ -111,7 +113,6 @@ public class MainActivity extends AppCompatActivity
     public Toolbar toolbar;
     NavigationView navigationView;
     DrawerLayout drawer;
-    public static String currentFragment;
 
     ArrayList<String> spinnerList = new ArrayList<>();
 

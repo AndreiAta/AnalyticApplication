@@ -262,7 +262,6 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         chart.setTouchEnabled(true);
         chart.setDoubleTapToZoomEnabled(false);
         chart.setMarkerView(mv);
-
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);

@@ -49,7 +49,7 @@
                     android:gravity="left|center"
                     android:layout_gravity="center_horizontal"
                     android:textColorHint="@color/White"
-                    />
+                    android:inputType="textEmailAddress"/>
 
                 <EditText
                     android:layout_width="340dp"
