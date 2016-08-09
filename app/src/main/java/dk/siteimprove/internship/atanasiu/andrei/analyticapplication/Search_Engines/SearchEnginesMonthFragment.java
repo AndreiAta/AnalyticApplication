@@ -96,7 +96,7 @@ public class SearchEnginesMonthFragment extends Fragment implements View.OnClick
     {
         MainActivity.currentFragment = "Month";
 
-        if(MainActivity.API_ID != null)
+        if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/traffic_sources/search_engines?page=1&page_size=10&period=thismonth";

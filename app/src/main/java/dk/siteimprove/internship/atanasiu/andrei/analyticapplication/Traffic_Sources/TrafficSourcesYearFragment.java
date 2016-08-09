@@ -90,7 +90,7 @@ public class TrafficSourcesYearFragment extends Fragment implements View.OnClick
         DateTime thisYear = new DateTime().minusYears(1);
         lastYear = thisYear.toString("yyyy");
 
-        if(MainActivity.API_ID != null)
+        if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/traffic_sources/direct_traffic_entry_pages?page=1&page_size=10&period=thisyear";

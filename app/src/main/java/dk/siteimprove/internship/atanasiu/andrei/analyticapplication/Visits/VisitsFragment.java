@@ -85,7 +85,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         totalVisits = 0;
         MainActivity.currentFragment = "Today";
 
-        if(!MainActivity.API_ID.equalsIgnoreCase("test"))
+        if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/behavior/visits_by_hour?page=1&page_size=10&period=Today";
