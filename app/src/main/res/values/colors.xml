@@ -14,5 +14,6 @@
     <color name="JasperRed">#dc4242</color>
     <color name="OnyxBlack">#222222</color>
     <color name="BrandyPunchOrange">#da800c</color>
+    <color name="Alert">#ff0000</color>
 
 </resources>

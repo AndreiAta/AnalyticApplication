@@ -62,6 +62,17 @@
                     android:textColorHint="@color/White"
                     android:gravity="left|center"/>
 
+                <TextView
+                    android:layout_width="330dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text=""
+                    android:gravity="left|center"
+                    android:textColor="@color/Alert"
+                    android:width="200dp"
+                    android:id="@+id/loginAlert"
+                    android:layout_gravity="center_horizontal"/>
+
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -70,6 +81,7 @@
                     android:id="@+id/testText"
                     android:visibility="gone"
                     android:layout_gravity="center_horizontal"/>
+
             </LinearLayout>
 
             <Button android:id="@+id/Button01"
@@ -83,6 +95,7 @@
                     android:layout_marginEnd="41dp"
                     android:layout_centerVertical="true"
                     android:layout_alignParentEnd="true"/>
+
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>
