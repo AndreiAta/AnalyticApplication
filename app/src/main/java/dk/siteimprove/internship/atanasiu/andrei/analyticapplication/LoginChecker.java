@@ -4,6 +4,7 @@ package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,6 +18,7 @@ import java.net.URL;
 
 public class LoginChecker extends AsyncTask<Void, Void, String>
 {
+    final String API_URL = "https://api.siteimprove.com/v2/sites";
 
     private Exception exception;
 
@@ -58,30 +60,35 @@ public class LoginChecker extends AsyncTask<Void, Void, String>
     {
         if(response == null) {
             response = "THERE WAS AN ERROR";
+            MainActivity.loginAlert.setText("Login Failed - Email & Key doesn't match");
+        }
+        else
+        {
+            try {
+                JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
+                JSONArray items = object.getJSONArray("items");
+                for(int i = 0; i < items.length(); i++)
+                {
+                    String site_name = items.getJSONObject(i).getString("site_name");
+                    Integer id = items.getJSONObject(i).getInt("id");
+                }
+
+                // Login is a sucess?
+                MainActivity.initialLogin = "Logged in!";
+                MainActivity.dialog.dismiss();
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (ClassCastException ce){
+                // Handle No Login -- or response?
+                MainActivity.loginAlert.setText("Login Failed - ClassCastException");
+            }
         }
         Log.i("INFO", response);
 
 
-        try {
 
 
-            JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
-            JSONArray items = object.getJSONArray("items");
-            for(int i = 0; i < items.length(); i++)
-            {
-                String site_name = items.getJSONObject(i).getString("site_name");
-                Integer id = items.getJSONObject(i).getInt("id");
-
-                siteNames.add(site_name);
-                siteIds.add(id.toString());
-
-            }
-
-            spinner.setSelection(1);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
     }
 }

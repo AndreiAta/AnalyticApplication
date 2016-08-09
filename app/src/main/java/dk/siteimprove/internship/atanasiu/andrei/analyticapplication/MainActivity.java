@@ -2,8 +2,11 @@ package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 
 
 import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -105,11 +108,13 @@ public class MainActivity extends AppCompatActivity
     public static String API_EMAIL;
     public static String API_KEY;
     public static EditText emailText;
+    public static String totalString;
     public static String currentFragment;
     EditText apiKeyText;
-    TextView headerTxt;
+    public static TextView headerTxt, loginAlert;
     public static TextView menuEmailTxt;
     public static String initialLogin;
+    public static Dialog dialog;
     public Toolbar toolbar;
     NavigationView navigationView;
     DrawerLayout drawer;
@@ -136,17 +141,17 @@ public class MainActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
-
         if (initialLogin == null)
         {
-            final Dialog dialog = new Dialog(this,R.style.full_screen_dialog);
+
+            dialog = new Dialog(this,R.style.full_screen_dialog);
             dialog.setContentView(R.layout.popup);
             dialog.setCancelable(false);
 
             emailText = (EditText) dialog.findViewById(R.id.emailTextField);
             apiKeyText = (EditText) dialog.findViewById(R.id.apiKeyTextField);
             headerTxt = (TextView) dialog.findViewById(R.id.headerTxt);
+            loginAlert = (TextView) dialog.findViewById(R.id.loginAlert);
             Button button = (Button) dialog.findViewById(R.id.Button01);
 
             readFromFile();
@@ -155,17 +160,30 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onClick(View view)
                 {
-                    initialLogin = "Logged in";
-                    API_EMAIL = emailText.getText().toString();
-                    API_KEY = apiKeyText.getText().toString();
-                    String totalString = API_EMAIL + "=-==-" + API_KEY;
-                    writeToFile(totalString);
+                    //initialLogin = "Logged in";
+                    loginAlert.setText("");
+                    if(haveNetworkConnection())
+                    {
+                        final LoginChecker lc = new LoginChecker();
+                        lc.execute();
+                        API_EMAIL = emailText.getText().toString();
+                        API_KEY = apiKeyText.getText().toString();
+                        totalString = API_EMAIL + "=-==-" + API_KEY; // Middle string is used to split, in read method.
+                        writeToFile(totalString);
 
-                    // Sets drawer menuMail textview to current user mail.
-                    View header = navigationView.getHeaderView(0);
-                    menuEmailTxt = (TextView) header.findViewById(R.id.menuMail);
-                    menuEmailTxt.setText(API_EMAIL);
-                    dialog.dismiss();
+                        // Sets drawer menuMail textview to current user mail.
+                        View header = navigationView.getHeaderView(0);
+                        menuEmailTxt = (TextView) header.findViewById(R.id.menuMail);
+                        menuEmailTxt.setText(API_EMAIL);
+                        new HomePageFragment();
+                        //dialog.dismiss();
+                    }
+                    else
+                    {
+                        Toast.makeText(getApplicationContext(), "YOU HAVE NO INTERNET!", Toast.LENGTH_SHORT).show();
+                        loginAlert.setText("Login Failed - No Internet");
+                    }
+
                 }
             });
             dialog.show();
@@ -335,7 +353,8 @@ public class MainActivity extends AppCompatActivity
         }
         try {
             fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
         }
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -347,8 +366,24 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onFragmentInteraction(Uri uri) {}
 
+    public boolean haveNetworkConnection()
+    {
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
+
+        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                if (ni.isConnected())
+                    haveConnectedWifi = true;
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (ni.isConnected())
+                    haveConnectedMobile = true;
+        }
+        return haveConnectedWifi || haveConnectedMobile;
     }
 
 }

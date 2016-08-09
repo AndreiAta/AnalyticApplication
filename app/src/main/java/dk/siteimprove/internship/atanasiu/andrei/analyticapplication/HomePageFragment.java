@@ -2,6 +2,8 @@ package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,6 +17,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,7 +54,15 @@ public class HomePageFragment extends Fragment
     {
         getActivity().setTitle("Choose Site");
         View rootView = inflater.inflate(R.layout.fragment_home_page, container, false);
-        new RetrieveFeedTask().execute();
+        if(haveNetworkConnection())
+        {
+            new RetrieveFeedTask().execute();
+        }
+        else
+        {
+            Toast.makeText(getActivity().getApplicationContext(), "YOU HAVE NO INTERNET!", Toast.LENGTH_SHORT).show();
+        }
+
 
         siteNames.add("Select Site");
         siteIds.add("Test");
@@ -110,6 +122,27 @@ public class HomePageFragment extends Fragment
         void onFragmentInteraction(Uri uri);
     }
 
+    public boolean haveNetworkConnection()
+    {
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
+
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                if (ni.isConnected())
+                    haveConnectedWifi = true;
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (ni.isConnected())
+                    haveConnectedMobile = true;
+        }
+        return haveConnectedWifi || haveConnectedMobile;
+    }
+
+    //===================================
+    //          INTERNAL CLASS
+    //===================================
     class RetrieveFeedTask extends AsyncTask<Void, Void, String>
     {
 
@@ -154,7 +187,7 @@ public class HomePageFragment extends Fragment
             if(response == null) {
                 response = "THERE WAS AN ERROR";
             }
-            Log.i("INFO", response);
+            Log.i("INFOXX", response);
 
 
             try {
@@ -176,6 +209,8 @@ public class HomePageFragment extends Fragment
 
             } catch (JSONException e) {
                 e.printStackTrace();
+            }catch (ClassCastException ce){
+                Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
             }
 
         }
