@@ -95,7 +95,7 @@ public class PopPagesMonthFragment extends Fragment implements View.OnClickListe
             apiIdSelected = false;
         }
 
-        View rootView = inflater.inflate(R.layout.fragment_popular_pages, container, false);// Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_barchart, container, false);// Inflate the layout for this fragment
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);
         textViewDate = (TextView) rootView.findViewById(R.id.textViewDate);

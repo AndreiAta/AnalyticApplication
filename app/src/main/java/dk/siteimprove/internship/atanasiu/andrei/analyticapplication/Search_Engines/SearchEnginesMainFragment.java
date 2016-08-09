@@ -51,7 +51,7 @@ public class SearchEnginesMainFragment extends Fragment
     {
         getActivity().setTitle("Search Engines");
         mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), getChildFragmentManager(), R.layout.fragment_search_engines_main);
+        mTabHost.setup(getActivity(), getChildFragmentManager(), R.layout.fragment_main);
 
         Bundle arg1 = new Bundle();
         arg1.putInt("Arg for Frag1", 1);

@@ -105,7 +105,7 @@ public class SearchEnginesMonthFragment extends Fragment implements View.OnClick
         {
             apiIdSelected = false;
         }
-        View rootView = inflater.inflate(R.layout.fragment_search_engines, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_barchart, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);
         textViewDate = (TextView) rootView.findViewById(R.id.textViewDate);

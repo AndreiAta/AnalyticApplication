@@ -52,11 +52,11 @@ public class TrafficSourcesMainFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        rootView = inflater.inflate(R.layout.fragment_traffic_sources_main, container, false);
+        rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         getActivity().setTitle("Traffic Sources");
         mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), getChildFragmentManager(), R.layout.fragment_traffic_sources_main);
+        mTabHost.setup(getActivity(), getChildFragmentManager(), R.layout.fragment_main);
 
         Bundle arg1 = new Bundle();
         arg1.putInt("Arg for Frag1", 1);
