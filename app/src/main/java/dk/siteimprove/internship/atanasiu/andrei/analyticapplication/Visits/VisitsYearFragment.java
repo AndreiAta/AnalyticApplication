@@ -86,7 +86,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
         DateTime thisYear = new DateTime().minusYears(1);
         lastYear = thisYear.toString("yyyy");
 
-        if(!MainActivity.API_ID.equalsIgnoreCase("test")) //Check if the user has selected a website
+        if(!MainActivity.API_ID.equalsIgnoreCase("")) //Check if the user has selected a website
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/overview/history?period=thisyear";

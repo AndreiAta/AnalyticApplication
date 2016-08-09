@@ -33,7 +33,6 @@ public class HomePageFragment extends Fragment
 {
     public TextView textView;
     Spinner spinner;
-    static final String API_KEY = "ebd8cdc10745831de07c286a9c6d967d";
     static final String API_URL = "https://api.siteimprove.com/v2/sites";
     ArrayList<String> siteNames = new ArrayList<>();
     ArrayList<String> siteIds = new ArrayList<>();
@@ -60,12 +59,12 @@ public class HomePageFragment extends Fragment
         }
         else
         {
-            Toast.makeText(getActivity().getApplicationContext(), "YOU HAVE NO INTERNET!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity().getApplicationContext(), "YOU HAVE NO INTERNET", Toast.LENGTH_SHORT).show();
         }
 
 
         siteNames.add("Select Site");
-        siteIds.add("Test");
+        siteIds.add("");
         spinner = (Spinner) rootView.findViewById(R.id.spinner1);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), R.layout.my_spinner_item, siteNames);
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);

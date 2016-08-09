@@ -110,7 +110,7 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
         textDatePeriod = textDatePeriod.replace("-", " ");
 
 
-        if(!MainActivity.API_ID.equalsIgnoreCase("test"))
+        if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=" + period;

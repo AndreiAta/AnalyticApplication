@@ -175,8 +175,19 @@ public class MainActivity extends AppCompatActivity
                         View header = navigationView.getHeaderView(0);
                         menuEmailTxt = (TextView) header.findViewById(R.id.menuMail);
                         menuEmailTxt.setText(API_EMAIL);
-                        new HomePageFragment();
-                        //dialog.dismiss();
+
+                        // Opens the "homepage" fragment.
+                        Fragment fragment = null;
+                        Class fragmentClass = null;
+                        fragmentClass = HomePageFragment.class;
+                        try {
+                            fragment = (Fragment) fragmentClass.newInstance();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
                     }
                     else
                     {
@@ -195,19 +206,19 @@ public class MainActivity extends AppCompatActivity
             menuEmailTxt.setText(API_EMAIL);
         }
 
-        if (savedInstanceState == null) {
-            Fragment fragment = null;
-            Class fragmentClass = null;
-            fragmentClass = HomePageFragment.class;
-            try {
-                fragment = (Fragment) fragmentClass.newInstance();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-        }
+//        if (savedInstanceState == null) {
+//            Fragment fragment = null;
+//            Class fragmentClass = null;
+//            fragmentClass = HomePageFragment.class;
+//            try {
+//                fragment = (Fragment) fragmentClass.newInstance();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//            FragmentManager fragmentManager = getSupportFragmentManager();
+//            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+//        }
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

@@ -83,7 +83,7 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
     {
         MainActivity.currentFragment = "Today";
 
-        if(MainActivity.API_ID != null)
+        if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/traffic_sources/direct_traffic_entry_pages?page=1&page_size=10&period=today";
