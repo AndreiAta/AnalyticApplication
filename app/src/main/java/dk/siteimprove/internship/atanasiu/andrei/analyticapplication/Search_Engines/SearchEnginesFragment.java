@@ -344,21 +344,32 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
                     xAxis = new ArrayList<>();
                     xAxisLabels = new ArrayList<>();
                 }
-                for(int i = 0; i < totalSearchEngines; i++)
-                {
-                    Integer visits = items.getJSONObject(i).getInt("visits");
-                    String search_engine = items.getJSONObject(i).getString("search_engine");
 
-                        if(secondCall) //Yesterday
+                if(totalSearchEngines == 0)
+                {
+                    Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                }else
+                {
+                    for (int i = 0; i < totalSearchEngines; i++)
+                    {
+                        Integer visits = items.getJSONObject(i).getInt("visits");
+                        String search_engine = items.getJSONObject(i).getString("search_engine");
+
+                        if (secondCall) //Yesterday
                         {
                             if (xAxis.contains(search_engine))
                             {
                                 tempValSet2[xAxis.indexOf(search_engine)] = visits;
-                            }else if(!xAxis.contains(search_engine) && xAxis.size() < 10)
+                            } else if (!xAxis.contains(search_engine) && xAxis.size() < 10)
                             {
                                 xAxis.add(search_engine);
-                                if(search_engine.length() > 15) { xAxisLabels.add(search_engine.substring(0,14) + "..."); }
-                                else{ xAxisLabels.add(search_engine); }
+                                if (search_engine.length() > 15)
+                                {
+                                    xAxisLabels.add(search_engine.substring(0, 14) + "...");
+                                } else
+                                {
+                                    xAxisLabels.add(search_engine);
+                                }
                                 tempValSet2[xAxis.indexOf(search_engine)] = visits;
                             }
                             if (i == totalSearchEngines - 1)
@@ -369,56 +380,62 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
                                     valueSet2.add(entry);
                                 }
                             }
-                        }else //Today
+                        } else //Today
                         {
-                            if(i < 10)
+                            if (i < 10)
                             {
-                                BarEntry entry = new BarEntry((float)visits, numberSearchEngines);
+                                BarEntry entry = new BarEntry((float) visits, numberSearchEngines);
                                 valueSet1.add(entry);
                                 xAxis.add(search_engine);
-                                if(search_engine.length() > 15) { xAxisLabels.add(search_engine.substring(0,14) + "..."); }
-                                else{ xAxisLabels.add(search_engine); }
+                                if (search_engine.length() > 15)
+                                {
+                                    xAxisLabels.add(search_engine.substring(0, 14) + "...");
+                                } else
+                                {
+                                    xAxisLabels.add(search_engine);
+                                }
                                 numberSearchEngines++;
                                 tableValues.add(visits);
                                 totalVisits = totalVisits + visits;
-                            }else
+                            } else
                             {
-                                if(!secondCall)
+                                if (!secondCall)
                                 {
                                     totalVisits = totalVisits + visits;
                                 }
                             }
 
                         }
-                }
-                if(secondCall)
-                {
-                    BarDataSet barDataSet2 = new BarDataSet(valueSet2, "YESTERDAY");
-                    barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
-                    barDataSet2.setBarSpacePercent(50f);
-                    dataSets.add(barDataSet2);
-                    drawGraph();
-
-                    secondCall = false;
-                }else
-                {
-                    dataSets = new ArrayList<>();
-                    BarDataSet barDataSet1 = new BarDataSet(valueSet1, "TODAY");
-                    barDataSet1.setColor(Color.rgb(5, 184, 198));
-                    barDataSet1.setBarSpacePercent(50f);
-                    dataSets.add(barDataSet1);
-                    textViewTotal.setText(String.valueOf(totalVisits));
-
-                    if(landscapeMode)
+                    }
+                    if(secondCall)
                     {
-                        secondCall = true;
-                        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                "/analytics/traffic_sources/search_engines?page=1&page_size=10&period=yesterday";
-                        new RetrieveFeedTask().execute();
+                        BarDataSet barDataSet2 = new BarDataSet(valueSet2, "YESTERDAY");
+                        barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
+                        barDataSet2.setBarSpacePercent(50f);
+                        dataSets.add(barDataSet2);
+                        drawGraph();
+
+                        secondCall = false;
                     }else
                     {
-                        createTable();
-                        drawGraph();
+                        dataSets = new ArrayList<>();
+                        BarDataSet barDataSet1 = new BarDataSet(valueSet1, "TODAY");
+                        barDataSet1.setColor(Color.rgb(5, 184, 198));
+                        barDataSet1.setBarSpacePercent(50f);
+                        dataSets.add(barDataSet1);
+                        textViewTotal.setText(String.valueOf(totalVisits));
+
+                        if(landscapeMode)
+                        {
+                            secondCall = true;
+                            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                                    "/analytics/traffic_sources/search_engines?page=1&page_size=10&period=yesterday";
+                            new RetrieveFeedTask().execute();
+                        }else
+                        {
+                            createTable();
+                            drawGraph();
+                        }
                     }
                 }
             } catch (JSONException e) {

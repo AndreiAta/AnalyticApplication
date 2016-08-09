@@ -36,7 +36,7 @@ public class CustomMarkerViewPage extends MarkerView
 
         }else if(MainActivity.currentFragment.equals("Week"))
         {
-            PageViewsWeekFragment.textViewInfo.setText("Week " + (e.getXIndex() + 1));
+            PageViewsWeekFragment.textViewInfo.setText("Day " + (e.getXIndex() + 1));
             PageViewsWeekFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
 
         }else if(MainActivity.currentFragment.equals("Month"))

@@ -47,7 +47,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
     ArrayList<BarDataSet> dataSets;
     ArrayList<String> xAxis;
     public static ArrayList<String> xAxisLabels;
-    ProgressBar progressBar;
+    public static ProgressBar progressBar;
     String API_URL = "";
     public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     TableLayout table;
@@ -334,85 +334,90 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                     xAxisLabels = new ArrayList<>();
                 }
 
-                for(int i = 0; i < totalSocialMedia; i++)
+                if(totalSocialMedia == 0)
                 {
-                    Integer visits = items.getJSONObject(i).getInt("visits");
-                    String organisation = items.getJSONObject(i).getString("organisation");
-
-                    if (secondCall) //Yesterday
-                    {
-                        if (xAxis.contains(organisation))
-                        {
-                            tempValSet2[xAxis.indexOf(organisation)] = visits;
-                        }else if(!xAxis.contains(organisation) && xAxis.size() < 10)
-                        {
-                            xAxis.add(organisation);
-                            if(organisation.length() > 20) { xAxisLabels.add(organisation.substring(0,19) + "..."); }
-                            else{ xAxisLabels.add(organisation); }
-                            tempValSet2[xAxis.indexOf(organisation)] = visits;
-                        }
-                        if (i == totalSocialMedia - 1)
-                        {
-                            for (int j = 0; j < totalSocialMedia; j++)
-                            {
-                                BarEntry entry = new BarEntry(tempValSet2[j], j);
-                                valueSet2.add(entry);
-                            }
-                        }
-                    }
-                    else //Today
-                    {
-                        if(i < 10)
-                        {
-                            BarEntry entry = new BarEntry((float)visits, numberorg);
-                            valueSet1.add(entry);
-                            xAxis.add(organisation);
-                            if(organisation.length() > 20) { xAxisLabels.add(organisation.substring(0,19) + "..."); }
-                            else{ xAxisLabels.add(organisation); }
-                            numberorg++;
-                            tableValues.add(visits);
-                            totalVisits = totalVisits + visits;
-                        }else
-                        {
-                            if(!secondCall)
-                            {
-                                totalVisits = totalVisits + visits;
-                            }
-                        }
-                    }
+                    Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
                 }
-
-                if(secondCall)
+                else
                 {
-                    BarDataSet barDataSet2 = new BarDataSet(valueSet2, "YESTERDAY");
-                    barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
-                    barDataSet2.setBarSpacePercent(50f);
-                    dataSets.add(barDataSet2);
-                    drawGraph();
-
-                    secondCall = false;
-                }else
-                {
-                    dataSets = new ArrayList<>();
-                    BarDataSet barDataSet1 = new BarDataSet(valueSet1, "TODAY");
-                    barDataSet1.setColor(Color.rgb(5, 184, 198));
-                    barDataSet1.setBarSpacePercent(50f);
-                    dataSets.add(barDataSet1);
-                    textViewTotal.setText(String.valueOf(totalVisits));
-
-                    if(landscapeMode)
+                    for(int i = 0; i < totalSocialMedia; i++)
                     {
-                        secondCall = true;
-                        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=Yesterday";
-                        new RetrieveFeedTask().execute();
+                        Integer visits = items.getJSONObject(i).getInt("visits");
+                        String organisation = items.getJSONObject(i).getString("organisation");
+
+                        if (secondCall) //Yesterday
+                        {
+                            if (xAxis.contains(organisation))
+                            {
+                                tempValSet2[xAxis.indexOf(organisation)] = visits;
+                            }else if(!xAxis.contains(organisation) && xAxis.size() < 10)
+                            {
+                                xAxis.add(organisation);
+                                if(organisation.length() > 20) { xAxisLabels.add(organisation.substring(0,19) + "..."); }
+                                else{ xAxisLabels.add(organisation); }
+                                tempValSet2[xAxis.indexOf(organisation)] = visits;
+                            }
+                            if (i == totalSocialMedia - 1)
+                            {
+                                for (int j = 0; j < totalSocialMedia; j++)
+                                {
+                                    BarEntry entry = new BarEntry(tempValSet2[j], j);
+                                    valueSet2.add(entry);
+                                }
+                            }
+                        }
+                        else //Today
+                        {
+                            if(i < 10)
+                            {
+                                BarEntry entry = new BarEntry((float)visits, numberorg);
+                                valueSet1.add(entry);
+                                xAxis.add(organisation);
+                                if(organisation.length() > 20) { xAxisLabels.add(organisation.substring(0,19) + "..."); }
+                                else{ xAxisLabels.add(organisation); }
+                                numberorg++;
+                                tableValues.add(visits);
+                                totalVisits = totalVisits + visits;
+                            }else
+                            {
+                                if(!secondCall)
+                                {
+                                    totalVisits = totalVisits + visits;
+                                }
+                            }
+                        }
+                    }
+                    if(secondCall)
+                    {
+                        BarDataSet barDataSet2 = new BarDataSet(valueSet2, "YESTERDAY");
+                        barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
+                        barDataSet2.setBarSpacePercent(50f);
+                        dataSets.add(barDataSet2);
+                        drawGraph();
+
+                        secondCall = false;
                     }else
                     {
-                        createTable();
-                        drawGraph();
+                        dataSets = new ArrayList<>();
+                        BarDataSet barDataSet1 = new BarDataSet(valueSet1, "TODAY");
+                        barDataSet1.setColor(Color.rgb(5, 184, 198));
+                        barDataSet1.setBarSpacePercent(50f);
+                        dataSets.add(barDataSet1);
+                        textViewTotal.setText(String.valueOf(totalVisits));
+
+                        if(landscapeMode)
+                        {
+                            secondCall = true;
+                            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=Yesterday";
+                            new RetrieveFeedTask().execute();
+                        }else
+                        {
+                            createTable();
+                            drawGraph();
+                        }
                     }
                 }
-
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (ClassCastException ce){

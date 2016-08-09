@@ -350,95 +350,100 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
                     xAxisLabels = new ArrayList<>();
                 }
 
-                for(int i = 0; i < totalSocialMedia; i++)
+                if(totalSocialMedia == 0)
                 {
-                    Integer visits = items.getJSONObject(i).getInt("visits");
-                    String organisation = items.getJSONObject(i).getString("organisation");
+                    Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    for (int i = 0; i < totalSocialMedia; i++)
+                    {
+                        Integer visits = items.getJSONObject(i).getInt("visits");
+                        String organisation = items.getJSONObject(i).getString("organisation");
 
-                    if(secondCall) //LAST YEAR
-                    {
-                        if (xAxis.contains(organisation))
+                        if (secondCall) //LAST YEAR
                         {
-                            tempValSet2[xAxis.indexOf(organisation)] = visits;
-                        } else if (!xAxis.contains(organisation) && xAxis.size() < 10)
-                        {
-                            xAxis.add(organisation);
-                            if (organisation.length() > 20)
+                            if (xAxis.contains(organisation))
                             {
-                                xAxisLabels.add(organisation.substring(0, 19) + "...");
-                            } else
+                                tempValSet2[xAxis.indexOf(organisation)] = visits;
+                            } else if (!xAxis.contains(organisation) && xAxis.size() < 10)
                             {
-                                xAxisLabels.add(organisation);
+                                xAxis.add(organisation);
+                                if (organisation.length() > 20)
+                                {
+                                    xAxisLabels.add(organisation.substring(0, 19) + "...");
+                                } else
+                                {
+                                    xAxisLabels.add(organisation);
+                                }
+                                tempValSet2[xAxis.indexOf(organisation)] = visits;
                             }
-                            tempValSet2[xAxis.indexOf(organisation)] = visits;
-                        }
-                        if (i == totalSocialMedia - 1)
-                        {
-                            for (int j = 0; j < totalSocialMedia; j++)
+                            if (i == totalSocialMedia - 1)
                             {
-                                BarEntry entry = new BarEntry(tempValSet2[j], j);
-                                valueSet2.add(entry);
+                                for (int j = 0; j < totalSocialMedia; j++)
+                                {
+                                    BarEntry entry = new BarEntry(tempValSet2[j], j);
+                                    valueSet2.add(entry);
+                                }
                             }
-                        }
-                    }else //THIS YEAR
-                    {
-                        if(i < 10)
+                        } else //THIS YEAR
                         {
-                            BarEntry entry = new BarEntry((float)visits, numberorg);
-                            valueSet1.add(entry);
-                            xAxis.add(organisation);
-                            if (organisation.length() > 20)
+                            if (i < 10)
                             {
-                                xAxisLabels.add(organisation.substring(0, 19) + "...");
-                            } else
-                            {
-                                xAxisLabels.add(organisation);
-                            }
-                            numberorg++;
-                            tableValues.add(visits);
-                            totalVisits = totalVisits + visits;
-                        }else
-                        {
-                            if(!secondCall)
-                            {
+                                BarEntry entry = new BarEntry((float) visits, numberorg);
+                                valueSet1.add(entry);
+                                xAxis.add(organisation);
+                                if (organisation.length() > 20)
+                                {
+                                    xAxisLabels.add(organisation.substring(0, 19) + "...");
+                                } else
+                                {
+                                    xAxisLabels.add(organisation);
+                                }
+                                numberorg++;
+                                tableValues.add(visits);
                                 totalVisits = totalVisits + visits;
+                            } else
+                            {
+                                if (!secondCall)
+                                {
+                                    totalVisits = totalVisits + visits;
+                                }
                             }
                         }
                     }
-                }
-
-                if(secondCall)
-                {
-                    BarDataSet barDataSet2 = new BarDataSet(valueSet2, "LAST YEAR");
-                    barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
-                    barDataSet2.setBarSpacePercent(50f);
-                    dataSets.add(barDataSet2);
-                    drawGraph();
-
-                    secondCall = false;
-                }else
-                {
-                    dataSets = new ArrayList<>();
-                    BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS YEAR");
-                    barDataSet1.setColor(Color.rgb(5, 184, 198));
-                    barDataSet1.setBarSpacePercent(50f);
-                    dataSets.add(barDataSet1);
-                    textViewTotal.setText(String.valueOf(totalVisits));
-
-                    if(landscapeMode)
+                    if(secondCall)
                     {
-                        secondCall = true;
-                        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
-                                + lastYear + "0101_" + lastYear + "1231";
-                        new RetrieveFeedTask().execute();
+                        BarDataSet barDataSet2 = new BarDataSet(valueSet2, "LAST YEAR");
+                        barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
+                        barDataSet2.setBarSpacePercent(50f);
+                        dataSets.add(barDataSet2);
+                        drawGraph();
+
+                        secondCall = false;
                     }else
                     {
-                        createTable();
-                        drawGraph();
+                        dataSets = new ArrayList<>();
+                        BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS YEAR");
+                        barDataSet1.setColor(Color.rgb(5, 184, 198));
+                        barDataSet1.setBarSpacePercent(50f);
+                        dataSets.add(barDataSet1);
+                        textViewTotal.setText(String.valueOf(totalVisits));
+
+                        if(landscapeMode)
+                        {
+                            secondCall = true;
+                            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                                    + lastYear + "0101_" + lastYear + "1231";
+                            new RetrieveFeedTask().execute();
+                        }else
+                        {
+                            createTable();
+                            drawGraph();
+                        }
                     }
                 }
-
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (ClassCastException ce){

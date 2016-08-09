@@ -19,6 +19,7 @@ public class LoginChecker extends AsyncTask<Void, Void, String>
 {
 
     private Exception exception;
+    String API_URL = "https://api.siteimprove.com/v2/sites";
 
     protected void onPreExecute() {
 
@@ -72,12 +73,12 @@ public class LoginChecker extends AsyncTask<Void, Void, String>
                 String site_name = items.getJSONObject(i).getString("site_name");
                 Integer id = items.getJSONObject(i).getInt("id");
 
-                siteNames.add(site_name);
-                siteIds.add(id.toString());
+//                siteNames.add(site_name);
+//                siteIds.add(id.toString());
 
             }
 
-            spinner.setSelection(1);
+//            spinner.setSelection(1);
 
         } catch (JSONException e) {
             e.printStackTrace();
