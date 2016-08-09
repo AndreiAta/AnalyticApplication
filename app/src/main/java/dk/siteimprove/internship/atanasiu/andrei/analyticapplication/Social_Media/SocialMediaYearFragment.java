@@ -49,7 +49,7 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
     ArrayList<BarDataSet> dataSets;
     ArrayList<String> xAxis;
     public static ArrayList<String> xAxisLabels;
-    ProgressBar progressBar;
+    public static ProgressBar progressBar;
     String API_URL = "";
     private OnFragmentInteractionListener mListener;
     public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
