@@ -1,8 +1,7 @@
-package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media;
+package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines;
 
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.components.MarkerView;
@@ -14,11 +13,11 @@ import com.github.mikephil.charting.utils.Utils;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 
-public class CustomMarkerViewSocial extends MarkerView
+public class CustomMarkerViewSearch extends MarkerView
 {
     private TextView tvContent;
 
-    public CustomMarkerViewSocial (Context context, int layoutResource) {
+    public CustomMarkerViewSearch (Context context, int layoutResource) {
         super(context, layoutResource);
         // this markerView only displays a textView
         tvContent = (TextView) findViewById(R.id.tvContent);
@@ -28,7 +27,6 @@ public class CustomMarkerViewSocial extends MarkerView
     @Override
     public void refreshContent(Entry e, Highlight highlight)
     {
-
         tvContent.setText("" + Utils.formatNumber(e.getVal(), 0, true)); // set the entry-value as the display text
 
         if(e instanceof BarEntry)
@@ -37,24 +35,28 @@ public class CustomMarkerViewSocial extends MarkerView
 
             if(MainActivity.currentFragment.equals("Today"))
             {
-                SocialMediaFragment.textViewInfo.setText("" + SocialMediaFragment.xAxisLabels.get(be.getXIndex()));
-                SocialMediaFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+                SearchEnginesFragment.textViewInfo.setText("" + SearchEnginesFragment.xAxisLabels.get(be.getXIndex()));
+                SearchEnginesFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+
             }else if(MainActivity.currentFragment.equals("Week"))
             {
-                SocialMediaWeekFragment.textViewInfo.setText("" + SocialMediaWeekFragment.xAxisLabels.get(be.getXIndex()));
-                SocialMediaWeekFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+                SearchEnginesWeekFragment.textViewInfo.setText("" + SearchEnginesWeekFragment.xAxisLabels.get(be.getXIndex()));
+                SearchEnginesWeekFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
 
             }else if(MainActivity.currentFragment.equals("Month"))
             {
-                SocialMediaMonthFragment.textViewInfo.setText("" + SocialMediaMonthFragment.xAxisLabels.get(be.getXIndex()));
-                SocialMediaMonthFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+                SearchEnginesMonthFragment.textViewInfo.setText("" + SearchEnginesMonthFragment.xAxisLabels.get(be.getXIndex()));
+                SearchEnginesMonthFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
 
             }else  if(MainActivity.currentFragment.equals("Year"))
             {
-                SocialMediaYearFragment.textViewInfo.setText("" + "" + SocialMediaYearFragment.xAxisLabels.get(be.getXIndex()));
-                SocialMediaYearFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+                SearchEnginesYearFragment.textViewInfo.setText("" + SearchEnginesYearFragment.xAxisLabels.get(be.getXIndex()));
+                SearchEnginesYearFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+
             }
         }
+
+
     }
 
 

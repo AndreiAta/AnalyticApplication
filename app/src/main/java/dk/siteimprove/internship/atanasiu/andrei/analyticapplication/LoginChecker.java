@@ -18,9 +18,8 @@ import java.net.URL;
 
 public class LoginChecker extends AsyncTask<Void, Void, String>
 {
-    final String API_URL = "https://api.siteimprove.com/v2/sites";
-
     private Exception exception;
+    String API_URL = "https://api.siteimprove.com/v2/sites";
 
     protected void onPreExecute() {
 
@@ -85,10 +84,6 @@ public class LoginChecker extends AsyncTask<Void, Void, String>
             }
         }
         Log.i("INFO", response);
-
-
-
-
 
     }
 }

@@ -46,7 +46,7 @@ public class TrafficSourcesMonthFragment extends Fragment implements View.OnClic
 {
     HorizontalBarChart chart;
     ArrayList<BarDataSet> dataSets;
-    ArrayList<String> xAxisLabels;
+    public static ArrayList<String> xAxisLabels;
     ProgressBar progressBar;
     String API_URL = "";
     public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
@@ -59,6 +59,7 @@ public class TrafficSourcesMonthFragment extends Fragment implements View.OnClic
     boolean landscapeMode, apiIdSelected,madeAllApiCalls;
     int visitsAmount, totalItems, xAxisPlacement, totalVisits;
     BarEntry entry;
+    CustomMarkerViewTraffic mv;
 
     private OnFragmentInteractionListener mListener;
 
@@ -81,6 +82,8 @@ public class TrafficSourcesMonthFragment extends Fragment implements View.OnClic
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        MainActivity.currentFragment = "Month";
+
         if(MainActivity.API_ID != null)
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
@@ -100,6 +103,7 @@ public class TrafficSourcesMonthFragment extends Fragment implements View.OnClic
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        mv = new CustomMarkerViewTraffic(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         textViewDate.setText("0 - 0");
         textViewInfo.setText("VISITS THIS MONTH");
@@ -252,6 +256,7 @@ public class TrafficSourcesMonthFragment extends Fragment implements View.OnClic
         chart.getAxisLeft().setDrawLabels(false);
         chart.getAxisRight().setDrawLabels(false);
         chart.setDoubleTapToZoomEnabled(false);
+        chart.setMarkerView(mv);
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);

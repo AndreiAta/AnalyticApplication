@@ -61,6 +61,7 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
     boolean landscapeMode, apiIdSelected;
     int totalVisits, totalSearchEngines;
     int[] tempValSet2 = new int[100];
+    CustomMarkerViewSearch mv;
 
     private OnFragmentInteractionListener mListener;
 
@@ -84,6 +85,8 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        MainActivity.currentFragment = "Year";
+
         DateTime thisYear = new DateTime().minusYears(1);
         lastYear = thisYear.toString("yyyy");
 
@@ -105,6 +108,7 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        mv = new CustomMarkerViewSearch(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         textViewDate.setText("0 - 0");
         textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS THIS YEAR");
@@ -250,6 +254,7 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
         chart.getAxisLeft().setDrawLabels(false);
         chart.getAxisRight().setDrawLabels(false);
         chart.setDoubleTapToZoomEnabled(false);
+        chart.setMarkerView(mv);
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);
@@ -341,82 +346,99 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
                     xAxis = new ArrayList<>();
                     xAxisLabels = new ArrayList<>();
                 }
-                for(int i = 0; i < totalSearchEngines; i++)
+                if(totalSearchEngines == 0)
                 {
-                    Integer visits = items.getJSONObject(i).getInt("visits");
-                    String search_engine = items.getJSONObject(i).getString("search_engine");
-
-                    if(secondCall) //Yesterday
-                    {
-                        if (xAxis.contains(search_engine))
-                        {
-                            tempValSet2[xAxis.indexOf(search_engine)] = visits;
-                        }else if(!xAxis.contains(search_engine) && xAxis.size() < 10)
-                        {
-                            xAxis.add(search_engine);
-                            if(search_engine.length() > 15) { xAxisLabels.add(search_engine.substring(0,14) + "..."); }
-                            else{ xAxisLabels.add(search_engine); }
-                            tempValSet2[xAxis.indexOf(search_engine)] = visits;
-                        }
-                        if (i == totalSearchEngines - 1)
-                        {
-                            for (int j = 0; j < totalSearchEngines; j++)
-                            {
-                                BarEntry entry = new BarEntry(tempValSet2[j], j);
-                                valueSet2.add(entry);
-                            }
-                        }
-                    }else //Today
-                    {
-                        if(i < 10)
-                        {
-                            BarEntry entry = new BarEntry((float)visits, numberSearchEngines);
-                            valueSet1.add(entry);
-                            xAxis.add(search_engine);
-                            if(search_engine.length() > 15) { xAxisLabels.add(search_engine.substring(0,14) + "..."); }
-                            else{ xAxisLabels.add(search_engine); }
-                            numberSearchEngines++;
-                            tableValues.add(visits);
-                            totalVisits = totalVisits + visits;
-                        }else
-                        {
-                            if(!secondCall)
-                            {
-                                totalVisits = totalVisits + visits;
-                            }
-                        }
-
-                    }
+                    Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
                 }
-                if(secondCall)
+                else
                 {
-                    BarDataSet barDataSet2 = new BarDataSet(valueSet2, "LAST YEAR");
-                    barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
-                    barDataSet2.setBarSpacePercent(50f);
-                    dataSets.add(barDataSet2);
-                    drawGraph();
-
-                    secondCall = false;
-                }else
-                {
-                    dataSets = new ArrayList<>();
-                    BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS YEAR");
-                    barDataSet1.setColor(Color.rgb(5, 184, 198));
-                    barDataSet1.setBarSpacePercent(50f);
-                    dataSets.add(barDataSet1);
-                    textViewTotal.setText(String.valueOf(totalVisits));
-
-                    if(landscapeMode)
+                    for (int i = 0; i < totalSearchEngines; i++)
                     {
-                        secondCall = true;
-                        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
-                                + lastYear + "0101_" + lastYear + "1231";
-                        new RetrieveFeedTask().execute();
+                        Integer visits = items.getJSONObject(i).getInt("visits");
+                        String search_engine = items.getJSONObject(i).getString("search_engine");
+
+                        if (secondCall) //Yesterday
+                        {
+                            if (xAxis.contains(search_engine))
+                            {
+                                tempValSet2[xAxis.indexOf(search_engine)] = visits;
+                            } else if (!xAxis.contains(search_engine) && xAxis.size() < 10)
+                            {
+                                xAxis.add(search_engine);
+                                if (search_engine.length() > 15)
+                                {
+                                    xAxisLabels.add(search_engine.substring(0, 14) + "...");
+                                } else
+                                {
+                                    xAxisLabels.add(search_engine);
+                                }
+                                tempValSet2[xAxis.indexOf(search_engine)] = visits;
+                            }
+                            if (i == totalSearchEngines - 1)
+                            {
+                                for (int j = 0; j < totalSearchEngines; j++)
+                                {
+                                    BarEntry entry = new BarEntry(tempValSet2[j], j);
+                                    valueSet2.add(entry);
+                                }
+                            }
+                        } else //Today
+                        {
+                            if (i < 10)
+                            {
+                                BarEntry entry = new BarEntry((float) visits, numberSearchEngines);
+                                valueSet1.add(entry);
+                                xAxis.add(search_engine);
+                                if (search_engine.length() > 15)
+                                {
+                                    xAxisLabels.add(search_engine.substring(0, 14) + "...");
+                                } else
+                                {
+                                    xAxisLabels.add(search_engine);
+                                }
+                                numberSearchEngines++;
+                                tableValues.add(visits);
+                                totalVisits = totalVisits + visits;
+                            } else
+                            {
+                                if (!secondCall)
+                                {
+                                    totalVisits = totalVisits + visits;
+                                }
+                            }
+
+                        }
+                    }
+                    if(secondCall)
+                    {
+                        BarDataSet barDataSet2 = new BarDataSet(valueSet2, "LAST YEAR");
+                        barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
+                        barDataSet2.setBarSpacePercent(50f);
+                        dataSets.add(barDataSet2);
+                        drawGraph();
+
+                        secondCall = false;
                     }else
                     {
-                        createTable();
-                        drawGraph();
+                        dataSets = new ArrayList<>();
+                        BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS YEAR");
+                        barDataSet1.setColor(Color.rgb(5, 184, 198));
+                        barDataSet1.setBarSpacePercent(50f);
+                        dataSets.add(barDataSet1);
+                        textViewTotal.setText(String.valueOf(totalVisits));
+
+                        if(landscapeMode)
+                        {
+                            secondCall = true;
+                            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                                    "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
+                                    + lastYear + "0101_" + lastYear + "1231";
+                            new RetrieveFeedTask().execute();
+                        }else
+                        {
+                            createTable();
+                            drawGraph();
+                        }
                     }
                 }
             } catch (JSONException e) {

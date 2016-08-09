@@ -53,7 +53,7 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
     private OnFragmentInteractionListener mListener;
     Integer totalMonthDays = 0, totalVisits;
     boolean landscapeMode;
-    TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
+    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     boolean apiIdSelected;
     TableLayout table;
     ArrayList<Integer> tableValues = new ArrayList<>();
@@ -61,6 +61,7 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
     boolean tableIsVisible = false;
     boolean secondCall = false;
     int totalDays;
+    CustomMarkerViewPage mv;
 
     public PageViewsMonthFragment()
     {
@@ -86,6 +87,8 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        MainActivity.currentFragment = "Month";
+
         if(MainActivity.API_ID != null)
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
@@ -102,6 +105,7 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
+        mv = new CustomMarkerViewPage(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         columnOne.setText("Day of Month");
         textViewInfo.setText("PAGE VIEWS THIS MONTH");
@@ -258,6 +262,7 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
         chart.setGridBackgroundColor(R.color.White);
         chart.getLegend().setTextColor(Color.WHITE);
         chart.setDoubleTapToZoomEnabled(false);
+        chart.setMarkerView(mv);
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextColor(Color.WHITE);

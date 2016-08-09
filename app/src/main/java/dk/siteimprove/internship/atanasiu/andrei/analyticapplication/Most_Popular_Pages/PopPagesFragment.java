@@ -50,14 +50,15 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
     int totalVisits, totalPopPages;
     ArrayList<BarEntry> valueSet1, valueSet2;
     ArrayList<BarDataSet> dataSets;
-    ArrayList<String> xAxis, xAxisLabels;
+    public static ArrayList<String> xAxis, xAxisLabels;
     ArrayList<Integer> tableValues = new ArrayList<>();
     int[] tempValSet2 = new int[100]; // This should be instantiated in RetriveFeedTask or simply use ArrayList instead?
 
     HorizontalBarChart chart;
     ProgressBar progressBar;
-    TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne, columnTwo;
+    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne, columnTwo;
     TableLayout table;
+    CustomMarkerViewPopular mv;
     private OnFragmentInteractionListener mListener;
 
     public PopPagesFragment() { } //Required empty constructor
@@ -79,6 +80,8 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        MainActivity.currentFragment = "Today";
+
         if(MainActivity.API_ID != null)
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
@@ -99,6 +102,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         columnTwo = (TextView) rootView.findViewById(R.id.columnTwo);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        mv = new CustomMarkerViewPopular(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         textViewDate.setText("0 - 0");
         textViewInfo.setText("PAGE VIEWS TODAY");
@@ -233,6 +237,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
         chart.getAxisLeft().setDrawLabels(false);
         chart.getAxisRight().setDrawLabels(false);
         chart.setDoubleTapToZoomEnabled(false);
+        chart.setMarkerView(mv);
         XAxis chartXAxis = chart.getXAxis();
         chartXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         chartXAxis.setSpaceBetweenLabels(0);
@@ -322,86 +327,100 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                     xAxis = new ArrayList<>();
                     xAxisLabels = new ArrayList<>();
                 }
-
-                for (int i = 0; i < totalPopPages; i++) // Loop through all the items in the JSON Array
+                if(totalPopPages == 0)
                 {
-                    Integer pageViews = items.getJSONObject(i).getInt("page_views");
-                    String title = items.getJSONObject(i).getString("title");
-                    String url = items.getJSONObject(i).getString("url");
-
-                    if (secondCall) //Yesterday
+                    Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    for (int i = 0; i < totalPopPages; i++) // Loop through all the items in the JSON Array
                     {
+                        Integer pageViews = items.getJSONObject(i).getInt("page_views");
+                        String title = items.getJSONObject(i).getString("title");
+                        String url = items.getJSONObject(i).getString("url");
 
-                        if (xAxis.contains(url)) // If the name is already in list, don't add it again.
+                        if (secondCall) //Yesterday
                         {
-                            tempValSet2[xAxis.indexOf(url)] = pageViews;
-                        }
-                        else if(!xAxis.contains(url) && xAxis.size() < 10) // if it isn't in list, and there is space - add it
-                        {
-                            xAxis.add(url);
-                            if(title.length() > 20) { xAxisLabels.add(title.substring(0,19) + "..."); }
-                            else{ xAxisLabels.add(title); }
-                            tempValSet2[xAxis.indexOf(url)] = pageViews;
-                        }
-                        if(i == totalPopPages - 1) // last time through the loop, move from tempArray to valueSet2.
-                        {
-                            for (int j = 0; j < totalPopPages; j++)
+
+                            if (xAxis.contains(url)) // If the name is already in list, don't add it again.
                             {
-                                BarEntry entry = new BarEntry(tempValSet2[j], j);
-                                valueSet2.add(entry);
+                                tempValSet2[xAxis.indexOf(url)] = pageViews;
+                            } else if (!xAxis.contains(url) && xAxis.size() < 10) // if it isn't in list, and there is space - add it
+                            {
+                                xAxis.add(url);
+                                if (title.length() > 20)
+                                {
+                                    xAxisLabels.add(title.substring(0, 19) + "...");
+                                } else
+                                {
+                                    xAxisLabels.add(title);
+                                }
+                                tempValSet2[xAxis.indexOf(url)] = pageViews;
                             }
-                        }
-                    } else //Today
-                    {
-                        if (i < 10) // we only want top 10
-                        {
-                            BarEntry entry = new BarEntry((float) pageViews, i);
-                            valueSet1.add(entry);
-                            xAxis.add(url);
-                            if(title.length() > 20) { xAxisLabels.add(title.substring(0,19) + "..."); }
-                            else{ xAxisLabels.add(title); }
-                            tableValues.add(pageViews);
-                            totalVisits = totalVisits + pageViews;
-                        } else
-                        {
-                            if (!secondCall) // calculating the totalVisits (after top 10)
+                            if (i == totalPopPages - 1) // last time through the loop, move from tempArray to valueSet2.
                             {
+                                for (int j = 0; j < totalPopPages; j++)
+                                {
+                                    BarEntry entry = new BarEntry(tempValSet2[j], j);
+                                    valueSet2.add(entry);
+                                }
+                            }
+                        } else //Today
+                        {
+                            if (i < 10) // we only want top 10
+                            {
+                                BarEntry entry = new BarEntry((float) pageViews, i);
+                                valueSet1.add(entry);
+                                xAxis.add(url);
+                                if (title.length() > 20)
+                                {
+                                    xAxisLabels.add(title.substring(0, 19) + "...");
+                                } else
+                                {
+                                    xAxisLabels.add(title);
+                                }
+                                tableValues.add(pageViews);
                                 totalVisits = totalVisits + pageViews;
+                            } else
+                            {
+                                if (!secondCall) // calculating the totalVisits (after top 10)
+                                {
+                                    totalVisits = totalVisits + pageViews;
+                                }
                             }
                         }
                     }
-                }
-
-                if(secondCall)
-                {
-                    BarDataSet barDataSet2 = new BarDataSet(valueSet2, "YESTERDAY");
-                    barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
-                    barDataSet2.setBarSpacePercent(50f);
-                    dataSets.add(barDataSet2);
-                    Log.i("IMPORT2", barDataSet2.toString());
-                    drawGraph();
-
-                    secondCall = false;
-                }else
-                {
-                    dataSets = new ArrayList<>();
-                    BarDataSet barDataSet1 = new BarDataSet(valueSet1, "TODAY");
-                    barDataSet1.setColor(Color.rgb(5, 184, 198));
-                    barDataSet1.setBarSpacePercent(50f);
-                    dataSets.add(barDataSet1);
-                    Log.i("IMPORT1", barDataSet1.toString());
-                    textViewTotal.setText(String.valueOf(totalVisits));
-
-                    if(landscapeMode)
+                    if(secondCall)
                     {
-                        secondCall = true;
-                        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                "/analytics/content/most_popular_pages?page=1&page_size=10&period=yesterday";
-                        new RetrieveFeedTask().execute();
+                        BarDataSet barDataSet2 = new BarDataSet(valueSet2, "YESTERDAY");
+                        barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
+                        barDataSet2.setBarSpacePercent(50f);
+                        dataSets.add(barDataSet2);
+                        Log.i("IMPORT2", barDataSet2.toString());
+                        drawGraph();
+
+                        secondCall = false;
                     }else
                     {
-                        createTable();
-                        drawGraph();
+                        dataSets = new ArrayList<>();
+                        BarDataSet barDataSet1 = new BarDataSet(valueSet1, "TODAY");
+                        barDataSet1.setColor(Color.rgb(5, 184, 198));
+                        barDataSet1.setBarSpacePercent(50f);
+                        dataSets.add(barDataSet1);
+                        Log.i("IMPORT1", barDataSet1.toString());
+                        textViewTotal.setText(String.valueOf(totalVisits));
+
+                        if(landscapeMode)
+                        {
+                            secondCall = true;
+                            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                                    "/analytics/content/most_popular_pages?page=1&page_size=10&period=yesterday";
+                            new RetrieveFeedTask().execute();
+                        }else
+                        {
+                            createTable();
+                            drawGraph();
+                        }
                     }
                 }
 

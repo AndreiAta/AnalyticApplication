@@ -187,8 +187,6 @@ public class HomePageFragment extends Fragment
             if(response == null) {
                 response = "THERE WAS AN ERROR";
             }
-            Log.i("INFOXX", response);
-
 
             try {
 
@@ -209,14 +207,12 @@ public class HomePageFragment extends Fragment
 
             } catch (JSONException e) {
                 e.printStackTrace();
-            }catch (ClassCastException ce){
+            } catch (ClassCastException ce)
+            {
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
             }
-
         }
     }
-
-
 
 
 }

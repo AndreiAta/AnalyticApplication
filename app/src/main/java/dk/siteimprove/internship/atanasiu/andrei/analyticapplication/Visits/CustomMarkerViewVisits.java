@@ -26,7 +26,7 @@ public class CustomMarkerViewVisits extends MarkerView
     @Override
     public void refreshContent(Entry e, Highlight highlight)
     {
-        tvContent.setText("" + e.getVal()); // set the entry-value as the display text
+        tvContent.setText("" + Utils.formatNumber(e.getVal(), 0, true)); // set the entry-value as the display text
 
         if(MainActivity.currentFragment.equals("Today"))
         {

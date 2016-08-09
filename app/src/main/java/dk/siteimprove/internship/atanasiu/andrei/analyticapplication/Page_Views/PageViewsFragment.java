@@ -52,9 +52,10 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
     boolean apiIdSelected, landscapeMode;
     boolean secondCall = false;
     boolean tableIsVisible = false;
-    TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
+    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     TableLayout table;
     ArrayList<Integer> tableValues = new ArrayList<>();
+    CustomMarkerViewPage mv;
 
     private OnFragmentInteractionListener mListener;
 
@@ -79,7 +80,9 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        MainActivity.currentFragment = "Today";
         totalVisits = 0;
+
         if(!MainActivity.API_ID.equalsIgnoreCase("test"))
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
@@ -97,6 +100,7 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
+        mv = new CustomMarkerViewPage(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         textViewDate.setText("0 - 0");
         textViewInfo.setText("PAGE VIEWS TODAY");
@@ -251,6 +255,7 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
         chart.getAxisRight().setDrawLabels(false);
         chart.setTouchEnabled(true);
         chart.setDoubleTapToZoomEnabled(false);
+        chart.setMarkerView(mv);
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setSpaceBetweenLabels(0);
