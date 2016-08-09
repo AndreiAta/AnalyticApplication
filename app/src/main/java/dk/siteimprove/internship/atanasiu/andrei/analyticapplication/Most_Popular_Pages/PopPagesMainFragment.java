@@ -2,11 +2,13 @@ package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popul
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,7 +88,10 @@ public class PopPagesMainFragment extends Fragment
             {
                 tv.setTextColor(getResources().getColor(R.color.JavaBlue));
             }
-            mTabHost.getTabWidget().getChildAt(i).getLayoutParams().height = 175;
+            Resources r = getResources();
+            float height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 45, r.getDisplayMetrics());
+
+            mTabHost.getTabWidget().getChildAt(i).getLayoutParams().height = (int)height;
 
         }
         mTabHost.getTabWidget().setDividerDrawable(null);

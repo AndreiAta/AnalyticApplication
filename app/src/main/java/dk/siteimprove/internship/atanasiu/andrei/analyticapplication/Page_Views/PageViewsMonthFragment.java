@@ -10,11 +10,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -263,6 +265,19 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
         chart.getLegend().setTextColor(Color.WHITE);
         chart.setDoubleTapToZoomEnabled(false);
         chart.setMarkerView(mv);
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(metrics);
+        final float height = metrics.heightPixels;
+        if(landscapeMode)
+        {
+            chart.getLayoutParams().height = (int)height/2;
+        }
+        else
+        {
+            chart.getLayoutParams().height = (int)height/3;
+        }
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextColor(Color.WHITE);
