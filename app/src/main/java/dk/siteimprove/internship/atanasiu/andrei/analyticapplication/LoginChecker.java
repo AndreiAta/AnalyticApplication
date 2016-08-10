@@ -22,11 +22,6 @@ public class LoginChecker extends AsyncTask<Void, Void, String>
     private Exception exception;
     String API_URL = "https://api.siteimprove.com/v2/sites";
 
-    protected void onPreExecute() {
-
-
-    }
-
     protected String doInBackground(Void... urls) {
         try {
             URL url = new URL(API_URL);
