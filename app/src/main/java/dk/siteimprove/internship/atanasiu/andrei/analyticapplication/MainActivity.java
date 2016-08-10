@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity
     DrawerLayout drawer;
     public static ArrayList<String> websites;
     public static ArrayList<Integer> siteIds;
-    public static View header;
+    View header;
 
     ArrayList<String> spinnerList = new ArrayList<>();
 
