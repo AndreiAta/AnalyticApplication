@@ -100,7 +100,7 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
         {
             apiIdSelected = false;
         }
-        View rootView = inflater.inflate(R.layout.fragment_visits, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_linechart, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         textViewDate = (TextView) rootView.findViewById(R.id.textViewDate);
         textViewInfo = (TextView) rootView.findViewById(R.id.textViewInfo);

@@ -48,7 +48,7 @@ public class PageViewsMainFragment extends Fragment
     {
         getActivity().setTitle("Page Views");
         mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), getChildFragmentManager(), R.layout.fragment_visits_main);
+        mTabHost.setup(getActivity(), getChildFragmentManager(), R.layout.fragment_main);
 
         Bundle arg1 = new Bundle();
         arg1.putInt("Arg for Frag1", 1);

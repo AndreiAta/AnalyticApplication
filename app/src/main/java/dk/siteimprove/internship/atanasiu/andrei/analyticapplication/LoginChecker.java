@@ -18,11 +18,12 @@ import java.net.URL;
 
 public class LoginChecker extends AsyncTask<Void, Void, String>
 {
+    MainActivity ma = new MainActivity();
     private Exception exception;
     String API_URL = "https://api.siteimprove.com/v2/sites";
 
     protected void onPreExecute() {
-
+        ma.testSomething();
 
     }
 

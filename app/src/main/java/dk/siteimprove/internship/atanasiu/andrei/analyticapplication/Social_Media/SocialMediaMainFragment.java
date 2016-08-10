@@ -51,11 +51,11 @@ public class SocialMediaMainFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        rootView = inflater.inflate(R.layout.fragment_social_media_main, container, false);
+        rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         getActivity().setTitle("Social Media");
         mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), getChildFragmentManager(), R.layout.fragment_social_media_main);
+        mTabHost.setup(getActivity(), getChildFragmentManager(), R.layout.fragment_main);
 
         Bundle arg1 = new Bundle();
         arg1.putInt("Arg for Frag1", 1);

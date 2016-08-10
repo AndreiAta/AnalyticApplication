@@ -19,6 +19,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -245,6 +246,11 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    public void testSomething()
+    {
+        Log.i("FFFFFFF", "test");
+    }
+
     private void writeToFile(String message)
     {
         String file_name = "test_file";
@@ -360,6 +366,7 @@ public class MainActivity extends AppCompatActivity
             initialLogin = null;
             this.recreate();
             fragmentClass = HomePageFragment.class;
+
 
         }
         try {

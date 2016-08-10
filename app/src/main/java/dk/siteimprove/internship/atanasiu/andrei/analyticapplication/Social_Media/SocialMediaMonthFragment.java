@@ -102,7 +102,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
             apiIdSelected= false;
         }
 
-        View rootView = inflater.inflate(R.layout.fragment_social_media, container, false); // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_barchart, container, false); // Inflate the layout for this fragment
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);
         textViewDate = (TextView) rootView.findViewById(R.id.textViewDate);
