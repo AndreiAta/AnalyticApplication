@@ -227,7 +227,6 @@ public class MainActivity extends AppCompatActivity
             FileOutputStream fileOutputStream = openFileOutput(file_name, MODE_PRIVATE);
             fileOutputStream.write(message.getBytes());
             fileOutputStream.close();
-            //Toast.makeText(getApplicationContext(), "Email Saved", Toast.LENGTH_LONG).show();
         }
         catch (FileNotFoundException e) {e.printStackTrace();} // TODO: Handle somehow?
         catch (IOException e) {e.printStackTrace();} // TODO: Handle somehow?
@@ -301,7 +300,7 @@ public class MainActivity extends AppCompatActivity
 
             final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_DARK);
             LayoutInflater inflater = getLayoutInflater();
-            View convertView = inflater.inflate(R.layout.site_picker_dialog, null);
+            final View convertView = inflater.inflate(R.layout.site_picker_dialog, null);
             alertDialog.setView(convertView);
 
             TextView title = new TextView(this);
@@ -316,7 +315,7 @@ public class MainActivity extends AppCompatActivity
             alertDialog.setCustomTitle(title);
 
             ListView lv = (ListView) convertView.findViewById(R.id.listView1);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,R.layout.list_item,websites);
+            final ArrayAdapter<String> adapter = new ArrayAdapter<>(this,R.layout.list_item,websites);
             lv.setAdapter(adapter);
             final AlertDialog ad = alertDialog.show();
 
@@ -328,7 +327,6 @@ public class MainActivity extends AppCompatActivity
                     Toast.makeText(MainActivity.this, "" + websites.get(position), Toast.LENGTH_SHORT).show();
                     API_ID = siteIds.get(position).toString();
                     menuSiteName.setText(websites.get(position));
-
                     ad.dismiss();
                 }
             });
@@ -370,8 +368,6 @@ public class MainActivity extends AppCompatActivity
             changeFragment = false;
             initialLogin = null;
             this.recreate();
-//            fragmentClass = HomePageFragment.class;
-
         }
         if(changeFragment)
         {
