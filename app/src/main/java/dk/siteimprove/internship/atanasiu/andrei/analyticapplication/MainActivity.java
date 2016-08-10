@@ -116,7 +116,8 @@ public class MainActivity extends AppCompatActivity
     DrawerLayout drawer;
     public static ArrayList<String> websites;
     public static ArrayList<Integer> siteIds;
-    public static View header;
+    View header;
+    ListView lv;
 
     ArrayList<String> spinnerList = new ArrayList<>();
 
@@ -388,7 +389,7 @@ public class MainActivity extends AppCompatActivity
         title.setTextSize(20);
         alertDialog.setCustomTitle(title);
 
-        ListView lv = (ListView) convertView.findViewById(R.id.listView1);
+        lv = (ListView) convertView.findViewById(R.id.listView1);
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(this,R.layout.list_item,websites);
         lv.setAdapter(adapter);
         final AlertDialog ad = alertDialog.show();
@@ -398,8 +399,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1,int position, long arg3)
             {
-                Log.i(arg1.toString(), "GGGGGG");
-                Toast.makeText(MainActivity.this, "" + websites.get(position), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "API site changed to: " + websites.get(position), Toast.LENGTH_SHORT).show();
                 API_ID = siteIds.get(position).toString();
                 menuSiteName.setText(websites.get(position));
                 ad.dismiss();

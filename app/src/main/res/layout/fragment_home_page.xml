@@ -19,20 +19,7 @@
             android:layout_marginTop="240dp"
             android:layout_centerHorizontal="true"
             android:text="@string/home_page_string"
-            android:textColor="@color/White"
-            />
-        <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:id="@+id/spinner1"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentTop="true"
-
-            android:layout_marginTop="168dp"
-            android:prompt="@string/spinner_text"
-            >
-
-        </Spinner>
+            android:textColor="@color/White"/>
     </RelativeLayout>
 
 </FrameLayout>
