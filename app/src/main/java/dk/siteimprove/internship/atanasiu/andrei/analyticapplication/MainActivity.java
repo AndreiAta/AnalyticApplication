@@ -141,9 +141,16 @@ public class MainActivity extends AppCompatActivity
         menuEmailTxt = (TextView) header.findViewById(R.id.menuMail);
         menuSiteName = (TextView) header.findViewById(R.id.menuSiteName);
 
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
         if (initialLogin == null)
         {
 
+            drawer.openDrawer(GravityCompat.START);
             dialog = new Dialog(this,R.style.full_screen_dialog);
             dialog.setContentView(R.layout.popup);
             dialog.setCancelable(false);
@@ -205,13 +212,6 @@ public class MainActivity extends AppCompatActivity
             menuEmailTxt.setText(API_EMAIL);
             menuSiteName.setText(websites.get(0));
         }
-
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        drawer.openDrawer(GravityCompat.START);
-        toggle.syncState();
     }
 
     private void writeToFile(String message)
