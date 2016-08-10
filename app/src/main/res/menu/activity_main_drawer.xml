@@ -54,13 +54,6 @@
         <item
             android:id="@+id/signOut"
             android:title="Change User"/>
-        <item
-            android:id="@+id/spinnerTest"
-            android:icon="@drawable/ic_public_white_18dp"
-            android:width="0dp"
-            app:actionLayout="@layout/spinner"
-            android:visible="false"
-            tools:ignore="MenuTitle"/>
 
     </group>
 </menu>

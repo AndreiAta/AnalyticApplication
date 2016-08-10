@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class LoginChecker extends AsyncTask<Void, Void, String>
 {
@@ -66,15 +67,23 @@ public class LoginChecker extends AsyncTask<Void, Void, String>
             try {
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
+                MainActivity.websites = new ArrayList<>();
+                MainActivity.siteIds = new ArrayList<>();
+
                 for(int i = 0; i < items.length(); i++)
                 {
                     String site_name = items.getJSONObject(i).getString("site_name");
                     Integer id = items.getJSONObject(i).getInt("id");
+
+                    MainActivity.websites.add(site_name);
+                    MainActivity.siteIds.add(id);
                 }
 
                 // Login is a sucess?
                 MainActivity.initialLogin = "Logged in!";
                 MainActivity.dialog.dismiss();
+                MainActivity.API_ID = MainActivity.siteIds.get(0).toString();
+                MainActivity.menuSiteName.setText(MainActivity.websites.get(0));
 
             } catch (JSONException e) {
                 e.printStackTrace();

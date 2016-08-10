@@ -1,6 +1,9 @@
 package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -58,6 +61,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
     TableLayout table;
     ArrayList<Integer> tableValues = new ArrayList<>();
     CustomMarkerViewVisits mv;
+
 
     private OnFragmentInteractionListener mListener;
 

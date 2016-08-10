@@ -1,6 +1,7 @@
 package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -19,6 +20,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +29,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -104,20 +108,18 @@ public class MainActivity extends AppCompatActivity
         TrafficSourcesYearFragment.OnFragmentInteractionListener
 
 {
-    public static String API_ID; // Should perhaps have some getter/setter?
-    public static String API_EMAIL;
-    public static String API_KEY;
     public static EditText emailText;
-    public static String totalString;
-    public static String currentFragment;
+    public static String totalString, currentFragment, initialLogin, API_ID, API_EMAIL, API_KEY;
     EditText apiKeyText;
-    public static TextView headerTxt, loginAlert;
-    public static TextView menuEmailTxt;
-    public static String initialLogin;
+    public static TextView headerTxt, loginAlert, menuEmailTxt, menuSiteName;
     public static Dialog dialog;
     public Toolbar toolbar;
     NavigationView navigationView;
     DrawerLayout drawer;
+    public static ArrayList<String> websites;
+    public static ArrayList<Integer> siteIds;
+    public static View header;
+    Typeface tf;
 
     ArrayList<String> spinnerList = new ArrayList<>();
 
@@ -129,8 +131,8 @@ public class MainActivity extends AppCompatActivity
         spinnerList.add("Somethingelse.dk.uk.");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        FontsOverride.setDefaultFont(this, "MONOSPACE", "Helvetica.otf");
-        Typeface tf = Typeface.createFromAsset(getAssets(), "Helvetica.otf");
+        FontsOverride.setDefaultFont(this, "monospace", "Helvetica.otf");
+        tf = Typeface.createFromAsset(getAssets(), "Helvetica.otf");
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -140,6 +142,9 @@ public class MainActivity extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        header = navigationView.getHeaderView(0);
+        menuEmailTxt = (TextView) header.findViewById(R.id.menuMail);
+        menuSiteName = (TextView) header.findViewById(R.id.menuSiteName);
 
         if (initialLogin == null)
         {
@@ -147,12 +152,12 @@ public class MainActivity extends AppCompatActivity
             dialog = new Dialog(this,R.style.full_screen_dialog);
             dialog.setContentView(R.layout.popup);
             dialog.setCancelable(false);
-
             emailText = (EditText) dialog.findViewById(R.id.emailTextField);
             apiKeyText = (EditText) dialog.findViewById(R.id.apiKeyTextField);
             headerTxt = (TextView) dialog.findViewById(R.id.headerTxt);
             loginAlert = (TextView) dialog.findViewById(R.id.loginAlert);
             Button button = (Button) dialog.findViewById(R.id.Button01);
+
 
             readFromFile();
             button.setOnClickListener(new View.OnClickListener()
@@ -172,8 +177,7 @@ public class MainActivity extends AppCompatActivity
                         writeToFile(totalString);
 
                         // Sets drawer menuMail textview to current user mail.
-                        View header = navigationView.getHeaderView(0);
-                        menuEmailTxt = (TextView) header.findViewById(R.id.menuMail);
+
                         menuEmailTxt.setText(API_EMAIL);
 
                         // Opens the "homepage" fragment.
@@ -204,45 +208,15 @@ public class MainActivity extends AppCompatActivity
             View header = navigationView.getHeaderView(0);
             menuEmailTxt = (TextView) header.findViewById(R.id.menuMail);
             menuEmailTxt.setText(API_EMAIL);
+            menuSiteName.setText(websites.get(0));
         }
-
-//        if (savedInstanceState == null) {
-//            Fragment fragment = null;
-//            Class fragmentClass = null;
-//            fragmentClass = HomePageFragment.class;
-//            try {
-//                fragment = (Fragment) fragmentClass.newInstance();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//
-//            FragmentManager fragmentManager = getSupportFragmentManager();
-//            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-//        }
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
+        drawer.openDrawer(GravityCompat.START);
         toggle.syncState();
-
-
-        Spinner spinner = (Spinner) navigationView.getMenu().findItem(R.id.spinnerTest).getActionView();
-     //   Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        spinner.setAdapter(new ArrayAdapter<String>(this, R.layout.my_spinner_item, spinnerList));
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-            {
-                Toast.makeText(MainActivity.this, "Something", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent)
-            {
-            }
-        });
     }
 
     private void writeToFile(String message)
@@ -318,10 +292,46 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         Fragment fragment = null;
         Class fragmentClass = null;
+        boolean changeFragment = true;
 
         if (id == R.id.chooseSite)
         {
-            fragmentClass = HomePageFragment.class;
+//            fragmentClass = HomePageFragment.class;
+            changeFragment = false;
+
+            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_DARK);
+            LayoutInflater inflater = getLayoutInflater();
+            View convertView = inflater.inflate(R.layout.site_picker_dialog, null);
+            alertDialog.setView(convertView);
+
+            TextView title = new TextView(this);
+            // You Can Customise your Title here
+            title.setText("Choose Websites");
+            title.setBackgroundColor(Color.DKGRAY);
+            title.setPadding(40, 40, 40, 40);
+            title.setGravity(Gravity.CENTER);
+            title.setTextColor(Color.WHITE);
+            title.setTextSize(20);
+            title.setTypeface(tf);
+            alertDialog.setCustomTitle(title);
+
+            ListView lv = (ListView) convertView.findViewById(R.id.listView1);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,R.layout.list_item,websites);
+            lv.setAdapter(adapter);
+            final AlertDialog ad = alertDialog.show();
+
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener()
+            {
+                @Override
+                public void onItemClick(AdapterView<?> arg0, View arg1,int position, long arg3)
+                {
+                    Toast.makeText(MainActivity.this, "" + websites.get(position), Toast.LENGTH_SHORT).show();
+                    API_ID = siteIds.get(position).toString();
+                    menuSiteName.setText(websites.get(position));
+
+                    ad.dismiss();
+                }
+            });
         }
         else if (id == R.id.visits)
         {
@@ -357,22 +367,26 @@ public class MainActivity extends AppCompatActivity
         }
         else if (id == R.id.signOut)
         {
+            changeFragment = false;
             initialLogin = null;
             this.recreate();
-            fragmentClass = HomePageFragment.class;
+//            fragmentClass = HomePageFragment.class;
 
         }
-        try {
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e)
+        if(changeFragment)
         {
-            e.printStackTrace();
-        }
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+            try {
+                fragment = (Fragment) fragmentClass.newInstance();
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+            drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+        }
         return true;
     }
 
