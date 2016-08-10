@@ -170,10 +170,10 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
 
     public void createTable()
     {
-
-        for (int i = 0; i < totalHours ; i++)
+        int tableSize = tableValues.size();
+        for (int i = 0; i < tableSize ; i++)
         {
-            TableRow[] tableRow = new TableRow[totalHours];
+            TableRow[] tableRow = new TableRow[tableSize];
             tableRow[i] = new TableRow(getActivity());
             tableRow[i].setPadding(40, 40, 40, 40);
 
@@ -448,6 +448,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
 
                     }else
                     {
+                        Log.i("GGGGGGGG", tableValues.toString());
                         dataSets = new ArrayList<>();
                         LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "TODAY");
                         lineDataSet1.setColor(Color.rgb(5, 184, 198));
