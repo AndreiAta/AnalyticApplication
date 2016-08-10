@@ -119,7 +119,6 @@ public class MainActivity extends AppCompatActivity
     public static ArrayList<String> websites;
     public static ArrayList<Integer> siteIds;
     public static View header;
-    Typeface tf;
 
     ArrayList<String> spinnerList = new ArrayList<>();
 
@@ -131,14 +130,11 @@ public class MainActivity extends AppCompatActivity
         spinnerList.add("Somethingelse.dk.uk.");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        FontsOverride.setDefaultFont(this, "monospace", "Helvetica.otf");
-        tf = Typeface.createFromAsset(getAssets(), "Helvetica.otf");
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         TextView myTitle = (TextView) toolbar.getChildAt(0);
-        myTitle.setTypeface(tf);
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -311,7 +307,6 @@ public class MainActivity extends AppCompatActivity
             title.setGravity(Gravity.CENTER);
             title.setTextColor(Color.WHITE);
             title.setTextSize(20);
-            title.setTypeface(tf);
             alertDialog.setCustomTitle(title);
 
             ListView lv = (ListView) convertView.findViewById(R.id.listView1);
