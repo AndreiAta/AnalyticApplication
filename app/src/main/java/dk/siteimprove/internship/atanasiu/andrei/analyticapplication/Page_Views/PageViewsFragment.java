@@ -162,10 +162,10 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
 
     public void createTable()
     {
-
-        for (int i = 0; i < totalHours ; i++)
+        int tableSize = tableValues.size();
+        for (int i = 0; i < tableSize ; i++)
         {
-            TableRow[] tableRow = new TableRow[totalHours];
+            TableRow[] tableRow = new TableRow[tableSize];
             tableRow[i] = new TableRow(getActivity());
             tableRow[i].setPadding(40, 40, 40, 40);
 

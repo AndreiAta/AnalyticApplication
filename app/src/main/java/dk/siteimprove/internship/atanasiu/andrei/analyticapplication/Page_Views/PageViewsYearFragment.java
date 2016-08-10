@@ -170,9 +170,10 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
 
     public void createTable()
     {
-        for (int i = 0; i <totalMonths ; i++)
+        int tableSize = tableValues.size();
+        for (int i = 0; i <tableSize ; i++)
         {
-            TableRow[] tableRow = new TableRow[totalMonths];
+            TableRow[] tableRow = new TableRow[tableSize];
             tableRow[i] = new TableRow(getActivity());
             tableRow[i].setPadding(40,40,40,40);
 
