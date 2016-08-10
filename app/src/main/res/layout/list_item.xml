@@ -9,5 +9,4 @@
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
     android:textColor="@color/White"
     android:background="@color/MineshaftGrey"
-    android:typeface="monospace"
     />

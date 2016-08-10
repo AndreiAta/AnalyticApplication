@@ -291,38 +291,7 @@ public class MainActivity extends AppCompatActivity
         {
 //            fragmentClass = HomePageFragment.class;
             changeFragment = false;
-
-            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_DARK);
-            LayoutInflater inflater = getLayoutInflater();
-            final View convertView = inflater.inflate(R.layout.site_picker_dialog, null);
-            alertDialog.setView(convertView);
-
-            TextView title = new TextView(this);
-            // You Can Customise your Title here
-            title.setText("Choose Website");
-            title.setBackgroundColor(Color.DKGRAY);
-            title.setPadding(40, 40, 40, 40);
-            title.setGravity(Gravity.CENTER);
-            title.setTextColor(Color.WHITE);
-            title.setTextSize(20);
-            alertDialog.setCustomTitle(title);
-
-            ListView lv = (ListView) convertView.findViewById(R.id.listView1);
-            final ArrayAdapter<String> adapter = new ArrayAdapter<>(this,R.layout.list_item,websites);
-            lv.setAdapter(adapter);
-            final AlertDialog ad = alertDialog.show();
-
-            lv.setOnItemClickListener(new AdapterView.OnItemClickListener()
-            {
-                @Override
-                public void onItemClick(AdapterView<?> arg0, View arg1,int position, long arg3)
-                {
-                    Toast.makeText(MainActivity.this, "" + websites.get(position), Toast.LENGTH_SHORT).show();
-                    API_ID = siteIds.get(position).toString();
-                    menuSiteName.setText(websites.get(position));
-                    ad.dismiss();
-                }
-            });
+            setupAlertDialog();
         }
         else if (id == R.id.visits)
         {
@@ -379,6 +348,8 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+
+
     @Override
     public void onFragmentInteraction(Uri uri) {}
 
@@ -400,4 +371,39 @@ public class MainActivity extends AppCompatActivity
         return haveConnectedWifi || haveConnectedMobile;
     }
 
+    private void setupAlertDialog()
+    {
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_DARK);
+        LayoutInflater inflater = getLayoutInflater();
+        final View convertView = inflater.inflate(R.layout.site_picker_dialog, null);
+        alertDialog.setView(convertView);
+
+        TextView title = new TextView(this);
+        // You Can Customise your Title here
+        title.setText("Choose Website");
+        title.setBackgroundColor(Color.DKGRAY);
+        title.setPadding(40, 40, 40, 40);
+        title.setGravity(Gravity.CENTER);
+        title.setTextColor(Color.WHITE);
+        title.setTextSize(20);
+        alertDialog.setCustomTitle(title);
+
+        ListView lv = (ListView) convertView.findViewById(R.id.listView1);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this,R.layout.list_item,websites);
+        lv.setAdapter(adapter);
+        final AlertDialog ad = alertDialog.show();
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1,int position, long arg3)
+            {
+                Log.i(arg1.toString(), "GGGGGG");
+                Toast.makeText(MainActivity.this, "" + websites.get(position), Toast.LENGTH_SHORT).show();
+                API_ID = siteIds.get(position).toString();
+                menuSiteName.setText(websites.get(position));
+                ad.dismiss();
+            }
+        });
+    }
 }
