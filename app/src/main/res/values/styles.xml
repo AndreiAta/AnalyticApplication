@@ -7,6 +7,7 @@
         <item name="colorPrimaryDark">@color/MineshaftGrey</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:typeface">monospace</item>
+
     </style>
 
     <style name="DialogTheme" parent="android:Theme.Dialog">
@@ -34,6 +35,12 @@
         <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
         <item name="android:typeface">monospace</item>
     </style>
+
+    <style name="DialogStyle">
+        <item name="android:background">@color/MineshaftGrey</item>
+        <item name="android:textColor">@color/White</item>
+    </style>
+
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
