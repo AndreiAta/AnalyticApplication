@@ -24,6 +24,7 @@
         android:id="@+id/menuSiteName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Analytics - siteimprove.com"/>
+        android:text="Analytics - siteimprove.com"
+        android:textColor="@color/JavaBlue"/>
 
 </LinearLayout>

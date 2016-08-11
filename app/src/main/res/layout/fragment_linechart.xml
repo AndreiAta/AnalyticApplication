@@ -107,7 +107,7 @@
                 android:background="@color/TuataraGrey">
 
                 <TableRow
-                    android:background="@color/OnyxBlack"
+                    android:background="@color/MineshaftGrey"
                     android:padding="10dp">
                     <TextView
                         android:id="@+id/columnOne"
