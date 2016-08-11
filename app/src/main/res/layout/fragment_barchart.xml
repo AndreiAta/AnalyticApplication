@@ -30,6 +30,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:indeterminate="true"
+                    android:layout_gravity="center"
                     android:layout_centerHorizontal="true"
                     android:visibility="gone" />
 
@@ -108,7 +109,7 @@
                 android:background="@color/TuataraGrey">
 
                 <TableRow
-                    android:background="@color/MineshaftGrey"
+                    android:background="@color/TuataraGrey"
                     android:padding="10dp">
                     <TextView
                         android:id="@+id/columnOne"

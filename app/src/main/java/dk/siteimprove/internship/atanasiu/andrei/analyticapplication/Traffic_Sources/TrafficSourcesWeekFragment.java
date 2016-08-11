@@ -98,8 +98,8 @@ public class TrafficSourcesWeekFragment extends Fragment implements View.OnClick
         period = mondayDate + "_" + currentDate;
 
         //Get Time Period for the Text View
-        String textDatePeriod = startOfWeek.toString("dd-MMMM") + " to " + currentDay.toString("dd-MMMM");
-        textDatePeriod = textDatePeriod.replace("-", " ");
+        String textDatePeriod = startOfWeek.toString("dd MMMM") + " - " + currentDay.toString("dd MMMM");
+
 
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
@@ -133,6 +133,7 @@ public class TrafficSourcesWeekFragment extends Fragment implements View.OnClick
         table.setVisibility(View.GONE);
         textViewDate.setText(textDatePeriod);
 
+        tableValues = new ArrayList<>();
         xAxisLabels = new ArrayList<>();
         dataSets = new ArrayList<>();
         totalVisits = 0;
@@ -361,7 +362,7 @@ public class TrafficSourcesWeekFragment extends Fragment implements View.OnClick
                 }else
                 {
                     visitsAmount = 0;
-                    tableValues = new ArrayList<>();
+
                 }
 
                 for (int i = 0; i < totalItems; i++)

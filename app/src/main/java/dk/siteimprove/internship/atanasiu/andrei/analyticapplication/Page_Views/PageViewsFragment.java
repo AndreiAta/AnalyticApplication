@@ -24,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.components.XAxis;
+
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,6 +86,7 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
     {
         MainActivity.currentFragment = "Today";
         totalVisits = 0;
+        DateTime today = new DateTime();
 
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
@@ -104,7 +107,7 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         mv = new CustomMarkerViewPage(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
-        textViewDate.setText("0 - 0");
+        textViewDate.setText(today.toString("dd MMMM"));
         textViewInfo.setText("PAGE VIEWS TODAY");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
@@ -448,7 +451,6 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
                         dataSets.add(lineDataSet1);
 
                         // Setting Header Text to match VisitsToday Fragment.
-                        textViewDate.setText("0 - " + String.valueOf(totalHours - 1));
                         textViewTotal.setText(String.valueOf(totalVisits));
 
                         if(landscapeMode)

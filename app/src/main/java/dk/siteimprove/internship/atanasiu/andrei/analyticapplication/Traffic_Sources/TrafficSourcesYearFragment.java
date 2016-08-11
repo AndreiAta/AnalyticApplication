@@ -125,9 +125,10 @@ public class TrafficSourcesYearFragment extends Fragment implements View.OnClick
         int dayOfYear = new DateTime().getDayOfYear();
         DateTime firstDayOfMonth = new DateTime().minusDays(dayOfYear - 1);
         DateTime today = new DateTime();
-        String textDatePeriod = firstDayOfMonth.toString("MMMMM") + " to " + today.toString("MMMMM");
+        String textDatePeriod = firstDayOfMonth.toString("MMMMM yyyy") + " - " + today.toString("MMMMM yyyy");
         textViewDate.setText(textDatePeriod);
 
+        tableValues = new ArrayList<>();
         xAxisLabels = new ArrayList<>();
         dataSets = new ArrayList<>();
         totalVisits = 0;
@@ -356,7 +357,7 @@ public class TrafficSourcesYearFragment extends Fragment implements View.OnClick
                 }else
                 {
                     visitsAmount = 0;
-                    tableValues = new ArrayList<>();
+
                 }
 
                 for (int i = 0; i < totalItems; i++)

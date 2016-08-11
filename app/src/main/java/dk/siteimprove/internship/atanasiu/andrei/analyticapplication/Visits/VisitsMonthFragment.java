@@ -125,7 +125,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         int daysOfMonth = new DateTime().getDayOfMonth();
         DateTime firstDayOfMonth = new DateTime().minusDays(daysOfMonth - 1);
         DateTime today = new DateTime().minusDays(1);
-        String textDatePeriod = firstDayOfMonth.toString("dd-MMMM") + " to " + today.toString("dd-MMMM");
+        String textDatePeriod = firstDayOfMonth.toString("dd MMMM") + " - " + today.toString("dd MMMM");
         textViewDate.setText(textDatePeriod);
 
         if(haveNetworkConnection())
