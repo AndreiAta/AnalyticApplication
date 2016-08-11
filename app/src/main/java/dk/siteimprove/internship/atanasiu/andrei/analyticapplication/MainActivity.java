@@ -4,6 +4,7 @@ package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
@@ -157,6 +158,7 @@ public class MainActivity extends AppCompatActivity
         {
 
             drawer.openDrawer(GravityCompat.START);
+            notificationDialog();
             dialog = new Dialog(this,R.style.full_screen_dialog);
             dialog.setContentView(R.layout.popup);
             dialog.setCancelable(false);
@@ -224,7 +226,9 @@ public class MainActivity extends AppCompatActivity
             View header = navigationView.getHeaderView(0);
             menuEmailTxt = (TextView) header.findViewById(R.id.menuMail);
             menuEmailTxt.setText(API_EMAIL);
-            menuSiteName.setText(websites.get(0));
+            int tempVal = siteIds.indexOf(Integer.valueOf(API_ID));
+            Log.i("XXXXXX", String.valueOf(tempVal));
+            menuSiteName.setText(websites.get(tempVal));
             signInButton.setAlpha(1);
             signInButton.setClickable(true);
             progressBarSignIn.setVisibility(View.GONE);
@@ -423,5 +427,23 @@ public class MainActivity extends AppCompatActivity
                 ad.dismiss();
             }
         });
+    }
+
+    private void notificationDialog()
+    {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        final View view = inflater.inflate(R.layout.notification_dialog, null);
+        builder.setView(view);
+        builder.setMessage("")
+                .setCancelable(false)
+                .setTitle("You can see more information by rotating the screen")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 }

@@ -1,6 +1,8 @@
 package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
