@@ -4,6 +4,7 @@ package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -56,6 +57,9 @@ public class LoginChecker extends AsyncTask<Void, Void, String>
         if(response == null) {
             response = "THERE WAS AN ERROR";
             MainActivity.loginAlert.setText("Login Failed - Email & Key doesn't match");
+            MainActivity.signInButton.setClickable(true);
+            MainActivity.signInButton.setAlpha(1);
+            MainActivity.progressBarSignIn.setVisibility(View.GONE);
         }
         else
         {
@@ -80,11 +84,15 @@ public class LoginChecker extends AsyncTask<Void, Void, String>
                 MainActivity.API_ID = MainActivity.siteIds.get(0).toString();
                 MainActivity.menuSiteName.setText(MainActivity.websites.get(0));
 
+
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (ClassCastException ce){
                 // Handle No Login -- or response?
                 MainActivity.loginAlert.setText("Login Failed - ClassCastException");
+                MainActivity.signInButton.setClickable(true);
+                MainActivity.signInButton.setAlpha(1);
+                MainActivity.progressBarSignIn.setVisibility(View.GONE);
             }
         }
         Log.i("INFO", response);

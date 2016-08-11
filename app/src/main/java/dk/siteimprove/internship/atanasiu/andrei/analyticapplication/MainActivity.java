@@ -29,6 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -118,6 +119,8 @@ public class MainActivity extends AppCompatActivity
     public static ArrayList<Integer> siteIds;
     View header;
     ListView lv;
+    public static Button signInButton;
+    public static ProgressBar progressBarSignIn;
 
 
     ArrayList<String> spinnerList = new ArrayList<>();
@@ -142,6 +145,8 @@ public class MainActivity extends AppCompatActivity
         menuEmailTxt = (TextView) header.findViewById(R.id.menuMail);
         menuSiteName = (TextView) header.findViewById(R.id.menuSiteName);
 
+
+
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -159,17 +164,22 @@ public class MainActivity extends AppCompatActivity
             apiKeyText = (EditText) dialog.findViewById(R.id.apiKeyTextField);
             headerTxt = (TextView) dialog.findViewById(R.id.headerTxt);
             loginAlert = (TextView) dialog.findViewById(R.id.loginAlert);
-            Button button = (Button) dialog.findViewById(R.id.Button01);
-
+            progressBarSignIn  = (ProgressBar) dialog.findViewById(R.id.progressBarSignIn);
+            progressBarSignIn.setVisibility(View.GONE);
+            signInButton = (Button) dialog.findViewById(R.id.SignInButton);
 
             readFromFile();
-            button.setOnClickListener(new View.OnClickListener()
+            signInButton.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View view)
                 {
                     //initialLogin = "Logged in";
                     loginAlert.setText("");
+                    signInButton.setAlpha(.5f);
+                    signInButton.setClickable(false);
+                    progressBarSignIn.setVisibility(View.VISIBLE);
+
                     if(haveNetworkConnection())
                     {
                         final LoginChecker lc = new LoginChecker();
@@ -200,6 +210,9 @@ public class MainActivity extends AppCompatActivity
                     {
                         Toast.makeText(getApplicationContext(), "YOU HAVE NO INTERNET!", Toast.LENGTH_SHORT).show();
                         loginAlert.setText("Login Failed - No Internet");
+                        signInButton.setAlpha(1);
+                        signInButton.setClickable(true);
+                        progressBarSignIn.setVisibility(View.GONE);
                     }
 
                 }
@@ -212,7 +225,11 @@ public class MainActivity extends AppCompatActivity
             menuEmailTxt = (TextView) header.findViewById(R.id.menuMail);
             menuEmailTxt.setText(API_EMAIL);
             menuSiteName.setText(websites.get(0));
+            signInButton.setAlpha(1);
+            signInButton.setClickable(true);
+            progressBarSignIn.setVisibility(View.GONE);
         }
+
     }
 
     private void writeToFile(String message)
