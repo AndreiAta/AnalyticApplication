@@ -55,7 +55,7 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
     ArrayList<BarEntry> valueSet1, valueSet2;
     ArrayList<BarDataSet> dataSets;
     public static ArrayList<String> xAxis, xAxisLabels;
-    ArrayList<Integer> tableValues = new ArrayList<>();
+    ArrayList<Integer> tableValues;
     int[] tempValSet2 = new int[100];
 
     HorizontalBarChart chart;
@@ -249,7 +249,7 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
         BarData data = new BarData(xAxisLabels, dataSets);
         chart.setData(data);
         chart.setDescription("");
-        chart.animateXY(2000, 2000);
+        chart.animateXY(1000, 1000);
         chart.invalidate();
         chart.setBackgroundColor(Color.rgb(68, 68, 68));
         chart.setGridBackgroundColor(R.color.White);
@@ -359,6 +359,7 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
                     valueSet1 = new ArrayList<>();
                     xAxis = new ArrayList<>();
                     xAxisLabels = new ArrayList<>();
+                    tableValues = new ArrayList<>();
                 }
                 if(totalPopPages == 0)
                 {

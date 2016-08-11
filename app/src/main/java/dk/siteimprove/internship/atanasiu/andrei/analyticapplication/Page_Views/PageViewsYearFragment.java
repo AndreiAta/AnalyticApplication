@@ -51,7 +51,7 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
     ArrayList<LineDataSet> dataSets;
     ArrayList<Entry> valueSet1;
     ArrayList<Entry> valueSet2;
-    ArrayList<Integer> tableValues = new ArrayList<>();
+    ArrayList<Integer> tableValues;
     boolean landscapeMode, apiIdSelected;
     boolean secondCall = false;
     boolean tableIsVisible = false;
@@ -256,7 +256,7 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
         Log.i("DATA SETS", dataSets.toString());
         chart.setData(data);
         chart.setDescription("");
-        chart.animateXY(2000, 2000);
+        chart.animateXY(1000, 1000);
         chart.invalidate();
         chart.setBackgroundColor(Color.rgb(68, 68, 68));
         chart.setGridBackgroundColor(R.color.White);
@@ -362,6 +362,7 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
                 }else
                 {
                     valueSet1 = new ArrayList<>();
+                    tableValues = new ArrayList<>();
                 }
                 if(totalMonths == 0)
                 {

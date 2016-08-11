@@ -54,7 +54,7 @@ public class TrafficSourcesYearFragment extends Fragment implements View.OnClick
     String lastYear;
     public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     TableLayout table;
-    ArrayList<Integer> tableValues = new ArrayList<>();
+    ArrayList<Integer> tableValues;
     ArrayList<BarEntry> valueSet1;
     ArrayList<BarEntry> valueSet2;
     boolean secondCall = false;
@@ -254,7 +254,7 @@ public class TrafficSourcesYearFragment extends Fragment implements View.OnClick
         BarData data = new BarData(xAxisLabels, dataSets);
         chart.setData(data);
         chart.setDescription("");
-        chart.animateXY(2000, 2000);
+        chart.animateXY(1000, 1000);
         chart.invalidate();
         chart.setBackgroundColor(Color.rgb(68, 68, 68));
         chart.setGridBackgroundColor(R.color.White);
@@ -356,6 +356,7 @@ public class TrafficSourcesYearFragment extends Fragment implements View.OnClick
                 }else
                 {
                     visitsAmount = 0;
+                    tableValues = new ArrayList<>();
                 }
 
                 for (int i = 0; i < totalItems; i++)
