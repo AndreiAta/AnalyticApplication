@@ -4,9 +4,15 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group
-        android:id="@+id/menu_top"
+        android:id="@+id/menu_top">
+        <item
+            android:id="@+id/chooseSite"
+            android:title="Choose Site"/>
+    </group>
+
+    <group
+        android:id="@+id/menu_middle"
         android:checkableBehavior="single">
-        android:id="@+id/menu_top"
 
             <item
                 android:id="@+id/visits"
@@ -49,11 +55,7 @@
     <group
         android:id="@+id/menu_bottom">
         <item
-            android:id="@+id/chooseSite"
-            android:title="Choose Site"/>
-        <item
             android:id="@+id/signOut"
-            android:title="Change User"/>
-
+            android:title="Sign out"/>
     </group>
 </menu>

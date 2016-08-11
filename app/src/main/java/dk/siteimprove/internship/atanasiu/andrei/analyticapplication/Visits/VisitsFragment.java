@@ -479,7 +479,10 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (ClassCastException ce){
-                Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+                try{
+                    Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+                }catch (NullPointerException nPE) {Log.i("DDDDDDDD","blaaa");}
+
             }
         }
     }

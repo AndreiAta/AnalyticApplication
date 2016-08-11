@@ -68,7 +68,7 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text=""
                     android:gravity="left|center"
-                    android:textColor="@color/Alert"
+                    android:textColor="@color/JasperRed"
                     android:width="200dp"
                     android:id="@+id/loginAlert"
                     android:layout_gravity="center_horizontal"/>
