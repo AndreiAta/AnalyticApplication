@@ -51,7 +51,7 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
     ArrayList<LineDataSet> dataSets;
     ArrayList<Entry> valueSet1;
     ArrayList<Entry> valueSet2;
-    ArrayList<Integer> tableValues = new ArrayList<>();
+    ArrayList<Integer> tableValues;
     boolean landscapeMode, apiIdSelected;
     boolean secondCall = false;
     boolean tableIsVisible = false;
@@ -362,6 +362,7 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
                 }else
                 {
                     valueSet1 = new ArrayList<>();
+                    tableValues = new ArrayList<>();
                 }
                 if(totalMonths == 0)
                 {

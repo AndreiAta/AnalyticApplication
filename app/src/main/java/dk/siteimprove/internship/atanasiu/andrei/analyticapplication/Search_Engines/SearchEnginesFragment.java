@@ -62,7 +62,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
     String API_URL = "";
     public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     TableLayout table;
-    ArrayList<Integer> tableValues = new ArrayList<>();
+    ArrayList<Integer> tableValues;
     ArrayList<BarEntry> valueSet1;
     ArrayList<BarEntry> valueSet2;
     boolean secondCall = false;
@@ -358,6 +358,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
                     valueSet1 = new ArrayList<>();
                     xAxis = new ArrayList<>();
                     xAxisLabels = new ArrayList<>();
+                    tableValues = new ArrayList<>();
                 }
 
                 if(totalSearchEngines == 0)

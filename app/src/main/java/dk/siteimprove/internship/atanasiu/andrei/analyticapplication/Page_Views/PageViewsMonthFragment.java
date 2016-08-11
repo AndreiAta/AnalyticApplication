@@ -58,7 +58,7 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
     public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     boolean apiIdSelected;
     TableLayout table;
-    ArrayList<Integer> tableValues = new ArrayList<>();
+    ArrayList<Integer> tableValues;
     ArrayList<String> tableWeekDays = new ArrayList<>();
     boolean tableIsVisible = false;
     boolean secondCall = false;
@@ -362,6 +362,7 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
                 }else
                 {
                     valueSet1 = new ArrayList<>();
+                    tableValues = new ArrayList<>();
                 }
                 if(totalDays == 0)
                 {

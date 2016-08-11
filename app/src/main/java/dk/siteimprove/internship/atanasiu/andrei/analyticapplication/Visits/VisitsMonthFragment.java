@@ -58,7 +58,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
     public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     boolean apiIdSelected;
     TableLayout table;
-    ArrayList<Integer> tableValues = new ArrayList<>();
+    ArrayList<Integer> tableValues;
     ArrayList<String> tableWeekDays = new ArrayList<>();
     boolean tableIsVisible = false;
     boolean secondCall = false;
@@ -364,6 +364,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
                 }else
                 {
                     valueSet1 = new ArrayList<>();
+                    tableValues = new ArrayList<>();
                 }
                 if(totalDays == 0)
                 {

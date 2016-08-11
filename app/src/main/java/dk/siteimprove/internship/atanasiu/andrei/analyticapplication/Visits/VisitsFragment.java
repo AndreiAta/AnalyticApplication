@@ -57,7 +57,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
     boolean tableIsVisible = false;
     public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     TableLayout table;
-    ArrayList<Integer> tableValues = new ArrayList<>();
+    ArrayList<Integer> tableValues;
     CustomMarkerViewVisits mv;
 
 
@@ -365,6 +365,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
                 }else
                 {
                     valueSet1 = new ArrayList<>();
+                    tableValues = new ArrayList<>();
                 }
                 if(totalHours == 0)
                 {

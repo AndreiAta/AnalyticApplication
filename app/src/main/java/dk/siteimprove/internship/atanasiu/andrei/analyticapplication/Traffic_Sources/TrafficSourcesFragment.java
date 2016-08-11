@@ -52,7 +52,7 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
     String API_URL = "";
     public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     TableLayout table;
-    ArrayList<Integer> tableValues = new ArrayList<>();
+    ArrayList<Integer> tableValues;
     ArrayList<BarEntry> valueSet1;
     ArrayList<BarEntry> valueSet2;
     boolean secondCall = false;
@@ -345,6 +345,7 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
                 }else
                 {
                     visitsAmount = 0;
+                    tableValues = new ArrayList<>();
                 }
 
                 for (int i = 0; i < totalItems; i++)

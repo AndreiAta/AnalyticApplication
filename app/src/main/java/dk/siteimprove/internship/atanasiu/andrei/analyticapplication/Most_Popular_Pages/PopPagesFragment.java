@@ -53,7 +53,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
     ArrayList<BarEntry> valueSet1, valueSet2;
     ArrayList<BarDataSet> dataSets;
     public static ArrayList<String> xAxis, xAxisLabels;
-    ArrayList<Integer> tableValues = new ArrayList<>();
+    ArrayList<Integer> tableValues;
     int[] tempValSet2 = new int[100]; // This should be instantiated in RetriveFeedTask or simply use ArrayList instead?
 
     HorizontalBarChart chart;
@@ -341,6 +341,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                     valueSet1 = new ArrayList<>();
                     xAxis = new ArrayList<>();
                     xAxisLabels = new ArrayList<>();
+                    tableValues = new ArrayList<>();
                 }
                 if(totalPopPages == 0)
                 {

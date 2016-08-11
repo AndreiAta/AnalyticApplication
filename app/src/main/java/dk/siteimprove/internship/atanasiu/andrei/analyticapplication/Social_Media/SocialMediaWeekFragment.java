@@ -56,7 +56,7 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
     private OnFragmentInteractionListener mListener;
     public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     TableLayout table;
-    ArrayList<Integer> tableValues = new ArrayList<>();
+    ArrayList<Integer> tableValues;
     ArrayList<String> tableWeekDays = new ArrayList<>();
     ArrayList<BarEntry> valueSet1;
     ArrayList<BarEntry> valueSet2;
@@ -370,6 +370,7 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
                     valueSet1 = new ArrayList<>();
                     xAxis = new ArrayList<>();
                     xAxisLabels = new ArrayList<>();
+                    tableValues = new ArrayList<>();
                 }
 
                 if(totalSocialMedia == 0)
