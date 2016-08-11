@@ -186,10 +186,13 @@ public class MainActivity extends AppCompatActivity
                         API_EMAIL = emailText.getText().toString();
                         API_KEY = apiKeyText.getText().toString();
                         totalString = API_EMAIL + "=-==-" + API_KEY; // Middle string is used to split, in read method.
-                        writeToFile(totalString);
+                        if(!API_EMAIL.equals("") && !API_KEY.equals(""))
+                        {
+                            writeToFile(totalString);
+                        }
+
 
                         // Sets drawer menuMail textview to current user mail.
-
                         menuEmailTxt.setText(API_EMAIL);
 
                         // Opens the "homepage" fragment.
@@ -444,8 +447,10 @@ public class MainActivity extends AppCompatActivity
 
         builder .setCancelable(false)
                 .setCustomTitle(title)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+                .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
 
                     }
                 });

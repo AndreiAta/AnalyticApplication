@@ -175,7 +175,8 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
 
             TextView hourOfDayTxt = new TextView(getActivity());
             hourOfDayTxt.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-            hourOfDayTxt.setText(String.valueOf(i));
+            if(i < 10) hourOfDayTxt.setText("0" + String.valueOf(i));
+            else hourOfDayTxt.setText(String.valueOf(i));
             hourOfDayTxt.setTextColor(Color.WHITE);
 
             TextView visitsTxt = new TextView(getActivity());
