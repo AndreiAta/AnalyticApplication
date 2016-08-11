@@ -261,17 +261,13 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
         chart.setDoubleTapToZoomEnabled(false);
         chart.setMarkerView(mv);
 
-        DisplayMetrics metrics = new DisplayMetrics();
-        WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
-        wm.getDefaultDisplay().getMetrics(metrics);
-        final float height = metrics.heightPixels;
         if(landscapeMode)
         {
-            chart.getLayoutParams().height = (int)height/2;
+            chart.getLayoutParams().height = (int)MainActivity.screenHeight/2;
         }
         else
         {
-            chart.getLayoutParams().height = (int)height/3;
+            chart.getLayoutParams().height = (int)MainActivity.screenHeight/3;
         }
 
         XAxis xAxis = chart.getXAxis();
