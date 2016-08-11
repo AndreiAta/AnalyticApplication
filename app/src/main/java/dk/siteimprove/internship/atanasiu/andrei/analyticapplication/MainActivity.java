@@ -403,11 +403,11 @@ public class MainActivity extends AppCompatActivity
 
         TextView title = new TextView(this);
         // You Can Customise your Title here
-        title.setText("Choose Website");
+        title.setText("Choose Site");
         title.setBackgroundColor(Color.DKGRAY);
         title.setPadding(40, 40, 40, 40);
         title.setGravity(Gravity.CENTER);
-        title.setTextColor(Color.WHITE);
+        title.setTextColor(Color.rgb(5, 184, 198));
         title.setTextSize(20);
         alertDialog.setCustomTitle(title);
 
@@ -431,13 +431,22 @@ public class MainActivity extends AppCompatActivity
 
     private void notificationDialog()
     {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_DEVICE_DEFAULT_DARK);
         LayoutInflater inflater = getLayoutInflater();
         final View view = inflater.inflate(R.layout.notification_dialog, null);
         builder.setView(view);
-        builder.setMessage("")
-                .setCancelable(false)
-                .setTitle("You can see more information by rotating the screen")
+
+        TextView title = new TextView(this);
+        // You Can Customise your Title here
+        title.setText("Rotate for more detailed graphs");
+        title.setBackgroundColor(Color.DKGRAY);
+        title.setPadding(40, 40, 40, 40);
+        title.setGravity(Gravity.CENTER);
+        title.setTextColor(Color.rgb(5, 184, 198));
+        title.setTextSize(18);
+
+        builder .setCancelable(false)
+                .setCustomTitle(title)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
