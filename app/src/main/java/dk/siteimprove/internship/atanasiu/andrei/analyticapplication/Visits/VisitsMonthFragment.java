@@ -260,7 +260,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         Log.i("DATA SETS", dataSets.toString());
         chart.setData(data);
         chart.setDescription("");
-        chart.animateXY(2000, 2000);
+        chart.animateXY(1000, 1000);
         chart.invalidate();
         chart.setBackgroundColor(Color.rgb(68, 68, 68));
         chart.setGridBackgroundColor(R.color.White);
