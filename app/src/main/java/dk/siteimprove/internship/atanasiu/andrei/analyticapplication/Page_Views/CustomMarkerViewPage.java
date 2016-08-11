@@ -10,6 +10,10 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.Utils;
 
+import org.joda.time.DateTime;
+
+import java.util.ArrayList;
+
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 
@@ -28,6 +32,7 @@ public class CustomMarkerViewPage extends MarkerView
     public void refreshContent(Entry e, Highlight highlight)
     {
         tvContent.setText("" + Utils.formatNumber(e.getVal(), 0, true)); // set the entry-value as the display text
+        DateTime today = new DateTime();
 
         if(MainActivity.currentFragment.equals("Today"))
         {
@@ -36,12 +41,12 @@ public class CustomMarkerViewPage extends MarkerView
 
         }else if(MainActivity.currentFragment.equals("Week"))
         {
-            PageViewsWeekFragment.textViewInfo.setText("Day " + (e.getXIndex() + 1));
+            PageViewsWeekFragment.textViewInfo.setText("Day " + (e.getXIndex() + 1) + "");
             PageViewsWeekFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
 
         }else if(MainActivity.currentFragment.equals("Month"))
         {
-            PageViewsMonthFragment.textViewInfo.setText("Day of Month " + (e.getXIndex() + 1));
+            PageViewsMonthFragment.textViewInfo.setText((e.getXIndex() + 1) + " of " + today.toString("MMMMM"));
             PageViewsMonthFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
 
         }else  if(MainActivity.currentFragment.equals("Year"))
