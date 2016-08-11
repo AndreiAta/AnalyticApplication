@@ -29,6 +29,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -83,6 +84,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                              Bundle savedInstanceState)
     {
         MainActivity.currentFragment = "Today";
+        DateTime today = new DateTime();
 
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
@@ -106,7 +108,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
         table = (TableLayout) rootView.findViewById(R.id.table);
         mv = new CustomMarkerViewPopular(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
-        textViewDate.setText("0 - 0");
+        textViewDate.setText(today.toString("dd MMMM"));
         textViewInfo.setText("PAGE VIEWS TODAY");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,

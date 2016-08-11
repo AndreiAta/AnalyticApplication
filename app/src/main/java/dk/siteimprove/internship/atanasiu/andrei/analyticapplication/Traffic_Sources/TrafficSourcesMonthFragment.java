@@ -121,9 +121,10 @@ public class TrafficSourcesMonthFragment extends Fragment implements View.OnClic
         int daysOfMonth = new DateTime().getDayOfMonth();
         DateTime firstDayOfMonth = new DateTime().minusDays(daysOfMonth - 1);
         DateTime today = new DateTime();
-        String textDatePeriod = firstDayOfMonth.toString("dd-MMMM") + " to " + today.toString("dd-MMMM");
+        String textDatePeriod = firstDayOfMonth.toString("dd MMMM") + " - " + today.toString("dd MMMM");
         textViewDate.setText(textDatePeriod);
 
+        tableValues = new ArrayList<>();
         dataSets = new ArrayList<>();
         xAxisLabels = new ArrayList<>();
         totalVisits = 0;
@@ -352,7 +353,7 @@ public class TrafficSourcesMonthFragment extends Fragment implements View.OnClic
                 }else
                 {
                     visitsAmount = 0;
-                    tableValues = new ArrayList<>();
+
                 }
 
                 for (int i = 0; i < totalItems; i++)

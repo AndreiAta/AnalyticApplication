@@ -31,6 +31,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -95,6 +96,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
                              Bundle savedInstanceState)
     {
         MainActivity.currentFragment = "Today";
+        DateTime today = new DateTime();
 
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
@@ -116,7 +118,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
         table = (TableLayout) rootView.findViewById(R.id.table);
         mv = new CustomMarkerViewSearch(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
-        textViewDate.setText("0 - 0");
+        textViewDate.setText(today.toString("dd MMMM"));
         textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS TODAY");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,

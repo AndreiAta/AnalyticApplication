@@ -107,10 +107,9 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
         mondayDate = mondayDate.replace("-", "");
         thisWeekCompareMonDate = startOfWeek.toString("dd");
         String period = mondayDate + "_" + currentDate;
-        //Get Time Period for the Text View
-        String textDatePeriod = startOfWeek.toString("dd-MMMM") + " to " + currentDay.toString("dd-MMMM");
-        textDatePeriod = textDatePeriod.replace("-", " ");
 
+        //Get Time Period for the Text View
+        String textDatePeriod = startOfWeek.toString("dd MMMM") + " - " + currentDay.toString("dd MMMM");
 
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {

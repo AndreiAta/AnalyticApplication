@@ -29,6 +29,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,6 +85,8 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
                              Bundle savedInstanceState)
     {
         MainActivity.currentFragment = "Today";
+        DateTime today = new DateTime();
+
 
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
@@ -106,7 +109,7 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
         table = (TableLayout) rootView.findViewById(R.id.table);
         mv = new CustomMarkerViewTraffic(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
-        textViewDate.setText("0 - 0");
+        textViewDate.setText(today.toString("dd MMMM"));
         textViewInfo.setText("VISITS TODAY");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
@@ -116,6 +119,7 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
         tableToggler.setOnClickListener(this);
         table.setVisibility(View.GONE);
 
+        tableValues = new ArrayList<>();
         xAxisLabels = new ArrayList<>();
         dataSets = new ArrayList<>();
         totalVisits = 0;
@@ -345,7 +349,6 @@ public class TrafficSourcesFragment extends Fragment implements View.OnClickList
                 }else
                 {
                     visitsAmount = 0;
-                    tableValues = new ArrayList<>();
                 }
 
                 for (int i = 0; i < totalItems; i++)
