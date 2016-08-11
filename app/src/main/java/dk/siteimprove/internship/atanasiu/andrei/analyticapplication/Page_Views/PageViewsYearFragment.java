@@ -122,7 +122,7 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
         int dayOfYear = new DateTime().getDayOfYear();
         DateTime firstDayOfMonth = new DateTime().minusDays(dayOfYear - 1);
         DateTime today = new DateTime();
-        String textDatePeriod = firstDayOfMonth.toString("MMMMM") + " to " + today.toString("MMMMM");
+        String textDatePeriod = firstDayOfMonth.toString("MMMMM yyyy") + " - " + today.toString("MMMMM yyyy");
         textViewDate.setText(textDatePeriod);
 
         if(haveNetworkConnection())

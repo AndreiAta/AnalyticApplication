@@ -124,7 +124,7 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
         int dayOfYear = new DateTime().getDayOfYear();
         DateTime firstDayOfMonth = new DateTime().minusDays(dayOfYear - 1);
         DateTime today = new DateTime();
-        String textDatePeriod = firstDayOfMonth.toString("MMMMM") + " to " + today.toString("MMMMM");
+        String textDatePeriod = firstDayOfMonth.toString("MMMMM yyyy") + " - " + today.toString("MMMMM yyyy");
         textViewDate.setText(textDatePeriod);
         // Calculate last year period for the API call
         DateTime thisYear = new DateTime().minusYears(1);

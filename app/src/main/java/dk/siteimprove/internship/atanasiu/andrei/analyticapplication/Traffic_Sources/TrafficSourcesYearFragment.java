@@ -125,7 +125,7 @@ public class TrafficSourcesYearFragment extends Fragment implements View.OnClick
         int dayOfYear = new DateTime().getDayOfYear();
         DateTime firstDayOfMonth = new DateTime().minusDays(dayOfYear - 1);
         DateTime today = new DateTime();
-        String textDatePeriod = firstDayOfMonth.toString("MMMMM") + " to " + today.toString("MMMMM");
+        String textDatePeriod = firstDayOfMonth.toString("MMMMM yyyy") + " - " + today.toString("MMMMM yyyy");
         textViewDate.setText(textDatePeriod);
 
         xAxisLabels = new ArrayList<>();
