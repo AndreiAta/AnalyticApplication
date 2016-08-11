@@ -33,6 +33,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -185,7 +186,11 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
             TextView visitsTxt = new TextView(getActivity());
             visitsTxt.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
             visitsTxt.setGravity(Gravity.RIGHT);
-            visitsTxt.setText(tableValues.get(i).toString());
+            //Calculates the % of totalVisits.
+            float tempPercent = ((float)tableValues.get(i)/(float)totalVisits * 100);
+            DecimalFormat numberFormat = new DecimalFormat("#.00");
+            String percentVisits = "% " + numberFormat.format(tempPercent) ;
+            visitsTxt.setText(tableValues.get(i).toString() + "\n" + percentVisits);
             visitsTxt.setTextColor(Color.WHITE);
 
             tableRow[i].addView(hourOfDayTxt);

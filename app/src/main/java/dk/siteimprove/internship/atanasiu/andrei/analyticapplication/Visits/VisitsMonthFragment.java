@@ -39,6 +39,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
@@ -161,18 +162,22 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         {
             TableRow[] tableRow = new TableRow[tableSize];
             tableRow[i] = new TableRow(getActivity());
-            tableRow[i].setPadding(40,40,40,40);
+            tableRow[i].setPadding(40, 40, 40, 40);
 
 
             TextView monthDay = new TextView(getActivity());
             monthDay.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-            monthDay.setText(String.valueOf(i+1));
+            monthDay.setText(String.valueOf(i + 1));
             monthDay.setTextColor(Color.WHITE);
 
             TextView visits = new TextView(getActivity());
             visits.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
             visits.setGravity(Gravity.RIGHT);
-            visits.setText(tableValues.get(i).toString());
+            //Calculates the % of totalVisits.
+            float tempPercent = ((float)tableValues.get(i)/(float)totalVisits * 100);
+            DecimalFormat numberFormat = new DecimalFormat("#.00");
+            String percentVisits = "% " + numberFormat.format(tempPercent) ;
+            visits.setText(tableValues.get(i).toString() + "\n" + percentVisits);
             visits.setTextColor(Color.WHITE);
 
             tableRow[i].addView(monthDay);
