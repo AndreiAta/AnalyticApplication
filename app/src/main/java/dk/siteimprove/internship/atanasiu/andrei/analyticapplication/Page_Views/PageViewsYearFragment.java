@@ -60,7 +60,7 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
     String API_URL = "";
     String lastYear;
     TableLayout table;
-    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
+    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne, columnTwo;
     int totalVisits, totalMonths;
     CustomMarkerViewPage mv;
 
@@ -107,9 +107,11 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
+        columnTwo = (TextView) rootView.findViewById(R.id.columnTwo);
         mv = new CustomMarkerViewPage(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         columnOne.setText("Month of Year");
+        columnTwo.setText("Page Views");
         textViewInfo.setText("PAGE VIEWS THIS YEAR");
         tableToggler.setOnClickListener(this);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
