@@ -39,6 +39,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormatSymbols;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -53,6 +54,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
     ArrayList<Entry> valueSet1;
     ArrayList<Entry> valueSet2;
     ArrayList<Integer> tableValues;
+    ArrayList<String> monthList;
     boolean landscapeMode, apiIdSelected;
     boolean secondCall = false;
     boolean tableIsVisible = false;
@@ -120,6 +122,16 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
         table.setVisibility(View.GONE);
         totalVisits = 0;
 
+        //Get month List for the table
+        monthList = new ArrayList<>();
+        String[] months = new DateFormatSymbols().getMonths();
+        for (int i = 0; i < months.length; i++)
+        {
+            String month = months[i];
+            System.out.println("month = " + month);
+            monthList .add(months[i]);
+        }
+
         //Get date period for text view
         int dayOfYear = new DateTime().getDayOfYear();
         DateTime firstDayOfMonth = new DateTime().minusDays(dayOfYear - 1);
@@ -172,6 +184,11 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
 
     public void createTable()
     {
+        while(tableValues.size() < 12)
+        {
+            tableValues.add(0);
+        }
+
         int tableSize = tableValues.size();
         for (int i = 0; i < tableSize ; i++)
         {
@@ -182,7 +199,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
 
             TextView monthDay = new TextView(getActivity());
             monthDay.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-            monthDay.setText(String.valueOf(i+1));
+            monthDay.setText(monthList.get(i));
             monthDay.setTextColor(Color.WHITE);
 
             TextView visits = new TextView(getActivity());

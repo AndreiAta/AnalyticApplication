@@ -199,7 +199,6 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
 
             TextView monthDay = new TextView(getActivity());
             monthDay.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-//            monthDay.setText(String.valueOf(i+1));
             monthDay.setText(monthList.get(i));
             monthDay.setTextColor(Color.WHITE);
 
