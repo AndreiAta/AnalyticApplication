@@ -199,22 +199,8 @@ public class MainActivity extends AppCompatActivity
                             writeToFile(totalString);
                         }
 
-
                         // Sets drawer menuMail textview to current user mail.
                         menuEmailTxt.setText(API_EMAIL);
-
-                        // Opens the "homepage" fragment.
-                        Fragment fragment = null;
-                        Class fragmentClass = null;
-                        fragmentClass = HomePageFragment.class;
-                        try {
-                            fragment = (Fragment) fragmentClass.newInstance();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        FragmentManager fragmentManager = getSupportFragmentManager();
-                        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
                     }
                     else
                     {
@@ -240,6 +226,20 @@ public class MainActivity extends AppCompatActivity
             signInButton.setAlpha(1);
             signInButton.setClickable(true);
             progressBarSignIn.setVisibility(View.GONE);
+        }
+
+        if (savedInstanceState == null) {
+            Fragment fragment = null;
+            Class fragmentClass = null;
+            fragmentClass = HomePageFragment.class;
+            try {
+                fragment = (Fragment) fragmentClass.newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
         }
 
     }
