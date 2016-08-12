@@ -198,7 +198,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
             //Calculates the % of totalVisits.
             float tempPercent = ((float)tableValues.get(i)/(float)totalVisits * 100);
             DecimalFormat numberFormat = new DecimalFormat("#.00");
-            String percentVisits = "% " + numberFormat.format(tempPercent);
+            String percentVisits = numberFormat.format(tempPercent) + " %";
 
             //Adds two different text sizes for the visitsTxt
             String visitsString = tableValues.get(i).toString() + "\n" + percentVisits;
