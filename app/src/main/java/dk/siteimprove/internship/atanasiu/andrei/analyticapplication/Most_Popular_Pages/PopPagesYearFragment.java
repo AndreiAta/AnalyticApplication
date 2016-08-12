@@ -114,7 +114,7 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
         textViewInfo.setText("PAGE VIEWS THIS YEAR");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
+                getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
         columnOne.setText("Popular Pages");
         columnTwo.setText("Page Views");
 
@@ -183,13 +183,13 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
             table.setVisibility(View.GONE);
             tableIsVisible = false;
             tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
+                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
         }else
         {
             table.setVisibility(View.VISIBLE);
             tableIsVisible = true;
             tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_36dp), null);
+                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_18dp), null);
         }
     }
 
