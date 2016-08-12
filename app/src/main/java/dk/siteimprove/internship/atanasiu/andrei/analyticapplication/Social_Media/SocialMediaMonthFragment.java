@@ -120,7 +120,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         textViewInfo.setText("VISITS THIS MONTH");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
+                getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
         columnOne.setText("Social Media");
         tableToggler.setOnClickListener(this);
         table.setVisibility(View.GONE);
@@ -204,13 +204,13 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
             table.setVisibility(View.GONE);
             tableIsVisible = false;
             tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
+                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
         }else
         {
             table.setVisibility(View.VISIBLE);
             tableIsVisible = true;
             tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_36dp), null);
+                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_18dp), null);
         }
     }
 

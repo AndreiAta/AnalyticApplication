@@ -116,7 +116,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
         textViewInfo.setText("VISITS TODAY");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
+                getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
         columnOne.setText("Social Media");
 
         tableToggler.setOnClickListener(this);
@@ -174,13 +174,13 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
             table.setVisibility(View.GONE);
             tableIsVisible = false;
             tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
+                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
         }else
         {
             table.setVisibility(View.VISIBLE);
             tableIsVisible = true;
             tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_36dp), null);
+                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_18dp), null);
         }
     }
 
