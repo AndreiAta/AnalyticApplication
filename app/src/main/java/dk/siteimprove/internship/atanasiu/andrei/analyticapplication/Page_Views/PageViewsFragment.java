@@ -43,6 +43,7 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
@@ -51,7 +52,7 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
 {
     ProgressBar progressBar;
     LineChart chart;
-    ArrayList<LineDataSet> dataSets;
+    ArrayList<ILineDataSet> dataSets;
     ArrayList<Entry> valueSet1;
     ArrayList<Entry> valueSet2;
     String API_URL = "";

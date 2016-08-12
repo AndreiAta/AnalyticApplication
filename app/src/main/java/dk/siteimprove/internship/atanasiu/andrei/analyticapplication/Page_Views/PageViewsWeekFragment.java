@@ -30,6 +30,7 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import org.joda.time.DateTime;
 import org.json.JSONArray;
@@ -52,7 +53,7 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
     private OnFragmentInteractionListener mListener;
     ProgressBar progressBar;
     LineChart chart;
-    ArrayList<LineDataSet> dataSets;
+    ArrayList<ILineDataSet> dataSets;
     ArrayList<Entry> valueSet1;
     ArrayList<Entry> valueSet2;
     String API_URL = "";

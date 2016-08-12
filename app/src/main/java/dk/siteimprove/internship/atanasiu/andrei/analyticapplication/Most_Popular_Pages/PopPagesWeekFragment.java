@@ -31,6 +31,7 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
 import org.joda.time.DateTime;
 import org.json.JSONArray;
@@ -56,7 +57,7 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
     boolean secondCall = false;
     int totalVisits, totalPopPages;
     ArrayList<BarEntry> valueSet1, valueSet2;
-    ArrayList<BarDataSet> dataSets;
+    ArrayList<IBarDataSet> dataSets;
     public static ArrayList<String> xAxis, xAxisLabels;
     ArrayList<Integer> tableValues;
     int[] tempValSet2 = new int[100];
