@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -238,8 +240,13 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
             //Calculates the % of totalVisits.
             float tempPercent = ((float)tableValues.get(i)/(float)totalVisits * 100);
             DecimalFormat numberFormat = new DecimalFormat("#.00");
-            String percentVisits = "% " + numberFormat.format(tempPercent) ;
-            visitsTxt.setText(tableValues.get(i).toString() + "\n" + percentVisits);
+            String percentVisits = "% " + numberFormat.format(tempPercent);
+
+            //Adds two different text sizes for the visitsTxt
+            String visitsString = tableValues.get(i).toString() + "\n" + percentVisits;
+            SpannableString spanString2 =  new SpannableString(visitsString);
+            spanString2.setSpan(new RelativeSizeSpan(0.7f), tableValues.get(i).toString().length() , spanString2.length(), 0); // set size, start-stop
+            visitsTxt.setText(spanString2);
             visitsTxt.setTextColor(Color.WHITE);
 
             tableRow[i].addView(hourOfDayTxt);
