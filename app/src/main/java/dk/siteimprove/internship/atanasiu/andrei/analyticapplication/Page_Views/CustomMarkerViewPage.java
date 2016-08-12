@@ -12,6 +12,7 @@ import com.github.mikephil.charting.utils.Utils;
 
 import org.joda.time.DateTime;
 
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
@@ -37,24 +38,46 @@ public class CustomMarkerViewPage extends MarkerView
         if(MainActivity.currentFragment.equals("Today"))
         {
             PageViewsFragment.textViewInfo.setText("Hour " + e.getXIndex());
-            PageViewsFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+            PageViewsFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Page Views");
 
         }else if(MainActivity.currentFragment.equals("Week"))
         {
-            PageViewsWeekFragment.textViewInfo.setText("Day " + (e.getXIndex() + 1) + "");
-            PageViewsWeekFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+            PageViewsWeekFragment.textViewInfo.setText(PageViewsWeekFragment.tableWeekDays.get(e.getXIndex()) + "");
+            PageViewsWeekFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Page Views");
 
         }else if(MainActivity.currentFragment.equals("Month"))
         {
-            PageViewsMonthFragment.textViewInfo.setText((e.getXIndex() + 1) + " of " + today.toString("MMMMM"));
-            PageViewsMonthFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+            PageViewsMonthFragment.textViewInfo.setText((e.getXIndex() + 1) + dateFixer(e.getXIndex() + 1)
+                    + " of " + today.toString("MMMMM"));
+            PageViewsMonthFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Page Views");
 
         }else  if(MainActivity.currentFragment.equals("Year"))
         {
-            PageViewsYearFragment.textViewInfo.setText("Month " + (e.getXIndex() + 1));
-            PageViewsYearFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+            PageViewsYearFragment.textViewInfo.setText("" + getMonth(e.getXIndex()));
+            PageViewsYearFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Page Views");
         }
+    }
 
+    public String dateFixer(int i)
+    {
+        if(i == 1)
+        {
+            return "st";
+        }
+        else if(i == 2)
+        {
+            return  "nd";
+        }
+        else if(i == 3)
+        {
+            return "rd";
+        }
+        else return "th";
+    }
+
+    public String getMonth(int month)
+    {
+        return new DateFormatSymbols().getMonths()[month ];
     }
 
 

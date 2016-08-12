@@ -66,7 +66,7 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
     boolean apiIdSelected;
     TableLayout table;
     ArrayList<Integer> tableValues;
-    ArrayList<String> tableWeekDays = new ArrayList<>();
+    public static ArrayList<String> tableWeekDays = new ArrayList<>();
     boolean tableIsVisible = false;
     CustomMarkerViewPage mv;
 

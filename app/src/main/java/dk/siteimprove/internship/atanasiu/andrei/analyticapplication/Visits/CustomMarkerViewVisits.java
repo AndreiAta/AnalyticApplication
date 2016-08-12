@@ -9,12 +9,18 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.Utils;
 
+import org.joda.time.DateTime;
+
+import java.text.DateFormatSymbols;
+import java.util.ArrayList;
+
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 
 public class CustomMarkerViewVisits extends MarkerView
 {
     private TextView tvContent;
+    ArrayList<String> monthNames;
 
     public CustomMarkerViewVisits (Context context, int layoutResource) {
         super(context, layoutResource);
@@ -27,6 +33,7 @@ public class CustomMarkerViewVisits extends MarkerView
     public void refreshContent(Entry e, Highlight highlight)
     {
         tvContent.setText("" + Utils.formatNumber(e.getVal(), 0, true)); // set the entry-value as the display text
+        DateTime today = new DateTime();
 
         if(MainActivity.currentFragment.equals("Today"))
         {
@@ -35,22 +42,43 @@ public class CustomMarkerViewVisits extends MarkerView
         }
         else if(MainActivity.currentFragment.equals("Week"))
         {
-            VisitsWeekFragment.textViewInfo.setText("Day " + (e.getXIndex() + 1));
+            VisitsWeekFragment.textViewInfo.setText("" + VisitsWeekFragment.tableWeekDays.get(e.getXIndex()));
             VisitsWeekFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
         }
         else if(MainActivity.currentFragment.equals("Month"))
         {
-            VisitsMonthFragment.textViewInfo.setText("Day of month " + (e.getXIndex() + 1));
+            VisitsMonthFragment.textViewInfo.setText((e.getXIndex() + 1) + dateFixer(e.getXIndex() + 1)+ " of "
+                    + today.toString("MMMMM"));
             VisitsMonthFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
         }
         else if(MainActivity.currentFragment.equals("Year"))
         {
-            VisitsYearFragment.textViewInfo.setText("Month " + (e.getXIndex() + 1));
+            VisitsYearFragment.textViewInfo.setText("" + getMonth(e.getXIndex()));
             VisitsYearFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
         }
     }
 
+    public String dateFixer(int i)
+    {
+        if(i == 1)
+        {
+            return "st";
+        }
+        else if(i == 2)
+        {
+            return  "nd";
+        }
+        else if(i == 3)
+        {
+            return "rd";
+        }
+        else return "th";
+    }
 
+    public String getMonth(int month)
+    {
+        return new DateFormatSymbols().getMonths()[month ];
+    }
 
     @Override
     public int getXOffset() {
