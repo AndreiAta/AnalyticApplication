@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -218,17 +220,27 @@ public class PopPagesMonthFragment extends Fragment implements View.OnClickListe
 
             TextView hourOfDayTxt = new TextView(getActivity());
             hourOfDayTxt.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-            hourOfDayTxt.setText(xAxisLabels.get(i).toString());
+            //Adds two different text sizes for the hourOfDayTxt
+            String titleString = xAxisLabels.get(i).toString() + "\n" + xAxis.get(i).toString().substring(7); // Could shorten more in url length?
+            SpannableString spanString1 =  new SpannableString(titleString);
+            spanString1.setSpan(new RelativeSizeSpan(0.5f), xAxisLabels.get(i).toString().length(), spanString1.length(), 0); // set size, start-stop
+            hourOfDayTxt.setText(spanString1);
             hourOfDayTxt.setTextColor(Color.WHITE);
 
             TextView visitsTxt = new TextView(getActivity());
             visitsTxt.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f));
             visitsTxt.setGravity(Gravity.RIGHT);
+
             //Calculates the % of totalVisits.
             float tempPercent = ((float)tableValues.get(i)/(float)totalVisits * 100);
             DecimalFormat numberFormat = new DecimalFormat("#.00");
-            String percentVisits = "% " + numberFormat.format(tempPercent) ;
-            visitsTxt.setText(tableValues.get(i).toString() + "\n" + percentVisits);
+            String percentVisits = "% " + numberFormat.format(tempPercent);
+
+            //Adds two different text sizes for the visitsTxt
+            String visitsString = tableValues.get(i).toString() + "\n" + percentVisits;
+            SpannableString spanString2 =  new SpannableString(visitsString);
+            spanString2.setSpan(new RelativeSizeSpan(0.7f), tableValues.get(i).toString().length() , spanString2.length(), 0); // set size, start-stop
+            visitsTxt.setText(spanString2);
             visitsTxt.setTextColor(Color.WHITE);
 
             tableRow[i].addView(hourOfDayTxt);
