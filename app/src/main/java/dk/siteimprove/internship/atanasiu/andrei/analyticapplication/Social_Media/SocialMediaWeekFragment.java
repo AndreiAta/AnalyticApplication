@@ -131,7 +131,7 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
 
         tableToggler.setOnClickListener(this);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
+                getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
         columnOne.setText("Social Media");
         textViewDate.setText(textDatePeriod);
 
@@ -246,13 +246,13 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
             table.setVisibility(View.GONE);
             tableIsVisible = false;
             tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
+                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
         }else
         {
             table.setVisibility(View.VISIBLE);
             tableIsVisible = true;
             tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_36dp), null);
+                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_18dp), null);
         }
     }
 
