@@ -20,12 +20,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -123,6 +125,7 @@ public class MainActivity extends AppCompatActivity
     ListView lv;
     public static Button signInButton;
     public static ProgressBar progressBarSignIn;
+    public static float screenHeight;
 
 
     ArrayList<String> spinnerList = new ArrayList<>();
@@ -131,6 +134,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        DisplayMetrics metrics = new DisplayMetrics();
+        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(metrics);
+        screenHeight = metrics.heightPixels;
+
         spinnerList.add("Siteimproving.com");
         spinnerList.add("Somethingelse.dk.uk.");
         super.onCreate(savedInstanceState);
@@ -186,10 +194,13 @@ public class MainActivity extends AppCompatActivity
                         API_EMAIL = emailText.getText().toString();
                         API_KEY = apiKeyText.getText().toString();
                         totalString = API_EMAIL + "=-==-" + API_KEY; // Middle string is used to split, in read method.
-                        writeToFile(totalString);
+                        if(!API_EMAIL.equals("") && !API_KEY.equals(""))
+                        {
+                            writeToFile(totalString);
+                        }
+
 
                         // Sets drawer menuMail textview to current user mail.
-
                         menuEmailTxt.setText(API_EMAIL);
 
                         // Opens the "homepage" fragment.
@@ -444,8 +455,10 @@ public class MainActivity extends AppCompatActivity
 
         builder .setCancelable(false)
                 .setCustomTitle(title)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+                .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
 
                     }
                 });
