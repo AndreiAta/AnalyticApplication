@@ -113,7 +113,6 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
-        mv = new CustomMarkerViewVisits(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         textViewDate.setText(today.toString("dd MMMM"));
         textViewInfo.setText("VISITS TODAY");
@@ -147,6 +146,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
             table.setVisibility(View.GONE);
             tableToggler.setVisibility(View.GONE);
         }
+        mv = new CustomMarkerViewVisits(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         chart = (LineChart) rootView.findViewById(R.id.chart);
         return  rootView;
