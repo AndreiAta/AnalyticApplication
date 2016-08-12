@@ -288,7 +288,6 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
         chart.setDescription("");
         chart.animateXY(1000, 1000);
         chart.invalidate();
-        chart.setBackgroundColor(Color.rgb(68, 68, 68));
         chart.setGridBackgroundColor(R.color.White);
         chart.getLegend().setTextColor(Color.WHITE);
         chart.getAxisLeft().setDrawLabels(false);
