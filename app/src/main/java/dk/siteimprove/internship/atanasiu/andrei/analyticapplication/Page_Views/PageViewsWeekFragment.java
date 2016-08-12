@@ -62,7 +62,7 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
     DateTime startOfWeek;
     String lastSunday;
     boolean landscapeMode;
-    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler;
+    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnTwo;
     boolean apiIdSelected;
     TableLayout table;
     ArrayList<Integer> tableValues;
@@ -129,6 +129,7 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
         textViewInfo = (TextView) rootView.findViewById(R.id.textViewInfo);
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
+        columnTwo = (TextView) rootView.findViewById(R.id.columnTwo);
         mv = new CustomMarkerViewPage(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         tableToggler.setOnClickListener(this);
@@ -147,6 +148,7 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
 
         textViewDate.setText(textDatePeriod);
         textViewInfo.setText("PAGE VIEWS THIS WEEK");
+        columnTwo.setText("Page Views");
         totalVisits = 0;
 
         if(haveNetworkConnection())

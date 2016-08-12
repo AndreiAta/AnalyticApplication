@@ -57,7 +57,7 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
     boolean apiIdSelected, landscapeMode;
     boolean secondCall = false;
     boolean tableIsVisible = false;
-    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
+    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne, columnTwo;
     TableLayout table;
     ArrayList<Integer> tableValues;
     CustomMarkerViewPage mv;
@@ -106,6 +106,7 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
+        columnTwo = (TextView) rootView.findViewById(R.id.columnTwo);
         mv = new CustomMarkerViewPage(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         textViewDate.setText(today.toString("dd MMMM"));
@@ -114,6 +115,7 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
         columnOne.setText("Hour of Day");
+        columnTwo.setText("Page Views");
 
         tableToggler.setOnClickListener(this);
 

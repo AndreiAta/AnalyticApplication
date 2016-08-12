@@ -56,7 +56,7 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
     private OnFragmentInteractionListener mListener;
     Integer totalMonthDays = 0, totalVisits;
     boolean landscapeMode;
-    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
+    public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne, columnTwo;
     boolean apiIdSelected;
     TableLayout table;
     ArrayList<Integer> tableValues;
@@ -108,9 +108,11 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
+        columnTwo = (TextView) rootView.findViewById(R.id.columnTwo);
         mv = new CustomMarkerViewPage(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         columnOne.setText("Day of Month");
+        columnTwo.setText("Page Views");
         textViewInfo.setText("PAGE VIEWS THIS MONTH");
         tableToggler.setOnClickListener(this);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
