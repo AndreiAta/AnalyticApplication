@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.util.Base64;
@@ -451,10 +453,9 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
                     {
                         LineDataSet lineDataSet2 = new LineDataSet(valueSet2, "YESTERDAY");
                         lineDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
+                        Drawable drawable = ContextCompat.getDrawable(getActivity().getApplication(), R.drawable.chart_lastperiod_background);
+                        lineDataSet2.setFillDrawable(drawable);
                         lineDataSet2.setDrawFilled(true);
-                        //lineDataSet2.setFillDrawable();
-                        lineDataSet2.setFillColor(Color.rgb(181, 0, 97));
-                        lineDataSet2.setFillAlpha(40);
                         dataSets.add(lineDataSet2);
                         drawGraph();
 
@@ -465,10 +466,10 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
                         Log.i("GGGGGGGG", tableValues.toString());
                         dataSets = new ArrayList<>();
                         LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "TODAY");
+                        Drawable drawable = ContextCompat.getDrawable(getActivity().getApplication(), R.drawable.chart_thisperiod_background);
+                        lineDataSet1.setFillDrawable(drawable);
                         lineDataSet1.setColor(Color.rgb(5, 184, 198));
                         lineDataSet1.setDrawFilled(true);
-                        lineDataSet1.setFillColor(Color.rgb(5, 184, 198));
-                        lineDataSet1.setFillAlpha(40);
                         dataSets.add(lineDataSet1);
 
                         // Setting Header Text to match VisitsToday Fragment.
