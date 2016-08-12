@@ -58,6 +58,18 @@ public class CustomMarkerViewPage extends MarkerView
         }
     }
 
+    @Override
+    public int getXOffset(float xpos)
+    {
+        return 0;
+    }
+
+    @Override
+    public int getYOffset(float ypos)
+    {
+        return 0;
+    }
+
     public String dateFixer(int i)
     {
         if(i == 1)
@@ -80,16 +92,4 @@ public class CustomMarkerViewPage extends MarkerView
         return new DateFormatSymbols().getMonths()[month ];
     }
 
-
-    @Override
-    public int getXOffset() {
-        // this will center the marker-view horizontally
-        return -(getWidth() / 2);
-    }
-
-    @Override
-    public int getYOffset() {
-        // this will cause the marker-view to be above the selected value
-        return -getHeight();
-    }
 }

@@ -30,6 +30,7 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
 import org.joda.time.DateTime;
 import org.json.JSONArray;
@@ -51,7 +52,7 @@ import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 public class SocialMediaWeekFragment extends Fragment implements View.OnClickListener
 {
     HorizontalBarChart chart;
-    ArrayList<BarDataSet> dataSets;
+    ArrayList<IBarDataSet> dataSets;
     public static ArrayList<String> xAxis;
     public static ArrayList<String> xAxisLabels;
     public static ProgressBar progressBar;
