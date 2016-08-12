@@ -106,7 +106,8 @@
                 android:showDividers="middle">
 
                 <TableRow
-                    android:padding="10dp">
+                    android:padding="10dp"
+                    android:background="@drawable/row_border">
                     <TextView
                         android:id="@+id/columnOne"
                         android:layout_width="wrap_content"
