@@ -136,13 +136,6 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
 
         table = (TableLayout) rootView.findViewById(R.id.table);
         table.setVisibility(View.GONE);
-        tableWeekDays.add("Monday");
-        tableWeekDays.add("Tuesday");
-        tableWeekDays.add("Wednesday");
-        tableWeekDays.add("Thursday");
-        tableWeekDays.add("Friday");
-        tableWeekDays.add("Saturday");
-        tableWeekDays.add("Sunday");
 
         textViewDate.setText(textDatePeriod);
         totalVisits = 0;
@@ -174,6 +167,14 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
 
     public void createTable()
     {
+        tableWeekDays.add("Monday");
+        tableWeekDays.add("Tuesday");
+        tableWeekDays.add("Wednesday");
+        tableWeekDays.add("Thursday");
+        tableWeekDays.add("Friday");
+        tableWeekDays.add("Saturday");
+        tableWeekDays.add("Sunday");
+
         for (int i = tableValues.size(); i < 7; i++)
         {
             tableValues.add(0);
