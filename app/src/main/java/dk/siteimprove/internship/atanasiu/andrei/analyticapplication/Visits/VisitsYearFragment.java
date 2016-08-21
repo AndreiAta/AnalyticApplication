@@ -134,7 +134,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
         {
             String month = months[i];
             System.out.println("month = " + month);
-            monthList .add(months[i]);
+            monthList.add(months[i]);
         }
 
         //Get date period for text view
