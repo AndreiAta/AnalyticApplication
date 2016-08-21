@@ -205,7 +205,7 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
             visits.setGravity(Gravity.RIGHT);
             //Calculates the % of totalVisits.
             float tempPercent = ((float)tableValues.get(i)/(float)totalVisits * 100);
-            DecimalFormat numberFormat = new DecimalFormat("#.00");
+            DecimalFormat numberFormat = new DecimalFormat("0.00");
             String percentVisits = numberFormat.format(tempPercent)+ " %";
 
             //Adds two different text sizes for the visitsTxt
