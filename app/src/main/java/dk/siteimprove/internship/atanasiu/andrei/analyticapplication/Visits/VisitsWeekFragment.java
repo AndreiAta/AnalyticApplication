@@ -393,11 +393,8 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
             {
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
-//                Integer thisMonDate = Integer.parseInt(thisWeekCompareMonDate);
-//                Integer lastMonDate = Integer.parseInt(lastWeekCompareMonDate);
                 int totalDays = items.length();
-                int placementOnXAxis = 0;
-                int compareCounter = 1;
+
                 if(secondCall)
                 {
                     valueSet2 = new ArrayList<>();
@@ -423,55 +420,17 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
                         if (secondCall)
                         {
                             //Last Week
-                            while(day_of_week != compareCounter)
-                            {
-                                int stopValue = compareCounter;
-                                for(int j = stopValue; j < day_of_week; j++)
-                                {
-                                    Entry entry = new Entry(0, placementOnXAxis);
-                                    valueSet2.add(entry);
-                                    compareCounter++;
-                                    placementOnXAxis++;
-                                }
-                            }
-                            if(day_of_week == compareCounter)
-                            {
-                                Entry entry = new Entry((float)visits, placementOnXAxis);
-                                valueSet2.add(entry);
-                                compareCounter++;
-                                placementOnXAxis++;
-                            }
 
-                            while(compareCounter <= 7 && i == (totalDays - 1))
-                            {
-                                Entry entry = new Entry(0, placementOnXAxis);
+                                Entry entry = new Entry((float)visits, i);
                                 valueSet2.add(entry);
-                                compareCounter++;
-                                placementOnXAxis++;
-                            }
+
                         } else  //Current Week
                         {
-                            while(day_of_week != compareCounter)
-                            {
-                                int stopValue = compareCounter;
-                                for(int j = stopValue; j < day_of_week; j++)
-                                {
-                                    Entry entry = new Entry(0, placementOnXAxis);
-                                    valueSet1.add(entry);
-                                    tableValues.add(0);
-                                    compareCounter++;
-                                    placementOnXAxis++;
-                                }
-                            }
-                            if(day_of_week == compareCounter)
-                            {
-                                Entry entry = new Entry((float)visits, placementOnXAxis);
+
+                                Entry entry = new Entry((float)visits, i);
                                 valueSet1.add(entry);
                                 tableValues.add(visits);
-                                compareCounter++;
-                                placementOnXAxis++;
                                 totalVisits = totalVisits + visits;
-                            }
                         }
                     }
 

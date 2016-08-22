@@ -365,9 +365,8 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
             {
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
-                int compareCounter = 1;
                 totalDays = items.length();
-                int placementOnXAxis = 0;
+
                 if(secondCall)
                 {
                     valueSet2 = new ArrayList<>();
@@ -384,60 +383,20 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
                 {
                     for (Integer i = 0; i < totalDays; i++)
                     {
-                        int day_of_month = items.getJSONObject(i).getInt("day_of_month");
                         int visits = items.getJSONObject(i).getInt("visits");
-
 
                         if(secondCall)
                         {
-                            while(day_of_month != compareCounter)
-                            {
-                                int startValue = compareCounter;
-                                for(int j = startValue; j < day_of_month; j++)
-                                {
-                                    Entry entry = new Entry(0, placementOnXAxis);
-                                    valueSet2.add(entry);
-                                    compareCounter++;
-                                    placementOnXAxis++;
-                                }
-                            }
-                            if(day_of_month == compareCounter)
-                            {
-                                Entry entry = new Entry((float)visits, placementOnXAxis);
+                                Entry entry = new Entry((float)visits, i);
                                 valueSet2.add(entry);
-                                compareCounter++;
-                                placementOnXAxis++;
-                            }
-                            while(compareCounter <= 31 && i == (totalDays - 1))
-                            {
-                                Entry entry = new Entry(0, placementOnXAxis);
-                                valueSet2.add(entry);
-                                placementOnXAxis++;
-                                compareCounter++;
-                            }
+
                         }else
                         {
-                            while (day_of_month != compareCounter)
-                            {
-                                int stopValue = compareCounter;
-                                for (int j = stopValue; j < day_of_month; j++)
-                                {
-                                    Entry entry = new Entry(0, placementOnXAxis);
-                                    valueSet1.add(entry);
-                                    tableValues.add(0);
-                                    placementOnXAxis++;
-                                    compareCounter++;
-                                }
-                            }
-                            if (day_of_month == compareCounter)
-                            {
-                                Entry entry = new Entry((float) visits, placementOnXAxis);
+
+                                Entry entry = new Entry((float) visits, i);
                                 valueSet1.add(entry);
                                 tableValues.add(visits);
-                                placementOnXAxis++;
-                                compareCounter++;
                                 totalVisits = totalVisits + visits;
-                            }
                         }
                     }
 

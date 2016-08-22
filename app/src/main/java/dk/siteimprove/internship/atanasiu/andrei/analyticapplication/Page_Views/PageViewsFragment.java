@@ -361,9 +361,7 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
             {
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
-                int compareCounter = 0;
                 totalHours = items.length();
-                int placementOnXAxis = 0;
 
                 if(secondCall)
                 {
@@ -380,65 +378,20 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
                 {
                     for (Integer i = 0; i < totalHours; i++)
                     {
-                        int hour_of_day = items.getJSONObject(i).getInt("hour_of_day");
                         int visits = items.getJSONObject(i).getInt("page_views");
 
                         if(secondCall) //Yesterday
                         {
-                            while(hour_of_day != compareCounter)
-                            {
-                                int stopValue = compareCounter;
-                                for (int j = stopValue; j < hour_of_day; j++)
-                                {
-                                    Entry entry = new Entry(0, placementOnXAxis);
-                                    valueSet2.add(entry);
-                                    placementOnXAxis++;
-                                    compareCounter++;
-                                }
-                            }
-                            if(compareCounter == hour_of_day)
-                            {
-                                Entry entry = new Entry((float)visits, placementOnXAxis);
+                                Entry entry = new Entry((float)visits, i);
                                 valueSet2.add(entry);
-                                compareCounter++;
-                                placementOnXAxis++;
-                            }
 
-                            while(compareCounter <= 23 && i == (totalHours - 1))
-                            {
-                                Entry entry = new Entry(0, placementOnXAxis);
-                                valueSet2.add(entry);
-                                compareCounter++;
-                                placementOnXAxis++;
-                            }
                         }else //Current Day
                         {
-                            while (hour_of_day != compareCounter)
-                            {
-
-                                int stopValue = compareCounter;
-                                for (int j = stopValue; j < hour_of_day; j++)
-                                {
-                                    Entry entry = new Entry(0, placementOnXAxis);
-                                    valueSet1.add(entry);
-                                    tableValues.add(0);
-                                    compareCounter++;
-                                    placementOnXAxis++;
-                                }
-
-                            }
-                            if (hour_of_day == compareCounter)
-                            {
-                                Entry entry = new Entry((float) visits, placementOnXAxis);
+                                Entry entry = new Entry((float) visits, i);
                                 valueSet1.add(entry);
                                 tableValues.add(visits);
-                                compareCounter++;
-                                placementOnXAxis++;
                                 totalVisits = totalVisits + visits;
-                            }
                         }
-
-
                     }
 
                     if(secondCall)

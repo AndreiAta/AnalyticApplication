@@ -45,6 +45,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -223,6 +225,9 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
 
     public void createTable()
     {
+        //Reverse the Array so they show nicely in the table
+        Collections.reverse(xAxis);
+        Collections.reverse(tableValues);
 
         for (int i = 0; i < xAxis.size() ; i++)
         {
@@ -377,10 +382,14 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
                     Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
                 }else
                 {
-                    for (int i = 0; i < totalSearchEngines; i++)
+                    //for (int i = 0; i < totalSearchEngines; i++)
+                    for(int i = totalSearchEngines - 1; i >= 0; i--)
                     {
+                        Log.i("Inside the for loop", "XXXXXX");
                         Integer visits = items.getJSONObject(i).getInt("visits");
                         String search_engine = items.getJSONObject(i).getString("search_engine");
+                        Log.i("VALUE VISITS", visits.toString());
+                        Log.i("VALUE SEARCH", search_engine);
 
                         if (secondCall) //Yesterday
                         {
@@ -409,7 +418,8 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
                             }
                         } else //Today
                         {
-                            if (i < 10)
+                            Log.i("INSIDE THE ELSE","HELOOOOO");
+                            if (valueSet1.size() < 10)
                             {
                                 BarEntry entry = new BarEntry((float) visits, numberSearchEngines);
                                 valueSet1.add(entry);
@@ -424,6 +434,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
                                 numberSearchEngines++;
                                 tableValues.add(visits);
                                 totalVisits = totalVisits + visits;
+                                Log.i("IMPORTANT " ,valueSet1.toString());
                             } else
                             {
                                 if (!secondCall)

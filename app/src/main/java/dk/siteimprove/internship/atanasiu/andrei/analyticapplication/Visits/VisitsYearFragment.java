@@ -129,13 +129,6 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
 
         //Get month List for the table
         monthList = new ArrayList<>();
-        String[] months = new DateFormatSymbols().getMonths();
-        for (int i = 0; i < months.length; i++)
-        {
-            String month = months[i];
-            System.out.println("month = " + month);
-            monthList.add(months[i]);
-        }
 
         //Get date period for text view
         int dayOfYear = new DateTime().getDayOfYear();
@@ -189,9 +182,13 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
 
     public void createTable()
     {
-        while(tableValues.size() < 12)
+
+        String[] months = new DateFormatSymbols().getMonths();
+        for (int i = 0; i <= totalMonths; i++)
         {
-            tableValues.add(0);
+            String month = months[i];
+            System.out.println("month = " + month);
+            monthList.add(months[i]);
         }
 
         int tableSize = tableValues.size();
@@ -381,9 +378,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
             {
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
-                int compareCounter = 1;
                 totalMonths = items.length();
-                int placementOnXAxis = 0;
 
                 if(secondCall)
                 {
@@ -403,59 +398,19 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
                         String timestamp = items.getJSONObject(i).getString("timestamp");
                         int visits = items.getJSONObject(i).getInt("visits");
                         String tempString = timestamp.substring(5, 7);
-                        int month_of_year = Integer.parseInt(tempString);
 
                         if(secondCall) //Last Year
                         {
-                            while(month_of_year != compareCounter)
-                            {
-                                int stopValue = compareCounter;
-                                for (int j = stopValue; j < month_of_year; j++)
-                                {
-                                    Entry entry = new Entry(0, placementOnXAxis);
-                                    valueSet2.add(entry);
-                                    placementOnXAxis++;
-                                    compareCounter++;
-                                }
-                            }
-                            if(compareCounter == month_of_year)
-                            {
-                                Entry entry = new Entry((float)visits, placementOnXAxis);
-                                valueSet2.add(entry);
-                                compareCounter++;
-                                placementOnXAxis++;
-                            }
 
-                            while(compareCounter <= 12 && i == (totalMonths - 1))
-                            {
-                                Entry entry = new Entry(0, placementOnXAxis);
+                                Entry entry = new Entry((float)visits, i);
                                 valueSet2.add(entry);
-                                compareCounter++;
-                                placementOnXAxis++;
-                            }
                         }else //Current Year
                         {
-                            while (month_of_year != compareCounter)
-                            {
-                                int stopValue = compareCounter;
-                                for (int j = stopValue; j < month_of_year; j++)
-                                {
-                                    Entry entry = new Entry(0, placementOnXAxis);
-                                    valueSet1.add(entry);
-                                    tableValues.add(0);
-                                    compareCounter++;
-                                    placementOnXAxis++;
-                                }
-                            }
-                            if (month_of_year == compareCounter)
-                            {
-                                Entry entry = new Entry((float) visits, placementOnXAxis);
-                                valueSet1.add(entry);
-                                tableValues.add(visits);
-                                compareCounter++;
-                                placementOnXAxis++;
-                                totalVisits = totalVisits + visits;
-                            }
+
+                            Entry entry = new Entry((float) visits, i);
+                            valueSet1.add(entry);
+                            tableValues.add(visits);
+                            totalVisits = totalVisits + visits;
                         }
                     }
 

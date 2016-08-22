@@ -407,55 +407,15 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
 
                         if(secondCall) //Last Year
                         {
-                            while(month_of_year != compareCounter)
-                            {
-                                int stopValue = compareCounter;
-                                for (int j = stopValue; j < month_of_year; j++)
-                                {
-                                    Entry entry = new Entry(0, placementOnXAxis);
-                                    valueSet2.add(entry);
-                                    placementOnXAxis++;
-                                    compareCounter++;
-                                }
-                            }
-                            if(compareCounter == month_of_year)
-                            {
-                                Entry entry = new Entry((float)visits, placementOnXAxis);
+                                Entry entry = new Entry((float)visits, i);
                                 valueSet2.add(entry);
-                                compareCounter++;
-                                placementOnXAxis++;
-                            }
-
-                            while(compareCounter <= 12 && i == (totalMonths - 1))
-                            {
-                                Entry entry = new Entry(0, placementOnXAxis);
-                                valueSet2.add(entry);
-                                compareCounter++;
-                                placementOnXAxis++;
-                            }
                         }else //Current Year
                         {
-                            while (month_of_year != compareCounter)
-                            {
-                                int stopValue = compareCounter;
-                                for (int j = stopValue; j < month_of_year; j++)
-                                {
-                                    Entry entry = new Entry(0, placementOnXAxis);
-                                    valueSet1.add(entry);
-                                    tableValues.add(0);
-                                    compareCounter++;
-                                    placementOnXAxis++;
-                                }
-                            }
-                            if (month_of_year == compareCounter)
-                            {
-                                Entry entry = new Entry((float) visits, placementOnXAxis);
+                                Entry entry = new Entry((float) visits, i);
                                 valueSet1.add(entry);
                                 tableValues.add(visits);
-                                compareCounter++;
-                                placementOnXAxis++;
                                 totalVisits = totalVisits + visits;
-                            }
+
                         }
                     }
 
