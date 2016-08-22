@@ -5,9 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -126,6 +124,7 @@ public class MainActivity extends AppCompatActivity
     public static Button signInButton;
     public static ProgressBar progressBarSignIn;
     public static float screenHeight;
+    boolean showRotateDialog;
 
 
     ArrayList<String> spinnerList = new ArrayList<>();
@@ -163,7 +162,10 @@ public class MainActivity extends AppCompatActivity
         {
 
             drawer.openDrawer(GravityCompat.START);
-            notificationDialog();
+
+            //setupRotateDialog();
+            showRotateDialog = true;
+
             dialog = new Dialog(this,R.style.full_screen_dialog);
             dialog.setContentView(R.layout.popup);
             dialog.setCancelable(false);
@@ -322,22 +324,43 @@ public class MainActivity extends AppCompatActivity
         {
 //            fragmentClass = HomePageFragment.class;
             changeFragment = false;
-            setupAlertDialog();
+            setupSitePickDialog();
         }
         else if (id == R.id.visits)
         {
+            if(showRotateDialog)
+            {
+                setupRotateDialog();
+                showRotateDialog = false;
+            }
             fragmentClass = MainVisitsFragment.class;
+
         }
         else if (id == R.id.pageViews)
         {
+            if(showRotateDialog)
+            {
+                setupRotateDialog();
+                showRotateDialog = false;
+            }
             fragmentClass = PageViewsMainFragment.class;
         }
         else if (id == R.id.popularPages)
         {
+            if(showRotateDialog)
+            {
+                setupRotateDialog();
+                showRotateDialog = false;
+            }
             fragmentClass = PopPagesMainFragment.class;
         }
         else if (id == R.id.trafficSources)
         {
+            if(showRotateDialog)
+            {
+                setupRotateDialog();
+                showRotateDialog = false;
+            }
             fragmentClass = TrafficSourcesMainFragment.class;
         }
         else if (id == R.id.entryPages)
@@ -346,10 +369,20 @@ public class MainActivity extends AppCompatActivity
         }
         else if (id == R.id.socialMedia)
         {
+            if(showRotateDialog)
+            {
+                setupRotateDialog();
+                showRotateDialog = false;
+            }
             fragmentClass = SocialMediaMainFragment.class;
         }
         else if (id == R.id.searchEngines)
         {
+            if(showRotateDialog)
+            {
+                setupRotateDialog();
+                showRotateDialog = false;
+            }
             fragmentClass = SearchEnginesMainFragment.class;
         }
         else if (id == R.id.countries)
@@ -402,7 +435,7 @@ public class MainActivity extends AppCompatActivity
         return haveConnectedWifi || haveConnectedMobile;
     }
 
-    private void setupAlertDialog()
+    private void setupSitePickDialog()
     {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_DARK);
         LayoutInflater inflater = getLayoutInflater();
@@ -437,7 +470,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    private void notificationDialog()
+    private void setupRotateDialog()
     {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_DEVICE_DEFAULT_DARK);
         LayoutInflater inflater = getLayoutInflater();
@@ -446,7 +479,7 @@ public class MainActivity extends AppCompatActivity
 
         TextView title = new TextView(this);
         // You Can Customise your Title here
-        title.setText("Rotate for more detailed graphs");
+        title.setText("Rotate to compare to last period");
         title.setBackgroundColor(Color.DKGRAY);
         title.setPadding(40, 40, 40, 40);
         title.setGravity(Gravity.CENTER);
