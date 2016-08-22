@@ -121,7 +121,7 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=" + period;
+                    "/analytics/behavior/visits_by_weekday?page=1&page_size=10&period=" + period;
             apiIdSelected = true;
 
         }else
@@ -395,10 +395,11 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
             {
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
-                Integer thisMonDate = Integer.parseInt(thisWeekCompareMonDate);
-                Integer lastMonDate = Integer.parseInt(lastWeekCompareMonDate);
+//                Integer thisMonDate = Integer.parseInt(thisWeekCompareMonDate);
+//                Integer lastMonDate = Integer.parseInt(lastWeekCompareMonDate);
                 int totalDays = items.length();
                 int placementOnXAxis = 0;
+                int compareCounter = 1;
                 if(secondCall)
                 {
                     valueSet2 = new ArrayList<>();
@@ -417,59 +418,59 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
                     for (Integer i = 0; i < totalDays; i++)
                     {
                         int visits = items.getJSONObject(i).getInt("page_views");
-                        int day_of_month = items.getJSONObject(i).getInt("day_of_month");
+                        int day_of_week = items.getJSONObject(i).getInt("day_of_week");
 
                         //Check if you are doing the current week or last week
                         //then check if any entries are missing and create them
                         if (secondCall)
                         {
                             //Last Week
-                            while(day_of_month != lastMonDate)
+                            while(day_of_week != compareCounter)
                             {
-                                int stopValue = lastMonDate;
-                                for(int j = stopValue; j < day_of_month; j++)
+                                int stopValue = compareCounter;
+                                for(int j = stopValue; j < day_of_week; j++)
                                 {
                                     Entry entry = new Entry(0, placementOnXAxis);
                                     valueSet2.add(entry);
-                                    lastMonDate++;
+                                    compareCounter++;
                                     placementOnXAxis++;
                                 }
                             }
-                            if(day_of_month == lastMonDate)
+                            if(day_of_week == compareCounter)
                             {
                                 Entry entry = new Entry((float)visits, placementOnXAxis);
                                 valueSet2.add(entry);
-                                lastMonDate++;
+                                compareCounter++;
                                 placementOnXAxis++;
                             }
 
-                            while(lastMonDate <= Integer.parseInt(lastSunday) && i == (totalDays - 1))
+                            while(compareCounter <= 7 && i == (totalDays - 1))
                             {
                                 Entry entry = new Entry(0, placementOnXAxis);
                                 valueSet2.add(entry);
-                                lastMonDate++;
+                                compareCounter++;
                                 placementOnXAxis++;
                             }
                         } else  //Current Week
                         {
-                            while(day_of_month != thisMonDate)
+                            while(day_of_week != compareCounter)
                             {
-                                int stopValue = thisMonDate;
-                                for(int j = stopValue; j < day_of_month; j++)
+                                int stopValue = compareCounter;
+                                for(int j = stopValue; j < day_of_week; j++)
                                 {
                                     Entry entry = new Entry(0, placementOnXAxis);
                                     valueSet1.add(entry);
                                     tableValues.add(0);
-                                    thisMonDate++;
+                                    compareCounter++;
                                     placementOnXAxis++;
                                 }
                             }
-                            if(day_of_month == thisMonDate)
+                            if(day_of_week == compareCounter)
                             {
                                 Entry entry = new Entry((float)visits, placementOnXAxis);
                                 valueSet1.add(entry);
                                 tableValues.add(visits);
-                                thisMonDate++;
+                                compareCounter++;
                                 placementOnXAxis++;
                                 totalVisits = totalVisits + visits;
                             }
@@ -501,7 +502,7 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
                         {
                             secondCall = true;
                             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                    "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=lastweek";
+                                    "/analytics/behavior/visits_by_weekday?page=1&page_size=10&period=lastweek";
                             new RetrieveFeedTask().execute();
                         }else
                         {

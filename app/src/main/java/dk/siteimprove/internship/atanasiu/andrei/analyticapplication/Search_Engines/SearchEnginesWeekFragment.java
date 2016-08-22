@@ -138,7 +138,7 @@ public class SearchEnginesWeekFragment extends Fragment implements View.OnClickL
         textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS THIS WEEK");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_36dp), null);
+                getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
         columnOne.setText("Search Engine");
 
         tableToggler.setOnClickListener(this);
