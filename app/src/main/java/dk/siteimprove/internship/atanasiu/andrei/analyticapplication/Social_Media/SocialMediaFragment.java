@@ -373,7 +373,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                         Integer visits = items.getJSONObject(i).getInt("visits");
                         String organisation = items.getJSONObject(i).getString("organisation");
 
-                        if (!secondCall) //This Week
+                        if (!secondCall) //Current Period
                         {
                             if (xAxis.contains(organisation))
                             {
@@ -401,7 +401,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                             }
 
                         }
-                        else //Last Week
+                        else //Last Period
                         {
                             if (xAxis.contains(organisation))
                             {
@@ -420,7 +420,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                             }
                             if (i == totalSocialMedia - 1)
                             {
-                                for (int j = 0; j < totalSocialMedia; j++)
+                                for (int j = 0; j < xAxis.size(); j++)
                                 {
                                     BarEntry entry = new BarEntry(tempValSet2[j], j);
                                     valueSet2.add(entry);
@@ -428,7 +428,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                             }
                         }
                     }
-                    if (!secondCall)
+                    if (!secondCall)//First Call
                     {
                         textViewTotal.setText(String.valueOf(totalVisits));
 
@@ -439,7 +439,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                                     "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=Yesterday";
                             new RetrieveFeedTask().execute();
                         }
-                        else
+                        else//Portrait Mode
                         {
                             reverseXPosInList(valueSet1);
                             Collections.reverse(valueSet1);
@@ -453,7 +453,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                             drawGraph();
                         }
                     }
-                    else
+                    else //Second Call
                     {
                         reverseXPosInList(valueSet1);
                         Collections.reverse(valueSet1);

@@ -45,6 +45,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -273,6 +275,7 @@ public class SearchEnginesWeekFragment extends Fragment implements View.OnClickL
 
     private void drawGraph()
     {
+        Collections.reverse(xAxisLabels);
         BarData data = new BarData(xAxisLabels, dataSets);
         chart.setData(data);
         chart.setDescription("");
@@ -369,7 +372,7 @@ public class SearchEnginesWeekFragment extends Fragment implements View.OnClickL
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
                 totalSearchEngines = items.length();
-                int numberSearchEngines = 0;
+                int pos = 0;
 
                 if(secondCall)
                 {
@@ -397,7 +400,34 @@ public class SearchEnginesWeekFragment extends Fragment implements View.OnClickL
                         Integer visits = items.getJSONObject(i).getInt("visits");
                         String search_engine = items.getJSONObject(i).getString("search_engine");
 
-                        if (secondCall) //Yesterday
+                        if (!secondCall) //Current Period
+                        {
+                            if (xAxis.contains(search_engine))
+                            {
+                                tempValSet2[xAxis.indexOf(search_engine)] = visits;
+                                BarEntry entry = new BarEntry(visits, xAxis.indexOf(search_engine));
+                                valueSet2.add(entry);
+                            } else if (!xAxis.contains(search_engine) && xAxis.size() < 10)
+                            {
+                                BarEntry entry = new BarEntry((float) visits, pos);
+                                valueSet1.add(entry);
+                                xAxis.add(search_engine);
+                                if (search_engine.length() > 20)
+                                {
+                                    xAxisLabels.add(search_engine.substring(0, 19) + "...");
+                                } else
+                                {
+                                    xAxisLabels.add(search_engine);
+                                }
+                                pos++;
+                                tableValues.add(visits);
+                                totalVisits = totalVisits + visits;
+                            } else
+                            {
+                                totalVisits = totalVisits + visits;
+                            }
+
+                        } else //Last Period
                         {
                             if (xAxis.contains(search_engine))
                             {
@@ -405,9 +435,9 @@ public class SearchEnginesWeekFragment extends Fragment implements View.OnClickL
                             } else if (!xAxis.contains(search_engine) && xAxis.size() < 10)
                             {
                                 xAxis.add(search_engine);
-                                if (search_engine.length() > 15)
+                                if (search_engine.length() > 20)
                                 {
-                                    xAxisLabels.add(search_engine.substring(0, 14) + "...");
+                                    xAxisLabels.add(search_engine.substring(0, 19) + "...");
                                 } else
                                 {
                                     xAxisLabels.add(search_engine);
@@ -416,74 +446,77 @@ public class SearchEnginesWeekFragment extends Fragment implements View.OnClickL
                             }
                             if (i == totalSearchEngines - 1)
                             {
-                                for (int j = 0; j < totalSearchEngines; j++)
+                                for (int j = 0; j < xAxis.size(); j++)
                                 {
                                     BarEntry entry = new BarEntry(tempValSet2[j], j);
                                     valueSet2.add(entry);
                                 }
                             }
-                        } else //Today
-                        {
-                            if (i < 10)
-                            {
-                                BarEntry entry = new BarEntry((float) visits, numberSearchEngines);
-                                valueSet1.add(entry);
-                                xAxis.add(search_engine);
-                                if (search_engine.length() > 15)
-                                {
-                                    xAxisLabels.add(search_engine.substring(0, 14) + "...");
-                                } else
-                                {
-                                    xAxisLabels.add(search_engine);
-                                }
-                                numberSearchEngines++;
-                                tableValues.add(visits);
-                                totalVisits = totalVisits + visits;
-                            } else
-                            {
-                                if (!secondCall)
-                                {
-                                    totalVisits = totalVisits + visits;
-                                }
-                            }
-
                         }
                     }
-                    if(secondCall)
+                    if (!secondCall)//First Call
                     {
-                        BarDataSet barDataSet2 = new BarDataSet(valueSet2, "LAST WEEK");
-                        barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
-                        barDataSet2.setBarSpacePercent(50f);
-                        dataSets.add(barDataSet2);
-                        drawGraph();
-
-                        secondCall = false;
-                    }else
-                    {
-                        dataSets = new ArrayList<>();
-                        BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS WEEK");
-                        barDataSet1.setColor(Color.rgb(5, 184, 198));
-                        barDataSet1.setBarSpacePercent(50f);
-                        dataSets.add(barDataSet1);
                         textViewTotal.setText(String.valueOf(totalVisits));
 
-                        if(landscapeMode)
+                        if (landscapeMode)
                         {
                             secondCall = true;
                             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                                     "/analytics/traffic_sources/search_engines?page=1&page_size=10&period=lastweek";
                             new RetrieveFeedTask().execute();
-                        }else
+                        }
+                        else//Portrait Mode
                         {
+                            reverseXPosInList(valueSet1);
+                            Collections.reverse(valueSet1);
+                            dataSets = new ArrayList<>();
+                            BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS WEEK");
+                            barDataSet1.setColor(Color.rgb(5, 184, 198));
+                            barDataSet1.setBarSpacePercent(50f);
+                            dataSets.add(barDataSet1);
+
                             createTable();
                             drawGraph();
                         }
                     }
+                    else //Second Call
+                    {
+                        reverseXPosInList(valueSet1);
+                        Collections.reverse(valueSet1);
+                        dataSets = new ArrayList<>();
+                        BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS WEEK");
+                        barDataSet1.setColor(Color.rgb(5, 184, 198));
+                        barDataSet1.setBarSpacePercent(50f);
+                        dataSets.add(barDataSet1);
+
+                        reverseXPosInList(valueSet2);
+                        Collections.reverse(valueSet2);
+                        BarDataSet barDataSet2 = new BarDataSet(valueSet2, "LAST WEEK");
+                        barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
+                        barDataSet2.setBarSpacePercent(50f);
+                        dataSets.add(barDataSet2);
+
+                        drawGraph();
+                        secondCall = false;
+                    }
                 }
+
             } catch (JSONException e) {
                 e.printStackTrace();
-            }catch (ClassCastException ce){
+            } catch (ClassCastException ce){
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        private void reverseXPosInList(ArrayList<BarEntry> list)
+        {
+            int xLabelSize = xAxisLabels.size()-1;
+            int listSize = list.size()-1;
+
+            for (int i = 0; i <= listSize; i++)
+            {
+                int pos = list.get(i).getXIndex();
+                list.get(i).setXIndex(xLabelSize-pos);
             }
         }
     }
