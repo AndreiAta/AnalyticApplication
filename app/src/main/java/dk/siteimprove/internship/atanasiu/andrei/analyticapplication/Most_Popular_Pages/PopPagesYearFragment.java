@@ -454,7 +454,7 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
                             reverseXPosInList(valueSet1);
                             Collections.reverse(valueSet1);
                             dataSets = new ArrayList<>();
-                            BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS MONTH");
+                            BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS YEAR");
                             barDataSet1.setColor(Color.rgb(5, 184, 198));
                             barDataSet1.setBarSpacePercent(50f);
                             dataSets.add(barDataSet1);
@@ -468,7 +468,7 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
                         reverseXPosInList(valueSet1);
                         Collections.reverse(valueSet1);
                         dataSets = new ArrayList<>();
-                        BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS MONTH");
+                        BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS YEAR");
                         barDataSet1.setColor(Color.rgb(5, 184, 198));
                         barDataSet1.setBarSpacePercent(50f);
                         dataSets.add(barDataSet1);
@@ -476,7 +476,7 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
 
                         reverseXPosInList(valueSet2);
                         Collections.reverse(valueSet2);
-                        BarDataSet barDataSet2 = new BarDataSet(valueSet2, "LAST MONTH");
+                        BarDataSet barDataSet2 = new BarDataSet(valueSet2, "LAST YEAR");
                         barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
                         barDataSet2.setBarSpacePercent(50f);
                         dataSets.add(barDataSet2);
