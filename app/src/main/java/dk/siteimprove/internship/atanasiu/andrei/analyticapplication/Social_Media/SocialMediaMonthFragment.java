@@ -44,6 +44,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
@@ -258,6 +259,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
 
     private void drawGraph()
     {
+        Collections.reverse(xAxisLabels);
         BarData data = new BarData(xAxisLabels, dataSets);
         chart.setData(data);
         chart.setDescription("");
@@ -352,7 +354,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
                 totalSocialMedia = items.length();
-                int numberorg = 0;
+                int pos = 0;
 
                 if(secondCall)
                 {
@@ -380,7 +382,30 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                         Integer visits = items.getJSONObject(i).getInt("visits");
                         String organisation = items.getJSONObject(i).getString("organisation");
 
-                        if (secondCall) //LAST MONTH
+                        if (!secondCall) //This Period
+                        {
+                            if (i < 10)
+                            {
+                                BarEntry entry = new BarEntry((float) visits, pos);
+                                valueSet1.add(entry);
+                                xAxis.add(organisation);
+                                if (organisation.length() > 20)
+                                {
+                                    xAxisLabels.add(organisation.substring(0, 19) + "...");
+                                } else
+                                {
+                                    xAxisLabels.add(organisation);
+                                }
+                                pos++;
+                                tableValues.add(visits);
+                                totalVisits = totalVisits + visits;
+                            } else
+                            {
+                                totalVisits = totalVisits + visits;
+                            }
+
+                        }
+                        else //Last Period
                         {
                             if (xAxis.contains(organisation))
                             {
@@ -405,39 +430,10 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                                     valueSet2.add(entry);
                                 }
                             }
-                        } else //THIS MONTH
-                        {
-                            BarEntry entry = new BarEntry((float) visits, numberorg);
-                            valueSet1.add(entry);
-                            xAxis.add(organisation);
-                            if (organisation.length() > 20)
-                            {
-                                xAxisLabels.add(organisation.substring(0, 19) + "...");
-                            } else
-                            {
-                                xAxisLabels.add(organisation);
-                            }
-                            numberorg++;
-                            tableValues.add(visits);
-                            totalVisits = totalVisits + visits;
                         }
                     }
-                    if(secondCall)
+                    if(!secondCall)
                     {
-                        BarDataSet barDataSet2 = new BarDataSet(valueSet2, "LAST MONTH");
-                        barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
-                        barDataSet2.setBarSpacePercent(50f);
-                        dataSets.add(barDataSet2);
-                        drawGraph();
-
-                        secondCall = false;
-                    }else
-                    {
-                        dataSets = new ArrayList<>();
-                        BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS MONTH");
-                        barDataSet1.setColor(Color.rgb(5, 184, 198));
-                        barDataSet1.setBarSpacePercent(50f);
-                        dataSets.add(barDataSet1);
                         textViewTotal.setText(String.valueOf(totalVisits));
 
                         if(landscapeMode)
@@ -448,9 +444,38 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                             new RetrieveFeedTask().execute();
                         }else
                         {
+                            reverseXPosInList(valueSet1);
+                            Collections.reverse(valueSet1);
+                            dataSets = new ArrayList<>();
+                            BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS MONTH");
+                            barDataSet1.setColor(Color.rgb(5, 184, 198));
+                            barDataSet1.setBarSpacePercent(50f);
+                            dataSets.add(barDataSet1);
+
                             createTable();
                             drawGraph();
                         }
+
+                    }else
+                    {
+                        reverseXPosInList(valueSet1);
+                        Collections.reverse(valueSet1);
+                        dataSets = new ArrayList<>();
+                        BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS MONTH");
+                        barDataSet1.setColor(Color.rgb(5, 184, 198));
+                        barDataSet1.setBarSpacePercent(50f);
+                        dataSets.add(barDataSet1);
+
+
+                        reverseXPosInList(valueSet2);
+                        Collections.reverse(valueSet2);
+                        BarDataSet barDataSet2 = new BarDataSet(valueSet2, "LAST MONTH");
+                        barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
+                        barDataSet2.setBarSpacePercent(50f);
+                        dataSets.add(barDataSet2);
+                        drawGraph();
+
+                        secondCall = false;
                     }
                 }
 
@@ -458,6 +483,17 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                 e.printStackTrace();
             } catch (ClassCastException ce){
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+            }
+        }
+        private void reverseXPosInList(ArrayList<BarEntry> list)
+        {
+            int xLabelSize = xAxisLabels.size()-1;
+            int listSize = list.size()-1;
+
+            for (int i = 0; i <= listSize; i++)
+            {
+                int pos = list.get(i).getXIndex();
+                list.get(i).setXIndex(xLabelSize-pos);
             }
         }
     }

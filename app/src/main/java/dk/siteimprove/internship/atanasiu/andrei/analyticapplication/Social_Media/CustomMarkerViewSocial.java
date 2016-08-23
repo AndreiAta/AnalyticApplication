@@ -31,6 +31,8 @@ public class CustomMarkerViewSocial extends MarkerView
 
         tvContent.setText("" + Utils.formatNumber(e.getVal(), 0, true)); // set the entry-value as the display text
 
+        Log.i("EEEEEEE", e.toString() + highlight.toString());
+
         if(e instanceof BarEntry)
         {
             BarEntry be = (BarEntry) e;
