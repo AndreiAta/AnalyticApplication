@@ -382,14 +382,10 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
                     Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
                 }else
                 {
-                    //for (int i = 0; i < totalSearchEngines; i++)
-                    for(int i = totalSearchEngines - 1; i >= 0; i--)
+                    for (int i = 0; i < totalSearchEngines; i++)
                     {
-                        Log.i("Inside the for loop", "XXXXXX");
                         Integer visits = items.getJSONObject(i).getInt("visits");
                         String search_engine = items.getJSONObject(i).getString("search_engine");
-                        Log.i("VALUE VISITS", visits.toString());
-                        Log.i("VALUE SEARCH", search_engine);
 
                         if (secondCall) //Yesterday
                         {
@@ -418,8 +414,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
                             }
                         } else //Today
                         {
-                            Log.i("INSIDE THE ELSE","HELOOOOO");
-                            if (valueSet1.size() < 10)
+                            if (i < 10)
                             {
                                 BarEntry entry = new BarEntry((float) visits, numberSearchEngines);
                                 valueSet1.add(entry);
@@ -434,7 +429,6 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
                                 numberSearchEngines++;
                                 tableValues.add(visits);
                                 totalVisits = totalVisits + visits;
-                                Log.i("IMPORTANT " ,valueSet1.toString());
                             } else
                             {
                                 if (!secondCall)

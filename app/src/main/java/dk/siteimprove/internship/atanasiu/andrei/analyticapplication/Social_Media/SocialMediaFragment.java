@@ -366,12 +366,15 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                     {
                         Integer visits = items.getJSONObject(i).getInt("visits");
                         String organisation = items.getJSONObject(i).getString("organisation");
+                        Log.i(">>>>>>", visits.toString());
 
                         if (secondCall) //Yesterday
                         {
                             if (xAxis.contains(organisation))
                             {
-                                tempValSet2[xAxis.indexOf(organisation)] = visits;
+//                                tempValSet2[xAxis.indexOf(organisation)] = visits;
+                                BarEntry entry = new BarEntry(visits, xAxis.indexOf(organisation));
+                                valueSet2.add(entry);
                             } else if (!xAxis.contains(organisation) && xAxis.size() < 10)
                             {
                                 xAxis.add(organisation);
@@ -382,16 +385,11 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                                 {
                                     xAxisLabels.add(organisation);
                                 }
-                                tempValSet2[xAxis.indexOf(organisation)] = visits;
+
+                                BarEntry entry = new BarEntry(visits, xAxis.size() - 1);
+                                valueSet2.add(entry);
                             }
-                            if (i == totalSocialMedia - 1)
-                            {
-                                for (int j = 0; j < totalSocialMedia; j++)
-                                {
-                                    BarEntry entry = new BarEntry(tempValSet2[j], j);
-                                    valueSet2.add(entry);
-                                }
-                            }
+
                         } else //Today
                         {
                             if (i < 10)

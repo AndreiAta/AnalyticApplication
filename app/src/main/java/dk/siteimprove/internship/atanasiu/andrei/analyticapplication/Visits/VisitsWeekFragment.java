@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -74,6 +75,7 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
     public static ArrayList<String> tableWeekDays = new ArrayList<>();
     boolean tableIsVisible = false;
     CustomMarkerViewVisits mv;
+    Button moreInfoButton;
 
     public VisitsWeekFragment()
     {
@@ -134,9 +136,10 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
         textViewInfo = (TextView) rootView.findViewById(R.id.textViewInfo);
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
+        moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
         mv = new CustomMarkerViewVisits(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
-        tableToggler.setOnClickListener(this);
+        moreInfoButton.setOnClickListener(this);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
 
@@ -165,6 +168,7 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
         {
             table.setVisibility(View.GONE);
             tableToggler.setVisibility(View.GONE);
+            moreInfoButton.setVisibility(View.GONE);
         }
         chart = (LineChart) rootView.findViewById(R.id.chart);
 

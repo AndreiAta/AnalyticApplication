@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -67,6 +68,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
     TableLayout table;
     ArrayList<Integer> tableValues;
     CustomMarkerViewVisits mv;
+    Button moreInfoButton;
 
 
     private OnFragmentInteractionListener mListener;
@@ -113,6 +115,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
+        moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
 
         textViewDate.setText(today.toString("dd MMMM"));
         textViewInfo.setText("VISITS TODAY");
@@ -121,7 +124,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
         columnOne.setText("Hour of Day");
 
-        tableToggler.setOnClickListener(this);
+        moreInfoButton.setOnClickListener(this);
 
         table = (TableLayout) rootView.findViewById(R.id.table);
         table.setVisibility(View.GONE);
@@ -145,6 +148,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         {
             table.setVisibility(View.GONE);
             tableToggler.setVisibility(View.GONE);
+            moreInfoButton.setVisibility(View.GONE);
         }
         mv = new CustomMarkerViewVisits(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 

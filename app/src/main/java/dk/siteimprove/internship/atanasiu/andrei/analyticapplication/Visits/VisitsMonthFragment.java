@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -70,6 +71,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
     boolean secondCall = false;
     int totalDays;
     CustomMarkerViewVisits mv;
+    Button moreInfoButton;
 
 
     public VisitsMonthFragment()
@@ -114,13 +116,14 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
+        moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
         mv = new CustomMarkerViewVisits(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         columnOne.setText("Day of Month");
         textViewInfo.setText("VISITS THIS MONTH");
-        tableToggler.setOnClickListener(this);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
+        moreInfoButton.setOnClickListener(this);
 
         table = (TableLayout) rootView.findViewById(R.id.table);
         table.setVisibility(View.GONE);
@@ -152,6 +155,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         {
             table.setVisibility(View.GONE);
             tableToggler.setVisibility(View.GONE);
+            moreInfoButton.setVisibility(View.GONE);
         }
 
         chart = (LineChart) rootView.findViewById(R.id.chart);

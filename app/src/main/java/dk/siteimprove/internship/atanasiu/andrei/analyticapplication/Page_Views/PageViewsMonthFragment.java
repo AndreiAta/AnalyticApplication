@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -70,6 +71,7 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
     boolean secondCall = false;
     int totalDays;
     CustomMarkerViewPage mv;
+    Button moreInfoButton;
 
     public PageViewsMonthFragment()
     {
@@ -114,14 +116,15 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         columnTwo = (TextView) rootView.findViewById(R.id.columnTwo);
+        moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
         mv = new CustomMarkerViewPage(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         columnOne.setText("Day of Month");
         columnTwo.setText("Page Views");
         textViewInfo.setText("PAGE VIEWS THIS MONTH");
-        tableToggler.setOnClickListener(this);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
+        moreInfoButton.setOnClickListener(this);
 
         table = (TableLayout) rootView.findViewById(R.id.table);
         table.setVisibility(View.GONE);
@@ -153,6 +156,7 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
         {
             table.setVisibility(View.GONE);
             tableToggler.setVisibility(View.GONE);
+            moreInfoButton.setVisibility(View.GONE);
         }
 
         chart = (LineChart) rootView.findViewById(R.id.chart);
