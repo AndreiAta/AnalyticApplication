@@ -17,6 +17,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -69,6 +71,7 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
     int[] tempValSet2 = new int[100];
     String lastYear;
     CustomMarkerViewSocial mv;
+    Button moreInfoButton;
 
 
     public SocialMediaYearFragment()
@@ -117,6 +120,7 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
         mv = new CustomMarkerViewSocial(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         textViewDate.setText("0 - 0");
@@ -125,7 +129,8 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
         columnOne.setText("Social Media");
-        tableToggler.setOnClickListener(this);
+
+        moreInfoButton.setOnClickListener(this);
         table.setVisibility(View.GONE);
 
         totalVisits = 0;
@@ -156,6 +161,7 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
         {
             table.setVisibility(View.GONE);
             tableToggler.setVisibility(View.GONE);
+            moreInfoButton.setVisibility(View.GONE);
         }
 
         return rootView;

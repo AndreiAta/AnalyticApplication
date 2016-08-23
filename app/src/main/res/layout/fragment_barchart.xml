@@ -92,6 +92,12 @@
                     android:textColor="@color/White"
                     android:layout_marginLeft="10dp"/>
 
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="33dp"
+                    android:id="@+id/moreInfoButton"
+                    android:background="@android:color/transparent"/>
+
             </FrameLayout>
 
             <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"

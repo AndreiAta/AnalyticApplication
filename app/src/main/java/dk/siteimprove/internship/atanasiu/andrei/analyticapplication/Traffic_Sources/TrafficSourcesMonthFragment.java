@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -66,6 +67,7 @@ public class TrafficSourcesMonthFragment extends Fragment implements View.OnClic
     int visitsAmount, totalItems, xAxisPlacement, totalVisits;
     BarEntry entry;
     CustomMarkerViewTraffic mv;
+    Button moreInfoButton;
 
     private OnFragmentInteractionListener mListener;
 
@@ -109,6 +111,7 @@ public class TrafficSourcesMonthFragment extends Fragment implements View.OnClic
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
         mv = new CustomMarkerViewTraffic(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         textViewDate.setText("0 - 0");
@@ -118,7 +121,7 @@ public class TrafficSourcesMonthFragment extends Fragment implements View.OnClic
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
         columnOne.setText("Traffic Sources");
 
-        tableToggler.setOnClickListener(this);
+        moreInfoButton.setOnClickListener(this);
         table.setVisibility(View.GONE);
 
         //Get date period for text view
@@ -161,6 +164,7 @@ public class TrafficSourcesMonthFragment extends Fragment implements View.OnClic
         {
             table.setVisibility(View.GONE);
             tableToggler.setVisibility(View.GONE);
+            moreInfoButton.setVisibility(View.GONE);
         }
 
         return  rootView;

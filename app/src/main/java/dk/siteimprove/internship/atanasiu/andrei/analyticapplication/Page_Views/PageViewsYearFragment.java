@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -70,6 +71,7 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
     int totalVisits, totalMonths;
     CustomMarkerViewPage mv;
     ArrayList<String>monthList;
+    Button moreInfoButton;
 
     public PageViewsYearFragment() {    }  // Required empty public constructor
 
@@ -115,14 +117,16 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         columnTwo = (TextView) rootView.findViewById(R.id.columnTwo);
+        moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
         mv = new CustomMarkerViewPage(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         columnOne.setText("Month of Year");
         columnTwo.setText("Page Views");
         textViewInfo.setText("PAGE VIEWS THIS YEAR");
-        tableToggler.setOnClickListener(this);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
+
+        moreInfoButton.setOnClickListener(this);
 
         table = (TableLayout) rootView.findViewById(R.id.table);
         table.setVisibility(View.GONE);
@@ -163,6 +167,7 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
         {
             table.setVisibility(View.GONE);
             tableToggler.setVisibility(View.GONE);
+            moreInfoButton.setVisibility(View.GONE);
         }
 
         chart = (LineChart) rootView.findViewById(R.id.chart);

@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -68,6 +69,7 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
     TableLayout table;
     CustomMarkerViewPopular mv;
     private OnFragmentInteractionListener mListener;
+    Button moreInfoButton;
 
     public PopPagesYearFragment() { } //Required empty constructor
 
@@ -110,6 +112,7 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         columnTwo = (TextView) rootView.findViewById(R.id.columnTwo);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
         mv = new CustomMarkerViewPopular(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         textViewInfo.setText("PAGE VIEWS THIS YEAR");
@@ -119,7 +122,7 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
         columnOne.setText("Popular Pages");
         columnTwo.setText("Page Views");
 
-        tableToggler.setOnClickListener(this);
+        moreInfoButton.setOnClickListener(this);
         table.setVisibility(View.GONE);
 
         totalVisits = 0;
@@ -153,6 +156,7 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
         {
             table.setVisibility(View.GONE);
             tableToggler.setVisibility(View.GONE);
+            moreInfoButton.setVisibility(View.GONE);
         }
 
         return rootView;
