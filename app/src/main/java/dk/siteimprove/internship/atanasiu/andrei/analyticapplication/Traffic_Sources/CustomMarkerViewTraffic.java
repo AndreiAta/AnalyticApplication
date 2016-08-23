@@ -2,6 +2,7 @@ package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Traffic_So
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.components.MarkerView;
@@ -26,7 +27,15 @@ public class CustomMarkerViewTraffic extends MarkerView
     @Override
     public void refreshContent(Entry e, Highlight highlight)
     {
-        tvContent.setText("" + Utils.formatNumber(e.getVal(), 0, true)); // set the entry-value as the display text
+        if(highlight.getDataSetIndex() == 1)
+        {
+            tvContent.setTextColor(Color.rgb(181, 0, 97));
+            tvContent.setText("" + Utils.formatNumber(e.getVal(), 0, true));
+        }else
+        {
+            tvContent.setTextColor(Color.rgb(5, 184, 198));
+            tvContent.setText("" + Utils.formatNumber(e.getVal(), 0, true));
+        }
 
         if(MainActivity.currentFragment.equals("Today"))
         {

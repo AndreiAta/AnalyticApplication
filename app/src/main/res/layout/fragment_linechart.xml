@@ -93,7 +93,7 @@
 
                 <Button
                     android:layout_width="match_parent"
-                    android:layout_height="33dp"
+                    android:layout_height="40dp"
                     android:id="@+id/moreInfoButton"
                     android:background="@android:color/transparent"/>
 
@@ -103,7 +103,7 @@
                 android:id="@+id/table"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+
                 android:padding="5dp"
                 android:divider="?android:attr/dividerHorizontal"
                 android:showDividers="middle">
