@@ -433,7 +433,7 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
                             }
                             if (i == totalSocialMedia - 1)
                             {
-                                for (int j = 0; j < totalSocialMedia; j++)
+                                for (int j = 0; j < xAxis.size(); j++)
                                 {
                                     BarEntry entry = new BarEntry(tempValSet2[j], j);
                                     valueSet2.add(entry);

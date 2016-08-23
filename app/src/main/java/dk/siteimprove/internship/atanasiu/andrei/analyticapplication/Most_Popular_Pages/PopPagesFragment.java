@@ -45,6 +45,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
@@ -252,6 +253,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
 
     private void drawGraph()
     {
+        Collections.reverse(xAxisLabels);
         BarData data = new BarData(xAxisLabels, dataSets);
         chart.setData(data);
         chart.setDescription("");
@@ -346,6 +348,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
                 totalPopPages = items.length();
+                int pos = 0;
 
                 if (secondCall) // second time we call the API, prepare lists, and fill tempArray with 0's
                 {
@@ -375,13 +378,36 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                         String title = items.getJSONObject(i).getString("title");
                         String url = items.getJSONObject(i).getString("url");
 
-                        if (secondCall) //Yesterday
+                        if(!secondCall) //This Period
                         {
-
+                            if (i < 10) // we only want top 10
+                            {
+                                BarEntry entry = new BarEntry((float) pageViews, pos);
+                                valueSet1.add(entry);
+                                xAxis.add(url);
+                                if (title.length() > 20)
+                                {
+                                    xAxisLabels.add(title.substring(0, 19) + "...");
+                                } else
+                                {
+                                    xAxisLabels.add(title);
+                                }
+                                pos++;
+                                tableValues.add(pageViews);
+                                totalVisits = totalVisits + pageViews;
+                            }
+                            else// calculating the totalVisits (after top 10)
+                            {
+                                totalVisits = totalVisits + pageViews;
+                            }
+                        }
+                        else //Last Period
+                        {
                             if (xAxis.contains(url)) // If the name is already in list, don't add it again.
                             {
                                 tempValSet2[xAxis.indexOf(url)] = pageViews;
-                            } else if (!xAxis.contains(url) && xAxis.size() < 10) // if it isn't in list, and there is space - add it
+                            }
+                            else if (!xAxis.contains(url) && xAxis.size() < 10) // if it isn't in list, and there is space - add it
                             {
                                 xAxis.add(url);
                                 if (title.length() > 20)
@@ -395,55 +421,16 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                             }
                             if (i == totalPopPages - 1) // last time through the loop, move from tempArray to valueSet2.
                             {
-                                for (int j = 0; j < totalPopPages; j++)
+                                for (int j = 0; j < xAxis.size(); j++)
                                 {
                                     BarEntry entry = new BarEntry(tempValSet2[j], j);
                                     valueSet2.add(entry);
                                 }
                             }
-                        } else //Today
-                        {
-                            if (i < 10) // we only want top 10
-                            {
-                                BarEntry entry = new BarEntry((float) pageViews, i);
-                                valueSet1.add(entry);
-                                xAxis.add(url);
-                                if (title.length() > 20)
-                                {
-                                    xAxisLabels.add(title.substring(0, 19) + "...");
-                                } else
-                                {
-                                    xAxisLabels.add(title);
-                                }
-                                tableValues.add(pageViews);
-                                totalVisits = totalVisits + pageViews;
-                            } else
-                            {
-                                if (!secondCall) // calculating the totalVisits (after top 10)
-                                {
-                                    totalVisits = totalVisits + pageViews;
-                                }
-                            }
                         }
                     }
-                    if(secondCall)
+                    if(!secondCall)
                     {
-                        BarDataSet barDataSet2 = new BarDataSet(valueSet2, "YESTERDAY");
-                        barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
-                        barDataSet2.setBarSpacePercent(50f);
-                        dataSets.add(barDataSet2);
-                        Log.i("IMPORT2", barDataSet2.toString());
-                        drawGraph();
-
-                        secondCall = false;
-                    }else
-                    {
-                        dataSets = new ArrayList<>();
-                        BarDataSet barDataSet1 = new BarDataSet(valueSet1, "TODAY");
-                        barDataSet1.setColor(Color.rgb(5, 184, 198));
-                        barDataSet1.setBarSpacePercent(50f);
-                        dataSets.add(barDataSet1);
-                        Log.i("IMPORT1", barDataSet1.toString());
                         textViewTotal.setText(String.valueOf(totalVisits));
 
                         if(landscapeMode)
@@ -454,9 +441,38 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                             new RetrieveFeedTask().execute();
                         }else
                         {
+                            reverseXPosInList(valueSet1);
+                            Collections.reverse(valueSet1);
+                            dataSets = new ArrayList<>();
+                            BarDataSet barDataSet1 = new BarDataSet(valueSet1, "TODAY");
+                            barDataSet1.setColor(Color.rgb(5, 184, 198));
+                            barDataSet1.setBarSpacePercent(50f);
+                            dataSets.add(barDataSet1);
+
                             createTable();
                             drawGraph();
                         }
+
+                    }else
+                    {
+                        reverseXPosInList(valueSet1);
+                        Collections.reverse(valueSet1);
+                        dataSets = new ArrayList<>();
+                        BarDataSet barDataSet1 = new BarDataSet(valueSet1, "TODAY");
+                        barDataSet1.setColor(Color.rgb(5, 184, 198));
+                        barDataSet1.setBarSpacePercent(50f);
+                        dataSets.add(barDataSet1);
+
+
+                        reverseXPosInList(valueSet2);
+                        Collections.reverse(valueSet2);
+                        BarDataSet barDataSet2 = new BarDataSet(valueSet2, "YESTERDAY");
+                        barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
+                        barDataSet2.setBarSpacePercent(50f);
+                        dataSets.add(barDataSet2);
+                        drawGraph();
+
+                        secondCall = false;
                     }
                 }
 
@@ -464,6 +480,17 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                 e.printStackTrace();
             } catch (ClassCastException ce){
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+            }
+        }
+        private void reverseXPosInList(ArrayList<BarEntry> list)
+        {
+            int xLabelSize = xAxisLabels.size()-1;
+            int listSize = list.size()-1;
+
+            for (int i = 0; i <= listSize; i++)
+            {
+                int pos = list.get(i).getXIndex();
+                list.get(i).setXIndex(xLabelSize-pos);
             }
         }
     }
