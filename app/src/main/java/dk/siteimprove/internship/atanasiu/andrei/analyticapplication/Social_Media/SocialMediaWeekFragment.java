@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -70,6 +71,7 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
     int totalVisits, totalSocialMedia;
     int[] tempValSet2 = new int[100];
     CustomMarkerViewSocial mv;
+    Button moreInfoButton;
 
     public SocialMediaWeekFragment()
     {
@@ -128,15 +130,15 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         table = (TableLayout) rootView.findViewById(R.id.table);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
+        moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
         mv = new CustomMarkerViewSocial(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
-        tableToggler.setOnClickListener(this);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
         columnOne.setText("Social Media");
         textViewDate.setText(textDatePeriod);
 
-        tableToggler.setOnClickListener(this);
+        moreInfoButton.setOnClickListener(this);
         table.setVisibility(View.GONE);
 
         totalVisits = 0;
@@ -160,6 +162,7 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
         {
             table.setVisibility(View.GONE);
             tableToggler.setVisibility(View.GONE);
+            moreInfoButton.setVisibility(View.GONE);
         }
 
         chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);

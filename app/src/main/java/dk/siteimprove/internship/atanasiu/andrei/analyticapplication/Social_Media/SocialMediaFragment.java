@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -52,7 +53,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
 {
     HorizontalBarChart chart;
     ArrayList<IBarDataSet> dataSets;
-    ArrayList<String> xAxis;
+    public static ArrayList<String> xAxis;
     public static ArrayList<String> xAxisLabels;
     ProgressBar progressBar;
     String API_URL = "";
@@ -67,6 +68,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
     boolean landscapeMode, apiIdSelected;
     int totalVisits, totalSocialMedia;
     CustomMarkerViewSocial mv;
+    Button moreInfoButton;
 
     private OnFragmentInteractionListener mListener;
 
@@ -111,6 +113,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
         mv = new CustomMarkerViewSocial(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         textViewDate.setText(today.toString("dd MMMM"));
@@ -120,7 +123,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
         columnOne.setText("Social Media");
 
-        tableToggler.setOnClickListener(this);
+        moreInfoButton.setOnClickListener(this);
         table.setVisibility(View.GONE);
 
         totalVisits = 0;
@@ -144,6 +147,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
         {
             table.setVisibility(View.GONE);
             tableToggler.setVisibility(View.GONE);
+            moreInfoButton.setVisibility(View.GONE);
         }
 
         return  rootView;
@@ -366,13 +370,12 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                     {
                         Integer visits = items.getJSONObject(i).getInt("visits");
                         String organisation = items.getJSONObject(i).getString("organisation");
-                        Log.i(">>>>>>", visits.toString());
 
                         if (secondCall) //Yesterday
                         {
                             if (xAxis.contains(organisation))
                             {
-//                                tempValSet2[xAxis.indexOf(organisation)] = visits;
+                                tempValSet2[xAxis.indexOf(organisation)] = visits;
                                 BarEntry entry = new BarEntry(visits, xAxis.indexOf(organisation));
                                 valueSet2.add(entry);
                             } else if (!xAxis.contains(organisation) && xAxis.size() < 10)
@@ -416,7 +419,6 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                             }
                         }
                     }
-
                     if (secondCall)
                     {
                         BarDataSet barDataSet2 = new BarDataSet(valueSet2, "YESTERDAY");

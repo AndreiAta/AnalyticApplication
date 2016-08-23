@@ -75,6 +75,7 @@ public class SearchEnginesWeekFragment extends Fragment implements View.OnClickL
     int totalVisits, totalSearchEngines;
     int[] tempValSet2 = new int[100];
     CustomMarkerViewSearch mv;
+    Button moreInfoButton;
 
     private OnFragmentInteractionListener mListener;
 
@@ -132,6 +133,7 @@ public class SearchEnginesWeekFragment extends Fragment implements View.OnClickL
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
         mv = new CustomMarkerViewSearch(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
         textViewDate.setText(textDatePeriod);
@@ -141,7 +143,7 @@ public class SearchEnginesWeekFragment extends Fragment implements View.OnClickL
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
         columnOne.setText("Search Engine");
 
-        tableToggler.setOnClickListener(this);
+        moreInfoButton.setOnClickListener(this);
         table.setVisibility(View.GONE);
 
         totalVisits = 0;
@@ -165,6 +167,7 @@ public class SearchEnginesWeekFragment extends Fragment implements View.OnClickL
         {
             table.setVisibility(View.GONE);
             tableToggler.setVisibility(View.GONE);
+            moreInfoButton.setVisibility(View.GONE);
         }
 
         return  rootView;
