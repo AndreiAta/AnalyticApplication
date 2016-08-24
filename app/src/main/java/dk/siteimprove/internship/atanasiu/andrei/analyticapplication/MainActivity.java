@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.design.widget.NavigationView;
@@ -176,6 +177,10 @@ public class MainActivity extends AppCompatActivity
             progressBarSignIn  = (ProgressBar) dialog.findViewById(R.id.progressBarSignIn);
             progressBarSignIn.setVisibility(View.GONE);
             signInButton = (Button) dialog.findViewById(R.id.SignInButton);
+            final TextInputLayout usernameWrapper = (TextInputLayout) dialog.findViewById(R.id.usernameWrapper);
+            final TextInputLayout passwordWrapper = (TextInputLayout) dialog.findViewById(R.id.passwordWrapper);
+            usernameWrapper.setHint("Enter your Email");
+            passwordWrapper.setHint("Enter you API-key");
 
             readFromFile();
             signInButton.setOnClickListener(new View.OnClickListener()
