@@ -45,22 +45,50 @@ public class CustomMarkerViewSearch extends MarkerView
             if(MainActivity.currentFragment.equals("Today"))
             {
                 SearchEnginesFragment.textViewInfo.setText("" + SearchEnginesFragment.xAxisLabels.get(be.getXIndex()));
-                SearchEnginesFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+
+                if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+                {
+                    SearchEnginesFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0 ,true) + " Visit");
+                }else
+                {
+                    SearchEnginesFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+                }
 
             }else if(MainActivity.currentFragment.equals("Week"))
             {
                 SearchEnginesWeekFragment.textViewInfo.setText("" + SearchEnginesWeekFragment.xAxisLabels.get(be.getXIndex()));
-                SearchEnginesWeekFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+
+                if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+                {
+                    SearchEnginesWeekFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0 ,true) + " Visit");
+                }else
+                {
+                    SearchEnginesWeekFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+                }
 
             }else if(MainActivity.currentFragment.equals("Month"))
             {
                 SearchEnginesMonthFragment.textViewInfo.setText("" + SearchEnginesMonthFragment.xAxisLabels.get(be.getXIndex()));
-                SearchEnginesMonthFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+
+                if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+                {
+                    SearchEnginesMonthFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visit");
+                }else
+                {
+                    SearchEnginesMonthFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+                }
 
             }else  if(MainActivity.currentFragment.equals("Year"))
             {
                 SearchEnginesYearFragment.textViewInfo.setText("" + SearchEnginesYearFragment.xAxisLabels.get(be.getXIndex()));
-                SearchEnginesYearFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+
+                if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+                {
+                    SearchEnginesYearFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visit");
+                }else
+                {
+                    SearchEnginesYearFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+                }
 
             }
         }

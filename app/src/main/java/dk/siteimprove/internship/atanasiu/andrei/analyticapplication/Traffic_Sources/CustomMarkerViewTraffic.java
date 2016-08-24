@@ -40,24 +40,50 @@ public class CustomMarkerViewTraffic extends MarkerView
         if(MainActivity.currentFragment.equals("Today"))
         {
             TrafficSourcesFragment.textViewInfo.setText("" + TrafficSourcesFragment.xAxisLabels.get(e.getXIndex()));
-            TrafficSourcesFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+
+            if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+            {
+                TrafficSourcesFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0 , true) + " Visit");
+            }else
+            {
+                TrafficSourcesFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+            }
         }else if(MainActivity.currentFragment.equals("Week"))
         {
             TrafficSourcesWeekFragment.textViewInfo.setText("" + TrafficSourcesWeekFragment.xAxisLabels.get(e.getXIndex()));
-            TrafficSourcesWeekFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+
+            if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+            {
+                TrafficSourcesWeekFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visit");
+            }else
+            {
+                TrafficSourcesWeekFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+            }
 
         }else if(MainActivity.currentFragment.equals("Month"))
         {
             TrafficSourcesMonthFragment.textViewInfo.setText("" + TrafficSourcesMonthFragment.xAxisLabels.get(e.getXIndex()));
-            TrafficSourcesMonthFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+
+            if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+            {
+                TrafficSourcesMonthFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0 ,true) + " Visit");
+            }else
+            {
+                TrafficSourcesMonthFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+            }
 
         }else  if(MainActivity.currentFragment.equals("Year"))
         {
             TrafficSourcesYearFragment.textViewInfo.setText("" + TrafficSourcesYearFragment.xAxisLabels.get(e.getXIndex()));
-            TrafficSourcesYearFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
 
+            if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+            {
+                TrafficSourcesYearFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visit");
+            }else
+            {
+                TrafficSourcesYearFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+            }
         }
-
     }
 
     @Override
