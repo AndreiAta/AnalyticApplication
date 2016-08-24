@@ -7,6 +7,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <RelativeLayout
+            android:id="@+id/signInLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             >
@@ -64,16 +65,15 @@
                     android:layout_height="wrap_content"
                     >
 
-                <EditText
-                    android:layout_width="340dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/apiKeyTextField"
-                    android:layout_gravity="center_horizontal"
-                    android:hint="API Key"
-                    android:height="50dp"
-                    android:width="200dp"
-                    android:textColorHint="@color/White"
-                    android:gravity="left|center"/>
+                    <EditText
+                        android:layout_width="340dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/apiKeyTextField"
+                        android:layout_gravity="center_horizontal"
+                        android:height="50dp"
+                        android:width="200dp"
+                        android:textColorHint="@color/White"
+                        android:gravity="left|center"/>
                 </android.support.design.widget.TextInputLayout>
 
                 <TextView
