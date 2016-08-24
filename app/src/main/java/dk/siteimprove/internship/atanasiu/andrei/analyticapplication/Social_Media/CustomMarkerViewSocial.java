@@ -48,21 +48,49 @@ public class CustomMarkerViewSocial extends MarkerView
             if(MainActivity.currentFragment.equals("Today"))
             {
                 SocialMediaFragment.textViewInfo.setText("" + SocialMediaFragment.xAxisLabels.get(be.getXIndex()));
-                SocialMediaFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+
+                if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+                {
+                    SocialMediaFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visit");
+                }else
+                {
+                    SocialMediaFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+                }
             }else if(MainActivity.currentFragment.equals("Week"))
             {
                 SocialMediaWeekFragment.textViewInfo.setText("" + SocialMediaWeekFragment.xAxisLabels.get(be.getXIndex()));
-                SocialMediaWeekFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+
+                if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+                {
+                    SocialMediaWeekFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0 ,true) + " Visit");
+                }else
+                {
+                    SocialMediaWeekFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+                }
 
             }else if(MainActivity.currentFragment.equals("Month"))
             {
                 SocialMediaMonthFragment.textViewInfo.setText("" + SocialMediaMonthFragment.xAxisLabels.get(be.getXIndex()));
-                SocialMediaMonthFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+
+                if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+                {
+                    SocialMediaMonthFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0 ,true) + " Visit");
+                }else
+                {
+                    SocialMediaMonthFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+                }
 
             }else  if(MainActivity.currentFragment.equals("Year"))
             {
                 SocialMediaYearFragment.textViewInfo.setText("" + "" + SocialMediaYearFragment.xAxisLabels.get(be.getXIndex()));
-                SocialMediaYearFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+
+                if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+                {
+                    SocialMediaYearFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0 ,true) + " Visit");
+                }else
+                {
+                    SocialMediaYearFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+                }
             }
         }
     }

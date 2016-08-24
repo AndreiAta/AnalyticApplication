@@ -45,22 +45,50 @@ public class CustomMarkerViewPopular extends MarkerView
             if(MainActivity.currentFragment.equals("Today"))
             {
                 PopPagesFragment.textViewInfo.setText("" + PopPagesFragment.xAxis.get(be.getXIndex()));
-                PopPagesFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+
+                if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+                {
+                    PopPagesFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visit");
+                }else
+                {
+                    PopPagesFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+                }
 
             }else if(MainActivity.currentFragment.equals("Week"))
             {
                 PopPagesWeekFragment.textViewInfo.setText("" + PopPagesWeekFragment.xAxis.get(be.getXIndex()));
-                PopPagesWeekFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+
+                if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+                {
+                    PopPagesWeekFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0 ,true) + " Visit");
+                }else
+                {
+                    PopPagesWeekFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+                }
 
             }else if(MainActivity.currentFragment.equals("Month"))
             {
                 PopPagesMonthFragment.textViewInfo.setText("" + PopPagesMonthFragment.xAxis.get(be.getXIndex()));
-                PopPagesMonthFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+
+                if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+                {
+                    PopPagesMonthFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visit");
+                }else
+                {
+                    PopPagesMonthFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+                }
 
             }else  if(MainActivity.currentFragment.equals("Year"))
             {
                 PopPagesYearFragment.textViewInfo.setText("" + PopPagesYearFragment.xAxis.get(be.getXIndex()));
-                PopPagesYearFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+
+                if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+                {
+                    PopPagesYearFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0 ,true) + " Visit");
+                }else
+                {
+                    PopPagesYearFragment.textViewTotal.setText(Utils.formatNumber(be.getVal(), 0, true) + " Visits");
+                }
             }
         }
 

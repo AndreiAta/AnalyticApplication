@@ -47,23 +47,51 @@ public class CustomMarkerViewPage extends MarkerView
         if(MainActivity.currentFragment.equals("Today"))
         {
             PageViewsFragment.textViewInfo.setText("Hour " + e.getXIndex());
-            PageViewsFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Page Views");
+
+            if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+            {
+                PageViewsFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0 ,true) + " Page View");
+            }else
+            {
+                PageViewsFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Page Views");
+            }
 
         }else if(MainActivity.currentFragment.equals("Week"))
         {
             PageViewsWeekFragment.textViewInfo.setText(PageViewsWeekFragment.tableWeekDays.get(e.getXIndex()) + "");
-            PageViewsWeekFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Page Views");
+
+            if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+            {
+                PageViewsWeekFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0 , true) + " Page View");
+            }else
+            {
+                PageViewsWeekFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Page Views");
+            }
 
         }else if(MainActivity.currentFragment.equals("Month"))
         {
             PageViewsMonthFragment.textViewInfo.setText((e.getXIndex() + 1) + dateFixer(e.getXIndex() + 1)
                     + " of " + today.toString("MMMMM"));
-            PageViewsMonthFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Page Views");
+
+            if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+            {
+                PageViewsMonthFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0 ,true) + " Page View");
+            }else
+            {
+                PageViewsMonthFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Page Views");
+            }
 
         }else  if(MainActivity.currentFragment.equals("Year"))
         {
             PageViewsYearFragment.textViewInfo.setText("" + getMonth(e.getXIndex()));
-            PageViewsYearFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Page Views");
+
+            if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+            {
+                PageViewsYearFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Page View") ;
+            }else
+            {
+                PageViewsYearFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Page Views");
+            }
         }
     }
 

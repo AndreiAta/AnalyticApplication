@@ -3,6 +3,7 @@ package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.components.MarkerView;
@@ -47,23 +48,51 @@ public class CustomMarkerViewVisits extends MarkerView
         if(MainActivity.currentFragment.equals("Today"))
         {
             VisitsFragment.textViewInfo.setText("Hour " + e.getXIndex());
-            VisitsFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+            if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+            {
+                VisitsFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visit");
+            }else
+            {
+                VisitsFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+            }
+
         }
         else if(MainActivity.currentFragment.equals("Week"))
         {
             VisitsWeekFragment.textViewInfo.setText("" + VisitsWeekFragment.tableWeekDays.get(e.getXIndex()));
-            VisitsWeekFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+
+            if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+            {
+                VisitsWeekFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visit");
+            }else
+            {
+                VisitsWeekFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+            }
         }
         else if(MainActivity.currentFragment.equals("Month"))
         {
             VisitsMonthFragment.textViewInfo.setText((e.getXIndex() + 1) + dateFixer(e.getXIndex() + 1)+ " of "
                     + today.toString("MMMMM"));
-            VisitsMonthFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+
+            if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+            {
+                VisitsMonthFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visit");
+            }else
+            {
+                VisitsMonthFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+            }
         }
         else if(MainActivity.currentFragment.equals("Year"))
         {
             VisitsYearFragment.textViewInfo.setText("" + getMonth(e.getXIndex()));
-            VisitsYearFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+
+            if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
+            {
+                VisitsYearFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visit");
+            }else
+            {
+                VisitsYearFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+            }
         }
     }
 
