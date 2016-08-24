@@ -87,7 +87,7 @@ public class CustomMarkerViewPage extends MarkerView
 
             if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
             {
-                PageViewsYearFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Page View") ;
+                PageViewsYearFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Page Viewgit add .") ;
             }else
             {
                 PageViewsYearFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Page Views");
