@@ -425,6 +425,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
                         Drawable drawable = ContextCompat.getDrawable(getActivity().getApplication(), R.drawable.chart_lastperiod_background);
                         lineDataSet2.setFillDrawable(drawable);
                         lineDataSet2.setDrawFilled(true);
+                        lineDataSet2.setHighLightColor(Color.rgb(255,255,255));
                         dataSets.add(lineDataSet2);
                         drawGraph();
 
@@ -438,6 +439,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
                         Drawable drawable = ContextCompat.getDrawable(getActivity().getApplication(), R.drawable.chart_thisperiod_background);
                         lineDataSet1.setFillDrawable(drawable);
                         lineDataSet1.setDrawFilled(true);
+                        lineDataSet1.setHighLightColor(Color.rgb(255,255,255));
                         dataSets.add(lineDataSet1);
 
                         // Setting Header Text to match VisitsYear Fragment.
