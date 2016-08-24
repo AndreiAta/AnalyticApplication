@@ -1,4 +1,4 @@
-package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media;
+package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.social_media;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -12,13 +12,11 @@ import android.support.v4.app.Fragment;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.util.Base64;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
@@ -42,7 +40,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.sql.Time;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -332,7 +329,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
 
         protected void onPostExecute(String response)
         {
-            Log.i("ERROR", response);
+            if(response != null) Log.i("ERROR", response);
 
             if(response == null) {
                 response = "THERE WAS AN ERROR";

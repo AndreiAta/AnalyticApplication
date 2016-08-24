@@ -1,4 +1,4 @@
-package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Traffic_Sources;
+package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.traffic_sources;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -12,13 +12,11 @@ import android.support.v4.app.Fragment;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.util.Base64;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
@@ -47,7 +45,6 @@ import java.util.ArrayList;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaFragment;
 
 public class TrafficSourcesMonthFragment extends Fragment implements View.OnClickListener
 {

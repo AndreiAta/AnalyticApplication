@@ -1,4 +1,4 @@
-package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Page_Views;
+package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.page_views;
 
 
 import android.content.Context;
@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.components.MarkerView;
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.Utils;
@@ -14,7 +13,6 @@ import com.github.mikephil.charting.utils.Utils;
 import org.joda.time.DateTime;
 
 import java.text.DateFormatSymbols;
-import java.util.ArrayList;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;

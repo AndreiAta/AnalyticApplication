@@ -1,4 +1,4 @@
-package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Entry_Pages;
+package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.entry_pages;
 
 /**
  * Created by Emil on 27-07-2016.

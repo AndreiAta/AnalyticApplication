@@ -1,4 +1,4 @@
-package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media;
+package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.social_media;
 
 
 import android.content.Context;

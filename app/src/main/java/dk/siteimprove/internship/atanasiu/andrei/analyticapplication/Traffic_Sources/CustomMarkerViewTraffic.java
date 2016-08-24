@@ -1,4 +1,4 @@
-package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Traffic_Sources;
+package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.traffic_sources;
 
 
 import android.content.Context;

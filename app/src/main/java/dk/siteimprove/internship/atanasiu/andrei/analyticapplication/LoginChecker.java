@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,10 +13,15 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.entity.Site;
 
 public class LoginChecker extends AsyncTask<Void, Void, String>
 {
@@ -67,22 +72,46 @@ public class LoginChecker extends AsyncTask<Void, Void, String>
                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
                 JSONArray items = object.getJSONArray("items");
                 MainActivity.websites = new ArrayList<>();
-                MainActivity.siteIds = new ArrayList<>();
 
                 for(int i = 0; i < items.length(); i++)
                 {
-                    String site_name = items.getJSONObject(i).getString("site_name");
-                    Integer id = items.getJSONObject(i).getInt("id");
+                    if(items.get(i).toString().contains("\"visits\":"))
+                    {
+                        String site_name = items.getJSONObject(i).getString("site_name");
+                        Integer id = items.getJSONObject(i).getInt("id");
+                        int visits = items.getJSONObject(i).getInt("visits");
 
-                    MainActivity.websites.add(site_name);
-                    MainActivity.siteIds.add(id);
+                        if(MainActivity.websites.size() == 0)
+                        {
+                            MainActivity.websites.add(new Site(id, site_name, visits));
+                        }
+                        else
+                        {
+                            for (int j = 0; j < MainActivity.websites.size() ; j++)
+                            {
+                                if(MainActivity.websites.get(j).getVisits() < visits)
+                                {
+                                    MainActivity.websites.add(j, new Site(id, site_name, visits));
+                                    break;
+                                }
+                                else if(j == MainActivity.websites.size()-1)
+                                {
+                                    MainActivity.websites.add(new Site(id, site_name, visits));
+                                    break;
+                                }
+                            }
+                        }
+
+
+                    }
+
                 }
 
                 // Login is a sucess?
                 MainActivity.initialLogin = "Logged in!";
                 MainActivity.dialog.dismiss();
-                MainActivity.API_ID = MainActivity.siteIds.get(0).toString();
-                MainActivity.menuSiteName.setText(MainActivity.websites.get(0));
+                MainActivity.API_ID = String.valueOf(MainActivity.websites.get(0).getId());
+                MainActivity.menuSiteName.setText(MainActivity.websites.get(0).getSiteName());
 
 
             } catch (JSONException e) {
@@ -96,7 +125,6 @@ public class LoginChecker extends AsyncTask<Void, Void, String>
             }
         }
         Log.i("INFO", response);
-
     }
 }
 

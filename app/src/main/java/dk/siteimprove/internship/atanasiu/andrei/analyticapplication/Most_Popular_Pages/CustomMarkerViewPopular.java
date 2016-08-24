@@ -1,4 +1,4 @@
-package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages;
+package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.most_popular_pages;
 
 
 import android.content.Context;

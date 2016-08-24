@@ -1,4 +1,4 @@
-package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Page_Views;
+package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.page_views;
 
 import android.content.Context;
 import android.content.res.Configuration;

@@ -1,4 +1,4 @@
-package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages;
+package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.most_popular_pages;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -15,10 +15,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaMonthFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaWeekFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaYearFragment;
 
 public class PopPagesMainFragment extends Fragment
 {

@@ -48,36 +48,37 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages.PopPagesFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages.PopPagesMainFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages.PopPagesMonthFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages.PopPagesWeekFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Most_Popular_Pages.PopPagesYearFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Page_Views.PageViewsFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Page_Views.PageViewsMainFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Page_Views.PageViewsMonthFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Page_Views.PageViewsWeekFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Page_Views.PageViewsYearFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesMonthFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesMainFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesWeekFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines.SearchEnginesYearFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaMainFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaMonthFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaWeekFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Social_Media.SocialMediaYearFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Traffic_Sources.TrafficSourcesFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Traffic_Sources.TrafficSourcesMainFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Traffic_Sources.TrafficSourcesMonthFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Traffic_Sources.TrafficSourcesWeekFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Traffic_Sources.TrafficSourcesYearFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.MainVisitsFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.VisitsFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.VisitsMonthFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.VisitsWeekFragment;
-import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits.VisitsYearFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.entity.Site;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.most_popular_pages.PopPagesFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.most_popular_pages.PopPagesMainFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.most_popular_pages.PopPagesMonthFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.most_popular_pages.PopPagesWeekFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.most_popular_pages.PopPagesYearFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.page_views.PageViewsFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.page_views.PageViewsMainFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.page_views.PageViewsMonthFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.page_views.PageViewsWeekFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.page_views.PageViewsYearFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.search_engines.SearchEnginesFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.search_engines.SearchEnginesMonthFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.search_engines.SearchEnginesMainFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.search_engines.SearchEnginesWeekFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.search_engines.SearchEnginesYearFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.social_media.SocialMediaFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.social_media.SocialMediaMainFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.social_media.SocialMediaMonthFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.social_media.SocialMediaWeekFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.social_media.SocialMediaYearFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.traffic_sources.TrafficSourcesFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.traffic_sources.TrafficSourcesMainFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.traffic_sources.TrafficSourcesMonthFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.traffic_sources.TrafficSourcesWeekFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.traffic_sources.TrafficSourcesYearFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.visits.MainVisitsFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.visits.VisitsFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.visits.VisitsMonthFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.visits.VisitsWeekFragment;
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.visits.VisitsYearFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -122,8 +123,8 @@ public class MainActivity extends AppCompatActivity
     public Toolbar toolbar;
     NavigationView navigationView;
     DrawerLayout drawer;
-    public static ArrayList<String> websites;
-    public static ArrayList<Integer> siteIds;
+    public static ArrayList<Site> websites;
+  //  public static ArrayList<Integer> siteIds;
     View header;
     ListView lv;
     public static Button signInButton;
@@ -234,9 +235,11 @@ public class MainActivity extends AppCompatActivity
             View header = navigationView.getHeaderView(0);
             menuEmailTxt = (TextView) header.findViewById(R.id.menuMail);
             menuEmailTxt.setText(API_EMAIL);
-            int tempVal = siteIds.indexOf(Integer.valueOf(API_ID));
-            Log.i("XXXXXX", String.valueOf(tempVal));
-            menuSiteName.setText(websites.get(tempVal));
+//            int tempValTest = websites.indexOf()
+//            int tempVal = siteIds.indexOf(Integer.valueOf(API_ID));
+//            Log.i("XXXXXX", String.valueOf(tempVal));
+
+            menuSiteName.setText((getSiteById(Integer.parseInt(API_ID))));
             signInButton.setAlpha(1);
             signInButton.setClickable(true);
             progressBarSignIn.setVisibility(View.GONE);
@@ -499,7 +502,14 @@ public class MainActivity extends AppCompatActivity
         alertDialog.setCustomTitle(title);
 
         lv = (ListView) convertView.findViewById(R.id.listView1);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this,R.layout.list_item,websites);
+
+        final ArrayList<String> dialogArray = new ArrayList<>(); //TODO make on top?
+        for (int i = 0; i < websites.size(); i++)
+        {
+            dialogArray.add(websites.get(i).getSiteName());
+        }
+
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.list_item, dialogArray);
         lv.setAdapter(adapter);
         final AlertDialog ad = alertDialog.show();
 
@@ -508,9 +518,10 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1,int position, long arg3)
             {
-                Toast.makeText(MainActivity.this, "API site changed to: " + websites.get(position), Toast.LENGTH_SHORT).show();
-                API_ID = siteIds.get(position).toString();
-                menuSiteName.setText(websites.get(position));
+                Toast.makeText(MainActivity.this, "API site changed to: " + websites.get(position).getSiteName(), Toast.LENGTH_SHORT).show();
+                API_ID = websites.get(position).getId().toString();
+                menuSiteName.setText(dialogArray.get(position));
+                writeToFile("choosen_website", websites.get(position) + "=-=SITE_URL=-=");
                 ad.dismiss();
             }
         });
@@ -543,5 +554,16 @@ public class MainActivity extends AppCompatActivity
                 });
         final AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public String getSiteById(int id)
+    {
+        for(Site s : websites)
+        {
+            if(s.getId().equals(id))
+                //return websites.indexOf(s);
+                return s.getSiteName();
+        }
+        return "Site name not found";
     }
 }
