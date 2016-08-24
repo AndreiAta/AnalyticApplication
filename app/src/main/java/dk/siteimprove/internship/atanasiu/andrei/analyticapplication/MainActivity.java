@@ -177,7 +177,8 @@ public class MainActivity extends AppCompatActivity
             progressBarSignIn.setVisibility(View.GONE);
             signInButton = (Button) dialog.findViewById(R.id.SignInButton);
 
-            readFromFile();
+            readFromFile("credentials_file");
+            readFromFile("rotate_check_file");
             signInButton.setOnClickListener(new View.OnClickListener()
             {
                 @Override
@@ -198,7 +199,7 @@ public class MainActivity extends AppCompatActivity
                         totalString = API_EMAIL + "=-==-" + API_KEY; // Middle string is used to split, in read method.
                         if(!API_EMAIL.equals("") && !API_KEY.equals(""))
                         {
-                            writeToFile(totalString);
+                            writeToFile("credentials_file", totalString);
                         }
 
                         // Sets drawer menuMail textview to current user mail.
@@ -246,12 +247,11 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void writeToFile(String message)
+    private void writeToFile(String fileName, String message)
     {
-        String file_name = "test_file";
         try
         {
-            FileOutputStream fileOutputStream = openFileOutput(file_name, MODE_PRIVATE);
+            FileOutputStream fileOutputStream = openFileOutput(fileName, MODE_PRIVATE);
             fileOutputStream.write(message.getBytes());
             fileOutputStream.close();
         }
@@ -259,12 +259,12 @@ public class MainActivity extends AppCompatActivity
         catch (IOException e) {e.printStackTrace();} // TODO: Handle somehow?
     }
 
-    private void readFromFile()
+    private void readFromFile(String fileName)
     {
         try
         {
             String message;
-            FileInputStream fileInputStream = openFileInput("test_file");
+            FileInputStream fileInputStream = openFileInput(fileName);
             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             StringBuffer stringBuffer = new StringBuffer();
@@ -280,6 +280,10 @@ public class MainActivity extends AppCompatActivity
                 API_KEY = parts[1];
                 emailText.setText(API_EMAIL);
                 apiKeyText.setText(API_KEY);
+            }
+            else if(tempString.contains("=-=SHOW_ME_NOT=-="))
+            {
+                showRotateDialog = false;
             }
 
             Toast.makeText(getApplicationContext(), API_EMAIL, Toast.LENGTH_LONG).show();
@@ -492,7 +496,7 @@ public class MainActivity extends AppCompatActivity
                 {
                     public void onClick(DialogInterface dialog, int id)
                     {
-
+                        writeToFile("rotate_check_file", "=-=SHOW_ME_NOT=-=");
                     }
                 });
         final AlertDialog alert = builder.create();
