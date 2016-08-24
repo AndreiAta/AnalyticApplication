@@ -1,9 +1,8 @@
-package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Visits;
+package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.visits;
 
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.components.MarkerView;

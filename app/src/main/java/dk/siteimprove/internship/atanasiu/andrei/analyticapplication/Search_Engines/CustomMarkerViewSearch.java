@@ -1,4 +1,4 @@
-package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Search_Engines;
+package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.search_engines;
 
 
 import android.content.Context;
