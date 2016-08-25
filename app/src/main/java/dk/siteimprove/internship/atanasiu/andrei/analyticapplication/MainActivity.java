@@ -1,5 +1,7 @@
 package dk.siteimprove.internship.atanasiu.andrei.analyticapplication;
 
+import static dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Constants.FIRST_COLUMN;
+import static dk.siteimprove.internship.atanasiu.andrei.analyticapplication.Constants.SECOND_COLUMN;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -21,7 +23,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -47,6 +48,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.entity.Site;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.most_popular_pages.PopPagesFragment;
@@ -169,7 +171,6 @@ public class MainActivity extends AppCompatActivity
 
             drawer.openDrawer(GravityCompat.START);
 
-            //setupRotateDialog();
             showRotateDialog = true;
 
             dialog = new Dialog(this,R.style.full_screen_dialog);
@@ -235,9 +236,6 @@ public class MainActivity extends AppCompatActivity
             View header = navigationView.getHeaderView(0);
             menuEmailTxt = (TextView) header.findViewById(R.id.menuMail);
             menuEmailTxt.setText(API_EMAIL);
-//            int tempValTest = websites.indexOf()
-//            int tempVal = siteIds.indexOf(Integer.valueOf(API_ID));
-//            Log.i("XXXXXX", String.valueOf(tempVal));
 
             menuSiteName.setText((getSiteById(Integer.parseInt(API_ID))));
             signInButton.setAlpha(1);
@@ -340,15 +338,14 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.chooseSite)
         {
-//            fragmentClass = HomePageFragment.class;
             changeFragment = false;
-            setupSitePickDialog();
+            createSitePickDialog();
         }
         else if (id == R.id.visits)
         {
             if(showRotateDialog)
             {
-                setupRotateDialog();
+                createRotateDialog();
                 showRotateDialog = false;
             }
             fragmentClass = MainVisitsFragment.class;
@@ -358,7 +355,7 @@ public class MainActivity extends AppCompatActivity
         {
             if(showRotateDialog)
             {
-                setupRotateDialog();
+                createRotateDialog();
                 showRotateDialog = false;
             }
             fragmentClass = PageViewsMainFragment.class;
@@ -367,7 +364,7 @@ public class MainActivity extends AppCompatActivity
         {
             if(showRotateDialog)
             {
-                setupRotateDialog();
+                createRotateDialog();
                 showRotateDialog = false;
             }
             fragmentClass = PopPagesMainFragment.class;
@@ -376,7 +373,7 @@ public class MainActivity extends AppCompatActivity
         {
             if(showRotateDialog)
             {
-                setupRotateDialog();
+                createRotateDialog();
                 showRotateDialog = false;
             }
             fragmentClass = TrafficSourcesMainFragment.class;
@@ -389,7 +386,7 @@ public class MainActivity extends AppCompatActivity
         {
             if(showRotateDialog)
             {
-                setupRotateDialog();
+                createRotateDialog();
                 showRotateDialog = false;
             }
             fragmentClass = SocialMediaMainFragment.class;
@@ -398,7 +395,7 @@ public class MainActivity extends AppCompatActivity
         {
             if(showRotateDialog)
             {
-                setupRotateDialog();
+                createRotateDialog();
                 showRotateDialog = false;
             }
             fragmentClass = SearchEnginesMainFragment.class;
@@ -484,50 +481,7 @@ public class MainActivity extends AppCompatActivity
         return haveConnectedWifi || haveConnectedMobile;
     }
 
-    private void setupSitePickDialog()
-    {
-        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_DARK);
-        LayoutInflater inflater = getLayoutInflater();
-        final View convertView = inflater.inflate(R.layout.site_picker_dialog, null);
-        alertDialog.setView(convertView);
-
-        TextView title = new TextView(this);
-        // You Can Customise your Title here
-        title.setText("Choose Site");
-        title.setBackgroundColor(Color.DKGRAY);
-        title.setPadding(40, 40, 40, 40);
-        title.setGravity(Gravity.CENTER);
-        title.setTextColor(Color.rgb(5, 184, 198));
-        title.setTextSize(20);
-        alertDialog.setCustomTitle(title);
-
-        lv = (ListView) convertView.findViewById(R.id.listView1);
-
-        final ArrayList<String> dialogArray = new ArrayList<>(); //TODO make on top?
-        for (int i = 0; i < websites.size(); i++)
-        {
-            dialogArray.add(websites.get(i).getSiteName());
-        }
-
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.list_item, dialogArray);
-        lv.setAdapter(adapter);
-        final AlertDialog ad = alertDialog.show();
-
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1,int position, long arg3)
-            {
-                Toast.makeText(MainActivity.this, "API site changed to: " + websites.get(position).getSiteName(), Toast.LENGTH_SHORT).show();
-                API_ID = websites.get(position).getId().toString();
-                menuSiteName.setText(dialogArray.get(position));
-                writeToFile("choosen_website", websites.get(position) + "=-=SITE_URL=-=");
-                ad.dismiss();
-            }
-        });
-    }
-
-    private void setupRotateDialog()
+    private void createRotateDialog()
     {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_DEVICE_DEFAULT_DARK);
         LayoutInflater inflater = getLayoutInflater();
@@ -555,6 +509,56 @@ public class MainActivity extends AppCompatActivity
         final AlertDialog alert = builder.create();
         alert.show();
     }
+
+    private void createSitePickDialog()
+    {
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_DARK);
+        LayoutInflater inflater = getLayoutInflater();
+        final View convertView = inflater.inflate(R.layout.site_picker_dialog, null);
+        alertDialog.setView(convertView);
+
+        ArrayList<HashMap<String, String>> list;
+        ListView listView = (ListView) convertView.findViewById(R.id.listView1);
+        list = new ArrayList<HashMap<String,String>>();
+
+        for (int i = 0; i < websites.size(); i++)
+        {
+            HashMap<String,String> temp = new HashMap<String, String>();
+            temp.put(FIRST_COLUMN, websites.get(i).getSiteName());
+            temp.put(SECOND_COLUMN, String.valueOf(websites.get(i).getVisits()));
+            list.add(temp);
+        }
+
+        ListViewAdapter adapter = new ListViewAdapter(this, list);
+        listView.setAdapter(adapter);
+
+        TextView title = new TextView(this);
+        // You Can Customise your Title here
+        title.setText("Choose Site");
+        title.setBackgroundColor(Color.DKGRAY);
+        title.setPadding(40, 40, 40, 40);
+        title.setGravity(Gravity.CENTER);
+        title.setTextColor(Color.rgb(5, 184, 198));
+        title.setTextSize(20);
+        alertDialog.setCustomTitle(title);
+
+        final AlertDialog ad = alertDialog.show();
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, final View view, int position, long id)
+            {
+                Toast.makeText(MainActivity.this, "API site changed to: " + websites.get(position).getSiteName(), Toast.LENGTH_SHORT).show();
+                API_ID = websites.get(position).getId().toString();
+                menuSiteName.setText(websites.get(position).getSiteName());
+                writeToFile("choosen_website", websites.get(position) + "=-=SITE_URL=-=");
+                ad.dismiss();
+            }
+
+        });
+    }
+
 
     public String getSiteById(int id)
     {
