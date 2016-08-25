@@ -540,7 +540,10 @@ public class MainActivity extends AppCompatActivity
         title.setGravity(Gravity.CENTER);
         title.setTextColor(Color.rgb(5, 184, 198));
         title.setTextSize(20);
-        alertDialog.setCustomTitle(title);
+
+        View titleView = inflater.inflate(R.layout.site_picker_dialog_title, null);
+        alertDialog.setCustomTitle(titleView);
+        //alertDialog.setCustomTitle(title);
 
         final AlertDialog ad = alertDialog.show();
 
@@ -555,7 +558,6 @@ public class MainActivity extends AppCompatActivity
                 writeToFile("choosen_website", websites.get(position) + "=-=SITE_URL=-=");
                 ad.dismiss();
             }
-
         });
     }
 
