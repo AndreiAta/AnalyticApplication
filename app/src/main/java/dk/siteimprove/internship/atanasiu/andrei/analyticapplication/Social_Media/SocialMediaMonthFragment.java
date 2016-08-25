@@ -33,6 +33,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,6 +59,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
     public static ArrayList<String> xAxisLabels;
     public static ProgressBar progressBar;
     String API_URL = "";
+    String period;
     private OnFragmentInteractionListener mListener;
     public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     TableLayout table;
@@ -98,16 +100,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                              Bundle savedInstanceState)
     {
         MainActivity.currentFragment = "Month";
-
-        if(!MainActivity.API_ID.equalsIgnoreCase(""))
-        {
-            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=Thismonth";
-            apiIdSelected = true;
-        }else
-        {
-            apiIdSelected= false;
-        }
+        periodCounter = 0;
 
         View rootView = inflater.inflate(R.layout.fragment_barchart, container, false); // Inflate the layout for this fragment
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
@@ -126,7 +119,6 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         imgBtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                textViewInfo.setText("VISITS THIS MONTH");
                 getPreviousPeriod();
             }
         });
@@ -141,13 +133,15 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         moreInfoButton.setOnClickListener(this);
         table.setVisibility(View.GONE);
 
-        totalVisits = 0;
-        //Get date period for text view
-        int daysOfMonth = new DateTime().getDayOfMonth();
-        DateTime firstDayOfMonth = new DateTime().minusDays(daysOfMonth - 1);
-        DateTime today = new DateTime();
-        String textDatePeriod = firstDayOfMonth.toString("dd MMMM") + " - " + today.toString("dd MMMM");
-        textViewDate.setText(textDatePeriod);
+        if(!MainActivity.API_ID.equalsIgnoreCase(""))
+        {
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=" + calculatePeriod(periodCounter);
+            apiIdSelected = true;
+        }else
+        {
+            apiIdSelected= false;
+        }
 
         if(haveNetworkConnection())
         {
@@ -174,9 +168,46 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         return rootView;
     }
 
+    private String calculatePeriod(int periodCounter)
+    {
+        period = "";
+        DateTime currentPeriod = new DateTime();
+        String stopPeriod = "";
+        int daysOfMonth = new DateTime().getDayOfMonth();
+        DateTime firstDayOfMonth = new DateTime().minusDays(daysOfMonth - 1);
+
+        if(periodCounter == 0)
+        {
+            stopPeriod = currentPeriod.minusMonths(periodCounter).toString("yyyyMMdd");
+            textViewDate.setText(firstDayOfMonth.toString("dd MMMM") + " - "
+                    + currentPeriod.minusMonths(periodCounter).toString("dd MMMM"));
+        }else
+        {
+            stopPeriod = currentPeriod.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("yyyyMMdd");
+            textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter).toString("dd MMMM") + " - "
+                    + currentPeriod.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("dd MMMM"));
+        }
+
+        //Get date period for text view
+//        int daysOfMonth = new DateTime().getDayOfMonth();
+//        DateTime firstDayOfMonth = new DateTime().minusDays(daysOfMonth - 1);
+//        DateTime today = new DateTime();
+//        String textDatePeriod = firstDayOfMonth.toString("dd MMMM") + " - " + today.toString("dd MMMM");
+//        textViewDate.setText(textDatePeriod);
+
+        String startPeriod = currentPeriod.minusMonths(periodCounter).toString("yyyyMM") + "01";
+        period = startPeriod + "_" + stopPeriod;
+        return period;
+    }
+
     private void getPreviousPeriod()
     {
-
+        textViewInfo.setText("VISITS THIS MONTH");
+        periodCounter ++;
+        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                + calculatePeriod(periodCounter);
+        new RetrieveFeedTask().execute();
     }
 
     public boolean haveNetworkConnection()
@@ -463,7 +494,8 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                         {
                             secondCall = true;
                             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=lastmonth";
+                                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                                    + calculatePeriod(periodCounter + 1);
                             new RetrieveFeedTask().execute();
                         }else
                         {
