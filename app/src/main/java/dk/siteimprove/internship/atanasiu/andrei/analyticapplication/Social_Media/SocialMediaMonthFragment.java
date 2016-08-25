@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -66,11 +67,12 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
     boolean secondCall = false;
     boolean tableIsVisible = false;
     boolean landscapeMode, apiIdSelected;
-    int totalVisits, totalSocialMedia;
+    int totalVisits, totalSocialMedia, periodCounter;
     int[] tempValSet2 = new int[100];
     CustomMarkerViewSocial mv;
     Button moreInfoButton;
-
+    ImageButton imgBtnBack;
+    TableRow defaultTableRow;
 
     public SocialMediaMonthFragment()
     {
@@ -116,8 +118,18 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        defaultTableRow = (TableRow) rootView.findViewById(R.id.defaultTableRow);
         moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
+        imgBtnBack = (ImageButton) rootView.findViewById(R.id.imgBtnBack);
         mv = new CustomMarkerViewSocial(getActivity().getApplicationContext(), R.layout.custom_marker_view);
+
+        imgBtnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                textViewInfo.setText("VISITS THIS MONTH");
+                getPreviousPeriod();
+            }
+        });
 
         textViewDate.setText("0 - 0");
         textViewInfo.setText("VISITS THIS MONTH");
@@ -160,6 +172,11 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         }
 
         return rootView;
+    }
+
+    private void getPreviousPeriod()
+    {
+
     }
 
     public boolean haveNetworkConnection()
@@ -345,7 +362,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
 
         protected void onPostExecute(String response)
         {
-            Log.i("ERROR", response);
+//            Log.i("ERROR", response);
 
             if(response == null) {
                 response = "THERE WAS AN ERROR";
@@ -369,10 +386,13 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                     }
                 }else
                 {
+                    totalVisits = 0;
                     valueSet1 = new ArrayList<>();
                     xAxis = new ArrayList<>();
                     xAxisLabels = new ArrayList<>();
                     tableValues = new ArrayList<>();
+                    table.removeAllViews();
+                    table.addView(defaultTableRow);
                 }
                 if(totalSocialMedia == 0)
                 {
