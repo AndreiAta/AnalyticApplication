@@ -98,11 +98,17 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                              Bundle savedInstanceState)
     {
         MainActivity.currentFragment = "Month";
+        DateTime currentPeriod = new DateTime();
+        String stopPeriod = currentPeriod.toString("yyyyMMdd");
+        String startPeriod = currentPeriod.toString("yyyyMM") + "01";
+        String period = startPeriod + "_" + stopPeriod;
+        String test = currentPeriod.minusMonths(12).toString("yyyyMMdd");
+        Log.i("AAAAA", test);
 
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=Thismonth";
+                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=" + period;
             apiIdSelected = true;
         }else
         {
@@ -128,6 +134,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
             public void onClick(View v) {
                 textViewInfo.setText("VISITS THIS MONTH");
                 getPreviousPeriod();
+                new RetrieveFeedTask().execute();
             }
         });
 
@@ -176,7 +183,8 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
 
     private void getPreviousPeriod()
     {
-
+        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=20130801_20130831";
     }
 
     public boolean haveNetworkConnection()
