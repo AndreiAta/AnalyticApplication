@@ -99,8 +99,6 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
     {
         MainActivity.currentFragment = "Month";
 
-git add .
-        g
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
