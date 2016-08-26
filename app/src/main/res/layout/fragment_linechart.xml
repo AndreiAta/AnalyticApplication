@@ -134,7 +134,8 @@
 
                 <TableRow
                     android:padding="10dp"
-                    android:background="@drawable/row_border">
+                    android:background="@drawable/row_border"
+                    android:id="@+id/defaultTableRow">
                     <TextView
                         android:id="@+id/columnOne"
                         android:layout_width="wrap_content"
