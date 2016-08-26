@@ -216,28 +216,32 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         String stopPeriod = "";
         int daysOfMonth = new DateTime().getDayOfMonth();
         DateTime firstDayOfMonth = new DateTime().minusDays(daysOfMonth - 1);
-        int monthAmount = currentPeriod.getMonthOfYear();
 
         if(periodCounter == 0)
         {
             stopPeriod = currentPeriod.minusMonths(periodCounter).toString("yyyyMMdd");
-            textViewDate.setText(firstDayOfMonth.toString("dd MMMM") + " - "
-                    + currentPeriod.minusMonths(periodCounter).toString("dd MMMM"));
+            textViewDate.setText(firstDayOfMonth.toString("dd MMM yyyy") + " - "
+                    + currentPeriod.minusMonths(periodCounter).toString("dd MMM yyyy"));
         }else
         {
             stopPeriod = currentPeriod.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("yyyyMMdd");
-            if(periodCounter >= monthAmount)
+            if(!secondCall)
             {
                 textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter).toString("dd MMM yyyy") + " - "
                         + currentPeriod.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("dd MMM yyyy"));
             }else
             {
-                textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter).toString("dd MMMM") + " - "
-                        + currentPeriod.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("dd MMMM"));
+                if(periodCounter == 1)
+                {
+                    textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter - 1).toString("dd MMM yyyy") + " - "
+                            + currentPeriod.minusMonths(periodCounter - 1).toString("dd MMM yyyy"));
+                }else
+                {
+                    textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter - 1).toString("dd MMM yyyy") + " - "
+                            + currentPeriod.minusMonths(periodCounter - 1).dayOfMonth().withMaximumValue().toString("dd MMM yyyy"));
+                }
             }
-
         }
-
 
         String startPeriod = currentPeriod.minusMonths(periodCounter).toString("yyyyMM") + "01";
         period = startPeriod + "_" + stopPeriod;

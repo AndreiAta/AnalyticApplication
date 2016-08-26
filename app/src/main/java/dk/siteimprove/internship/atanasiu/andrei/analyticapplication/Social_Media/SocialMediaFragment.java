@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -55,6 +56,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
     public static ArrayList<String> xAxisLabels;
     ProgressBar progressBar;
     String API_URL = "";
+    String period;
     public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     TableLayout table;
     ArrayList<Integer> tableValues;
@@ -64,9 +66,10 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
     boolean secondCall = false;
     boolean tableIsVisible = false;
     boolean landscapeMode, apiIdSelected;
-    int totalVisits, totalSocialMedia;
+    int totalVisits, totalSocialMedia, periodCounter;
     CustomMarkerViewSocial mv;
     Button moreInfoButton;
+    ImageButton imgBtnBack, imgBtnForward;
 
     private OnFragmentInteractionListener mListener;
 
@@ -90,17 +93,6 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                              Bundle savedInstanceState)
     {
         MainActivity.currentFragment = "Today";
-        DateTime today = new DateTime();
-
-        if(!MainActivity.API_ID.equalsIgnoreCase(""))
-        {
-            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=Today";
-            apiIdSelected = true;
-        }else
-        {
-            apiIdSelected = false;
-        }
 
         View rootView = inflater.inflate(R.layout.fragment_barchart, container, false); // Inflate the layout for this fragment
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
@@ -112,9 +104,27 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         table = (TableLayout) rootView.findViewById(R.id.table);
         moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
+        imgBtnBack = (ImageButton) rootView.findViewById(R.id.imgBtnBack);
+        imgBtnForward = (ImageButton) rootView.findViewById(R.id.imgBtnForward);
         mv = new CustomMarkerViewSocial(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
-        textViewDate.setText(today.toString("dd MMMM"));
+        imgBtnForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                getNextPeriod();
+            }
+        });
+
+        imgBtnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getPreviousPeriod();
+            }
+        });
+
+        DateTime today = new DateTime();
+        textViewDate.setText(today.toString("dd MMM yyyy"));
         textViewInfo.setText("VISITS TODAY");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
@@ -124,7 +134,18 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
         moreInfoButton.setOnClickListener(this);
         table.setVisibility(View.GONE);
 
-        totalVisits = 0;
+        periodCounter = 0;
+
+        if(!MainActivity.API_ID.equalsIgnoreCase(""))
+        {
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                    + calculatePeriod(periodCounter);
+            apiIdSelected = true;
+        }else
+        {
+            apiIdSelected = false;
+        }
 
         if(haveNetworkConnection())
         {
@@ -149,6 +170,59 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
         }
 
         return  rootView;
+    }
+
+    private void getNextPeriod()
+    {
+        if(periodCounter != 0)
+        {
+            imgBtnBack.setClickable(false);
+            imgBtnBack.setAlpha(0.5f);
+            imgBtnForward.setClickable(false);
+            imgBtnForward.setAlpha(0.5f);
+            chart.setVisibility(View.INVISIBLE);
+            textViewInfo.setText("VISITS TODAY");
+            periodCounter--;
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                    + calculatePeriod(periodCounter);
+            new RetrieveFeedTask().execute();
+        }
+    }
+
+    private void getPreviousPeriod()
+    {
+        imgBtnBack.setClickable(false);
+        imgBtnBack.setAlpha(0.5f);
+        imgBtnForward.setClickable(false);
+        imgBtnForward.setAlpha(0.5f);
+        chart.setVisibility(View.INVISIBLE);
+        textViewInfo.setText("VISITS TODAY");
+        periodCounter ++;
+        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                + calculatePeriod(periodCounter);
+        new RetrieveFeedTask().execute();
+    }
+
+    private String calculatePeriod(int periodCounter)
+    {
+        period = "";
+        DateTime currentPeriod = new DateTime();
+        String currentDay = currentPeriod.toString("yyyyMMdd");
+        textViewDate.setText(currentPeriod.minusDays(periodCounter).toString("dd MMM yyyy"));
+        if(periodCounter != 0)
+        {
+            currentDay = currentPeriod.minusDays(periodCounter).toString("yyyyMMdd");
+
+            if(secondCall)
+            {
+                textViewDate.setText(currentPeriod.minusDays(periodCounter - 1).toString("dd MMM yyyy"));
+            }
+        }
+
+        period = currentDay;
+        return period;
     }
 
     public boolean haveNetworkConnection()
@@ -284,6 +358,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
             chart.getAxisLeft().setDrawLabels(false);
             chart.getAxisRight().setDrawLabels(false);
         }
+        chart.setVisibility(View.VISIBLE);
     }
 
     // ===============================
@@ -334,7 +409,17 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
             if(response == null) {
                 response = "THERE WAS AN ERROR";
             }
-            progressBar.setVisibility(View.GONE);
+            if(landscapeMode)
+            {
+                if(secondCall)
+                {
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+            else
+            {
+                progressBar.setVisibility(View.GONE);
+            }
 
             try
             {
@@ -358,10 +443,12 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                     xAxis = new ArrayList<>();
                     xAxisLabels = new ArrayList<>();
                     tableValues = new ArrayList<>();
+                    totalVisits = 0;
                 }
                 if(totalSocialMedia == 0)
                 {
                     Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                    handleNoData(); //Reenable forward button and reset graph arrays
                 }
                 else
                 {
@@ -433,7 +520,8 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                         {
                             secondCall = true;
                             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=Yesterday";
+                                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                                    + calculatePeriod(periodCounter + 1);
                             new RetrieveFeedTask().execute();
                         }
                         else//Portrait Mode
@@ -470,13 +558,31 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                         drawGraph();
                         secondCall = false;
                     }
+                    imgBtnBack.setClickable(true);
+                    imgBtnBack.setAlpha(1f);
+                    if(periodCounter != 0)
+                    {
+                        imgBtnForward.setClickable(true);
+                        imgBtnForward.setAlpha(1f);
+                    }
                 }
 
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (ClassCastException ce){
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+                handleNoData(); //Reenable forward button and reset graph arrays
             }
+        }
+
+        private void handleNoData()
+        {
+            imgBtnForward.setClickable(true);
+            imgBtnForward.setAlpha(1f);
+            chart.setVisibility(View.VISIBLE);
+            xAxisLabels = new ArrayList<>();
+            dataSets = new ArrayList<>();
+            chart.clear();
         }
 
         private void reverseXPosInList(ArrayList<BarEntry> list)
