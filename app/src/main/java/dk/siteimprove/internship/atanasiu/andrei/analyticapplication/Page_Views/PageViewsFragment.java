@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -56,8 +57,10 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
     ArrayList<ILineDataSet> dataSets;
     ArrayList<Entry> valueSet1;
     ArrayList<Entry> valueSet2;
+    ArrayList<String> xAxis;
     String API_URL = "";
-    int totalHours, totalVisits;
+    String period;
+    int totalHours, totalVisits, periodCounter;
     boolean apiIdSelected, landscapeMode;
     boolean secondCall = false;
     boolean tableIsVisible = false;
@@ -66,6 +69,8 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
     ArrayList<Integer> tableValues;
     CustomMarkerViewPage mv;
     Button moreInfoButton;
+    ImageButton imgBtnBack, imgBtnForward;
+    TableRow defaultTableRow;
 
     private OnFragmentInteractionListener mListener;
 
@@ -76,14 +81,7 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
     {
         super.onCreate(savedInstanceState);
 
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
-        {
-            landscapeMode = true;
-        }
-        else
-        {
-            landscapeMode = false;
-        }
+        landscapeMode = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     @Override
@@ -91,19 +89,10 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
                              Bundle savedInstanceState)
     {
         MainActivity.currentFragment = "Today";
-        totalVisits = 0;
+        periodCounter = 0;
         DateTime today = new DateTime();
 
-        if(!MainActivity.API_ID.equalsIgnoreCase(""))
-        {
-            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/behavior/visits_by_hour?page=1&page_size=10&period=Today";
-            apiIdSelected = true;
 
-        }else
-        {
-            apiIdSelected = false;
-        }
         View rootView = inflater.inflate(R.layout.fragment_linechart, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         textViewDate = (TextView) rootView.findViewById(R.id.textViewDate);
@@ -112,8 +101,25 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         columnTwo = (TextView) rootView.findViewById(R.id.columnTwo);
+        defaultTableRow = (TableRow) rootView.findViewById(R.id.defaultTableRow);
         moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
+        imgBtnBack = (ImageButton) rootView.findViewById(R.id.imgBtnBack);
+        imgBtnForward = (ImageButton) rootView.findViewById(R.id.imgBtnForward);
         mv = new CustomMarkerViewPage(getActivity().getApplicationContext(), R.layout.custom_marker_view);
+
+        imgBtnForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                getNextPeriod();
+            }
+        });
+        imgBtnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getPreviousPeriod();
+            }
+        });
 
         textViewDate.setText(today.toString("dd MMMM"));
         textViewInfo.setText("PAGE VIEWS TODAY");
@@ -127,6 +133,17 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
 
         table = (TableLayout) rootView.findViewById(R.id.table);
         table.setVisibility(View.GONE);
+
+        if(!MainActivity.API_ID.equalsIgnoreCase(""))
+        {
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/behavior/visits_by_hour?page=1&page_size=10&period=";
+            apiIdSelected = true;
+
+        }else
+        {
+            apiIdSelected = false;
+        }
 
         if(haveNetworkConnection())
         {
@@ -153,6 +170,59 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
         chart = (LineChart) rootView.findViewById(R.id.chart);
         return  rootView;
 
+    }
+
+    private void getNextPeriod()
+    {
+        if(periodCounter != 0)
+        {
+            imgBtnBack.setClickable(false);
+            imgBtnBack.setAlpha(0.5f);
+            imgBtnForward.setClickable(false);
+            imgBtnForward.setAlpha(0.5f);
+            chart.setVisibility(View.INVISIBLE);
+            textViewInfo.setText("VISITS TODAY");
+            periodCounter--;
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/behavior/visits_by_hour?page=1&page_size=10&period="
+                    + calculatePeriod(periodCounter);
+            new RetrieveFeedTask().execute();
+        }
+    }
+
+    private void getPreviousPeriod()
+    {
+        imgBtnBack.setClickable(false);
+        imgBtnBack.setAlpha(0.5f);
+        imgBtnForward.setClickable(false);
+        imgBtnForward.setAlpha(0.5f);
+        chart.setVisibility(View.INVISIBLE);
+        textViewInfo.setText("VISITS TODAY");
+        periodCounter ++;
+        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                "/analytics/behavior/visits_by_hour?page=1&page_size=10&period="
+                + calculatePeriod(periodCounter);
+        new RetrieveFeedTask().execute();
+    }
+
+    private String calculatePeriod(int periodCounter)
+    {
+        period = "";
+        DateTime currentPeriod = new DateTime();
+        String currentDay = currentPeriod.toString("yyyyMMdd");
+        textViewDate.setText(currentPeriod.minusDays(periodCounter).toString("dd MMM yyyy"));
+        if(periodCounter != 0)
+        {
+            currentDay = currentPeriod.minusDays(periodCounter).toString("yyyyMMdd");
+
+            if(secondCall)
+            {
+                textViewDate.setText(currentPeriod.minusDays(periodCounter - 1).toString("dd MMM yyyy"));
+            }
+        }
+
+        period = currentDay;
+        return period;
     }
 
     @Override
@@ -255,7 +325,6 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
     }
 
     private ArrayList<String> getXAxisValues() {
-        ArrayList<String> xAxis = new ArrayList<>();
 
         for (Integer i = 0; i < 24 ; i++)
         {
@@ -304,6 +373,7 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
             chart.getAxisLeft().setDrawLabels(false);
             chart.getAxisRight().setDrawLabels(false);
         }
+        chart.setVisibility(View.VISIBLE);
     }
 
     // ===============================
@@ -356,8 +426,17 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
             if(response == null) {
                 response = "THERE WAS AN ERROR";
             }
-            progressBar.setVisibility(View.GONE);
-            Log.i("INFO", response);
+            if(landscapeMode)
+            {
+                if(secondCall)
+                {
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+            else
+            {
+                progressBar.setVisibility(View.GONE);
+            }
 
             try
             {
@@ -372,10 +451,13 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
                 {
                     valueSet1 = new ArrayList<>();
                     tableValues = new ArrayList<>();
+                    totalVisits = 0;
+                    xAxis = new ArrayList<>();
                 }
                 if(totalHours == 0)
                 {
                     Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                    handleNoData(); //Reenable forward button and reset graph arrays
                 }else
                 {
                     for (Integer i = 0; i < totalHours; i++)
@@ -427,7 +509,8 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
                         {
                             secondCall = true;
                             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                    "/analytics/behavior/visits_by_hour?page=1&page_size=10&period=Yesterday";
+                                    "/analytics/behavior/visits_by_hour?page=1&page_size=10&period="
+                                    + calculatePeriod(periodCounter + 1);
                             new RetrieveFeedTask().execute();
                         }else
                         {
@@ -435,14 +518,31 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
                             createTable();
                         }
                     }
-
+                    imgBtnBack.setClickable(true);
+                    imgBtnBack.setAlpha(1f);
+                    if(periodCounter != 0)
+                    {
+                        imgBtnForward.setClickable(true);
+                        imgBtnForward.setAlpha(1f);
+                    }
                 }
 
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (ClassCastException ce){
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+                handleNoData(); //Reenable forward button and reset graph arrays
             }
+        }
+
+        private void handleNoData()
+        {
+            imgBtnForward.setClickable(true);
+            imgBtnForward.setAlpha(1f);
+            chart.setVisibility(View.VISIBLE);
+            xAxis = new ArrayList<>();
+            dataSets = new ArrayList<>();
+            chart.clear();
         }
     }
 }

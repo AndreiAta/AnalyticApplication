@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -43,9 +44,11 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
@@ -59,17 +62,20 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
     ArrayList<Entry> valueSet2;
     ArrayList<Integer> tableValues;
     ArrayList<String> monthList;
+    ArrayList<String> xAxis;
     boolean landscapeMode, apiIdSelected;
     boolean secondCall = false;
     boolean tableIsVisible = false;
     private OnFragmentInteractionListener mListener;
     String API_URL = "";
-    String lastYear;
+    String lastYear, period;
     TableLayout table;
     public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
-    int totalVisits, totalMonths;
+    int totalVisits, totalMonths, periodCounter;
     CustomMarkerViewVisits mv;
     Button moreInfoButton;
+    ImageButton imgBtnBack, imgBtnForward;
+    TableRow defaultTableRow;
 
     public VisitsYearFragment() {    }  // Required empty public constructor
 
@@ -96,16 +102,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
         DateTime thisYear = new DateTime().minusYears(1);
         lastYear = thisYear.toString("yyyy");
 
-        if(!MainActivity.API_ID.equalsIgnoreCase("")) //Check if the user has selected a website
-        {
-            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/overview/history?period=thisyear";
-            apiIdSelected = true;
 
-        }else
-        {
-            apiIdSelected = false;
-        }
         View rootView = inflater.inflate(R.layout.fragment_linechart, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         table = (TableLayout) rootView.findViewById(R.id.table);
@@ -115,8 +112,24 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
+        imgBtnBack = (ImageButton) rootView.findViewById(R.id.imgBtnBack);
+        imgBtnForward = (ImageButton) rootView.findViewById(R.id.imgBtnForward);
+        defaultTableRow = (TableRow) rootView.findViewById(R.id.defaultTableRow);
         mv = new CustomMarkerViewVisits(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
+        imgBtnForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                getNextPeriod();
+            }
+        });
+        imgBtnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getPreviousPeriod();
+            }
+        });
 
         columnOne.setText("Month of Year");
         textViewInfo.setText("VISITS THIS YEAR");
@@ -126,7 +139,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
 
         table = (TableLayout) rootView.findViewById(R.id.table);
         table.setVisibility(View.GONE);
-        totalVisits = 0;
+        periodCounter = 0;
 
         //Get month List for the table
         monthList = new ArrayList<>();
@@ -137,6 +150,18 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
         DateTime today = new DateTime();
         String textDatePeriod = firstDayOfMonth.toString("MMMMM yyyy") + " - " + today.toString("MMMMM yyyy");
         textViewDate.setText(textDatePeriod);
+
+        if(!MainActivity.API_ID.equalsIgnoreCase("")) //Check if the user has selected a website
+        {
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/overview/history?period="
+                    + calculatePeriod(periodCounter);
+            apiIdSelected = true;
+
+        }else
+        {
+            apiIdSelected = false;
+        }
 
         if(haveNetworkConnection())
         {
@@ -162,6 +187,68 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
 
         chart = (LineChart) rootView.findViewById(R.id.chart);
         return rootView;
+    }
+
+    private void getNextPeriod()
+    {
+        if(periodCounter != 0)
+        {
+            imgBtnBack.setClickable(false);
+            imgBtnBack.setAlpha(0.5f);
+            imgBtnForward.setClickable(false);
+            imgBtnForward.setAlpha(0.5f);
+            chart.setVisibility(View.INVISIBLE);
+            textViewInfo.setText("VISITS THIS YEAR");
+            periodCounter--;
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/overview/history?period="
+                    + calculatePeriod(periodCounter);
+            new RetrieveFeedTask().execute();
+        }
+    }
+
+    private String calculatePeriod(int periodCounter)
+    {
+        DateTime currentPeriod = new DateTime();
+        DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
+        String firstDayOfYear = currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("yyyyMMdd");
+        String period = firstDayOfYear + "_" + currentPeriod.toString("yyyyMMdd");
+        textViewDate.setText(currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("dd MMM yyyy")
+                + " - " + currentPeriod.toString("dd MMM yyyy"));
+        if(periodCounter != 0)
+        {
+            period = currentPeriod.minusYears(periodCounter).toString("yyyy") + "0101"
+                    + "_"
+                    + currentPeriod.minusYears(periodCounter).toString("yyyy") + "1231" ;
+            textViewDate.setText(currentPeriod.minusYears(periodCounter).dayOfYear().withMinimumValue().toString("dd MMM yyyy")
+                    + " - "
+                    + currentPeriod.minusYears(periodCounter).dayOfYear().withMaximumValue().toString("dd MMM yyyy") );
+            if(secondCall)
+            {
+                if(periodCounter == 1)
+                {
+                    textViewDate.setText(currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("dd MMM yyyy")
+                            + " - " + currentPeriod.toString("dd MMM yyyy"));
+                }
+            }
+        }
+
+        return period;
+    }
+
+    private void getPreviousPeriod()
+    {
+        imgBtnBack.setClickable(false);
+        imgBtnBack.setAlpha(0.5f);
+        imgBtnForward.setClickable(false);
+        imgBtnForward.setAlpha(0.5f);
+        chart.setVisibility(View.INVISIBLE);
+        textViewInfo.setText("VISITS THIS YEAR");
+        periodCounter ++;
+        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                "/analytics/overview/history?period="
+                + calculatePeriod(periodCounter);
+        new RetrieveFeedTask().execute();
     }
 
 
@@ -272,7 +359,6 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
     }
 
     private ArrayList<String> getXAxisValues() {
-        ArrayList<String> xAxis = new ArrayList<>();
 
         for (Integer i = 1; i <= 12 ; i++)
         {
@@ -322,6 +408,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
             chart.getAxisLeft().setDrawLabels(false);
             chart.getAxisRight().setDrawLabels(false);
         }
+        chart.setVisibility(View.VISIBLE);
     }
 
     // ===============================
@@ -373,8 +460,17 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
             if(response == null) {
                 response = "THERE WAS AN ERROR";
             }
-            progressBar.setVisibility(View.GONE);
-            Log.i("INFO", response);
+            if(landscapeMode)
+            {
+                if(secondCall)
+                {
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+            else
+            {
+                progressBar.setVisibility(View.GONE);
+            }
 
             try
             {
@@ -389,10 +485,15 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
                 {
                     valueSet1 = new ArrayList<>();
                     tableValues = new ArrayList<>();
+                    totalVisits = 0;
+                    xAxis = new ArrayList<>();
+                    table.removeAllViews();
+                    table.addView(defaultTableRow);
                 }
                 if(totalMonths == 0)
                 {
                     Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                    handleNoData(); //Reenable forward button and reset graph arrays
                 }else
                 {
                     for (Integer i = 0; i < totalMonths; i++)
@@ -447,7 +548,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
                         {
                             secondCall = true;
                             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                    "/analytics/overview/history?period=" + lastYear + "0101_" + lastYear + "1231";
+                                    "/analytics/overview/history?period=" + calculatePeriod(periodCounter + 1);
                             new RetrieveFeedTask().execute();
                         }else
                         {
@@ -455,14 +556,31 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
                             createTable();
                         }
                     }
-
+                    imgBtnBack.setClickable(true);
+                    imgBtnBack.setAlpha(1f);
+                    if(periodCounter != 0)
+                    {
+                        imgBtnForward.setClickable(true);
+                        imgBtnForward.setAlpha(1f);
+                    }
                 }
 
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (ClassCastException ce){
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+                handleNoData(); //Reenable forward button and reset graph arrays
             }
+        }
+
+        private void handleNoData()
+        {
+            imgBtnForward.setClickable(true);
+            imgBtnForward.setAlpha(1f);
+            chart.setVisibility(View.VISIBLE);
+            xAxis = new ArrayList<>();
+            dataSets = new ArrayList<>();
+            chart.clear();
         }
     }
 }
