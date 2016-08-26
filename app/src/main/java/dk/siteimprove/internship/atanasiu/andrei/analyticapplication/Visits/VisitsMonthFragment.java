@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -57,6 +58,8 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
     ArrayList<Entry> valueSet1;
     ArrayList<Entry> valueSet2;
     String API_URL = "";
+    String period;
+    int periodCounter;
     private OnFragmentInteractionListener mListener;
     Integer totalMonthDays = 0, totalVisits;
     boolean landscapeMode;
@@ -70,6 +73,9 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
     int totalDays;
     CustomMarkerViewVisits mv;
     Button moreInfoButton;
+    ImageButton imgBtnBack, imgBtnForward;
+    TableRow defaultTableRow;
+    ArrayList<String> xAxis;
 
 
     public VisitsMonthFragment()
@@ -82,14 +88,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
     {
         super.onCreate(savedInstanceState);
 
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
-        {
-            landscapeMode = true;
-        }
-        else
-        {
-            landscapeMode = false;
-        }
+        landscapeMode = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     @Override
@@ -97,16 +96,8 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
                              Bundle savedInstanceState)
     {
         MainActivity.currentFragment = "Month";
+        periodCounter = 0;
 
-        if(!MainActivity.API_ID.equalsIgnoreCase(""))
-        {
-            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=ThisMonth";
-            apiIdSelected = true;
-        }else
-        {
-            apiIdSelected = false;
-        }
         View rootView = inflater.inflate(R.layout.fragment_linechart, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         textViewDate = (TextView) rootView.findViewById(R.id.textViewDate);
@@ -114,27 +105,48 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
+        table = (TableLayout) rootView.findViewById(R.id.table);
         moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
+        chart = (LineChart) rootView.findViewById(R.id.chart);
+        defaultTableRow = (TableRow) rootView.findViewById(R.id.defaultTableRow);
+        imgBtnBack = (ImageButton) rootView.findViewById(R.id.imgBtnBack);
+        imgBtnForward = (ImageButton) rootView.findViewById(R.id.imgBtnForward);
         mv = new CustomMarkerViewVisits(getActivity().getApplicationContext(), R.layout.custom_marker_view);
+
+        imgBtnForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                getNextPeriod();
+            }
+        });
+        imgBtnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getPreviousPeriod();
+            }
+        });
 
         columnOne.setText("Day of Month");
         textViewInfo.setText("VISITS THIS MONTH");
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
         moreInfoButton.setOnClickListener(this);
-
-        table = (TableLayout) rootView.findViewById(R.id.table);
         table.setVisibility(View.GONE);
 
-        totalVisits = 0;
-        //Get date period for text view
-        int daysOfMonth = new DateTime().getDayOfMonth();
-        DateTime firstDayOfMonth = new DateTime().minusDays(daysOfMonth - 1);
-        DateTime today = new DateTime().minusDays(1);
-        String textDatePeriod = firstDayOfMonth.toString("dd MMMM") + " - " + today.toString("dd MMMM");
-        textViewDate.setText(textDatePeriod);
 
-        if(haveNetworkConnection())
+        if(!MainActivity.API_ID.equalsIgnoreCase(""))
+        {
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=" +
+                    calculatePeriod(periodCounter);
+            apiIdSelected = true;
+        }else
+        {
+            apiIdSelected = false;
+        }
+
+        if(hasNetworkConnection())
         {
             if(apiIdSelected)
             {
@@ -156,10 +168,79 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
             moreInfoButton.setVisibility(View.GONE);
         }
 
-        chart = (LineChart) rootView.findViewById(R.id.chart);
-
         return  rootView;
+    }
 
+    private void getNextPeriod()
+    {
+        if(periodCounter != 0)
+        {
+            imgBtnBack.setClickable(false);
+            imgBtnBack.setAlpha(0.5f);
+            imgBtnForward.setClickable(false);
+            imgBtnForward.setAlpha(0.5f);
+            chart.setVisibility(View.INVISIBLE);
+            textViewInfo.setText("VISITS THIS MONTH");
+            periodCounter--;
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period="
+                    + calculatePeriod(periodCounter);
+            new RetrieveFeedTask().execute();
+        }
+    }
+
+    private void getPreviousPeriod()
+    {
+        imgBtnBack.setClickable(false);
+        imgBtnBack.setAlpha(0.5f);
+        imgBtnForward.setClickable(false);
+        imgBtnForward.setAlpha(0.5f);
+        chart.setVisibility(View.INVISIBLE);
+        textViewInfo.setText("VISITS THIS MONTH");
+        periodCounter ++;
+        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period="
+                + calculatePeriod(periodCounter);
+        new RetrieveFeedTask().execute();
+    }
+
+    private String calculatePeriod(int periodCounter)
+    {
+        period = "";
+        DateTime currentPeriod = new DateTime();
+        String stopPeriod;
+        int daysOfMonth = new DateTime().getDayOfMonth();
+        DateTime firstDayOfMonth = new DateTime().minusDays(daysOfMonth - 1);
+
+        if(periodCounter == 0)
+        {
+            stopPeriod = currentPeriod.minusMonths(periodCounter).toString("yyyyMMdd");
+            textViewDate.setText(firstDayOfMonth.toString("dd MMM yyyy") + " - "
+                    + currentPeriod.minusMonths(periodCounter).toString("dd MMM yyyy"));
+        }else
+        {
+            stopPeriod = currentPeriod.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("yyyyMMdd");
+            if(!secondCall)
+            {
+                textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter).toString("dd MMM yyyy") + " - "
+                        + currentPeriod.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("dd MMM yyyy"));
+            }else
+            {
+                if(periodCounter == 1)
+                {
+                    textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter - 1).toString("dd MMM yyyy") + " - "
+                            + currentPeriod.toString("dd MMM yyyy"));
+                }else
+                {
+                    textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter - 1).toString("dd MMM yyyy") + " - "
+                            + currentPeriod.minusMonths(periodCounter - 1).dayOfMonth().withMaximumValue().toString("dd MMM yyyy"));
+                }
+            }
+        }
+
+        String startPeriod = currentPeriod.minusMonths(periodCounter).toString("yyyyMM") + "01";
+        period = startPeriod + "_" + stopPeriod;
+        return period;
     }
 
     public void createTable()
@@ -216,21 +297,25 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    public boolean haveNetworkConnection() {
-        boolean haveConnectedWifi = false;
-        boolean haveConnectedMobile = false;
+    public boolean hasNetworkConnection()
+    {
+        boolean isConnectedWifi = false;
+        boolean isConnectedMobile = false;
 
         ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
-        for (NetworkInfo ni : netInfo) {
-            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
-                if (ni.isConnected())
-                    haveConnectedWifi = true;
-            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
-                if (ni.isConnected())
-                    haveConnectedMobile = true;
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null) // connected to the internet
+        {
+            if (netInfo.getType() == ConnectivityManager.TYPE_WIFI)
+            {
+                isConnectedWifi = true;
+            }
+            if (netInfo.getType() == ConnectivityManager.TYPE_MOBILE)
+            {
+                isConnectedMobile = true;
+            }
         }
-        return haveConnectedWifi || haveConnectedMobile;
+        return isConnectedWifi || isConnectedMobile;
     }
 
     @Override
@@ -261,7 +346,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
     }
 
     private ArrayList<String> getXAxisValues() {
-        ArrayList<String> xAxis = new ArrayList<>();
+        xAxis = new ArrayList<>();
 
         for (Integer i = 1; i <= 31 ; i++)
         {
@@ -308,6 +393,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
             chart.getAxisLeft().setDrawLabels(false);
             chart.getAxisRight().setDrawLabels(false);
         }
+        chart.setVisibility(View.VISIBLE);
     }
 
     // ===============================
@@ -360,8 +446,17 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
             if(response == null) {
                 response = "THERE WAS AN ERROR";
             }
-            progressBar.setVisibility(View.GONE);
-            Log.i("INFO", response);
+            if(landscapeMode)
+            {
+                if(secondCall)
+                {
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+            else
+            {
+                progressBar.setVisibility(View.GONE);
+            }
 
             try
             {
@@ -376,11 +471,15 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
                 {
                     valueSet1 = new ArrayList<>();
                     tableValues = new ArrayList<>();
+                    xAxis = new ArrayList<>();
+                    totalVisits = 0;
+                    table.removeAllViews();
+                    table.addView(defaultTableRow);
                 }
                 if(totalDays == 0)
                 {
                     Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
-                    totalVisits = 0;
+                    handleNoData(); //Reenable forward button and reset graph arrays
                 }else
                 {
                     for (Integer i = 0; i < totalDays; i++)
@@ -422,7 +521,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
                         Drawable drawable = ContextCompat.getDrawable(getActivity().getApplication(), R.drawable.chart_thisperiod_background);
                         lineDataSet1.setFillDrawable(drawable);
                         lineDataSet1.setDrawFilled(true);
-                        lineDataSet1.setHighLightColor(Color.rgb(255,255,255));
+                        lineDataSet1.setHighLightColor(Color.rgb(255, 255, 255));
                         dataSets.add(lineDataSet1);
                         Log.i("Total VISISTS", totalVisits.toString());
                         textViewTotal.setText(totalVisits.toString());
@@ -430,7 +529,8 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
                         {
                             secondCall = true;
                             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                    "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=LastMonth";
+                                    "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=" +
+                                    calculatePeriod(periodCounter+1);
                             new RetrieveFeedTask().execute();
                         }else
                         {
@@ -439,13 +539,31 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
                             drawGraph();
                         }
                     }
+                    imgBtnBack.setClickable(true);
+                    imgBtnBack.setAlpha(1f);
+                    if(periodCounter != 0)
+                    {
+                        imgBtnForward.setClickable(true);
+                        imgBtnForward.setAlpha(1f);
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (ClassCastException ce){
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+                handleNoData(); //Reenable forward button and reset graph arrays
             }
 
+        }
+
+        private void handleNoData()
+        {
+            imgBtnForward.setClickable(true);
+            imgBtnForward.setAlpha(1f);
+            chart.setVisibility(View.VISIBLE);
+            xAxis = new ArrayList<>();
+            dataSets = new ArrayList<>();
+            chart.clear();
         }
     }
 }
