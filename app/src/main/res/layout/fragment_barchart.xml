@@ -20,20 +20,14 @@
                 android:layout_height="wrap_content"
                 android:gravity="center">
 
-                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                xmlns:tools="http://schemas.android.com/tools"
-                                android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
-
-                                android:paddingTop="@dimen/activity_vertical_margin"
-                                android:paddingBottom="@dimen/activity_vertical_margin"
-                                tools:context=".MainActivity">
-                    <com.github.mikephil.charting.charts.HorizontalBarChart
-                        android:id="@+id/chart"
-                        android:layout_width="fill_parent"
-                        android:layout_height="200dp"
-                        android:layout_below="@+id/textViewTotal"
-                        android:layout_alignParentEnd="true"/>
+                <RelativeLayout
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/activity_vertical_margin"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    tools:context=".MainActivity">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -47,6 +41,27 @@
                         android:layout_centerHorizontal="true"
                         android:textColor="@color/White"
                         android:paddingBottom="5dp"/>
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_keyboard_arrow_left_white_36dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_above="@+id/textViewInfo"
+                        android:layout_toStartOf="@+id/textViewDate"
+                        android:background="@android:color/transparent"
+                        android:id="@+id/imgBtnBack"/>
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_keyboard_arrow_right_white_36dp"
+                        android:alpha="0.5"
+                        android:layout_alignParentTop="true"
+                        android:layout_above="@+id/textViewInfo"
+                        android:layout_toEndOf="@+id/textViewDate"
+                        android:background="@android:color/transparent"
+                        android:id="@+id/imgBtnForward"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -77,29 +92,12 @@
                         android:layout_below="@+id/textViewTotal"
                         android:layout_centerHorizontal="true"/>
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_keyboard_arrow_left_white_36dp"
-                        android:layout_alignParentTop="true"
-                        android:layout_above="@+id/textViewInfo"
-                        android:layout_toStartOf="@+id/textViewDate"
-                        android:background="@android:color/transparent"
-                        android:id="@+id/imgBtnBack"
-                        />
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_keyboard_arrow_right_white_36dp"
-                        android:alpha="0.5"
-                        android:layout_alignParentTop="true"
-                        android:layout_above="@+id/textViewInfo"
-                        android:layout_toEndOf="@+id/textViewDate"
-                        android:background="@android:color/transparent"
-                        android:id="@+id/imgBtnForward"
-                        />
-
+                    <com.github.mikephil.charting.charts.HorizontalBarChart
+                        android:id="@+id/chart"
+                        android:layout_width="fill_parent"
+                        android:layout_height="200dp"
+                        android:layout_below="@+id/textViewTotal"
+                        android:layout_alignParentEnd="true"/>
                 </RelativeLayout>
 
             </LinearLayout>

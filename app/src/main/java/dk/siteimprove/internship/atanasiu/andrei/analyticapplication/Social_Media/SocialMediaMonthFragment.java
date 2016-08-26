@@ -136,7 +136,8 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=" + calculatePeriod(periodCounter);
+                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=" +
+                    calculatePeriod(periodCounter);
             apiIdSelected = true;
         }else
         {

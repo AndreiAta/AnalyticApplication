@@ -98,7 +98,7 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
         MainActivity.currentFragment = "Week";
 
         int dayOfWeek = new DateTime().getDayOfWeek();
-        DateTime currentDay = new DateTime().;
+        DateTime currentDay = new DateTime();
         String currentDate = currentDay.toString("yyyy-MM-dd");
         currentDate = currentDate.replace("-","");
 
