@@ -417,7 +417,17 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
             if(response == null) {
                 response = "THERE WAS AN ERROR";
             }
-            progressBar.setVisibility(View.GONE);
+            if(landscapeMode)
+            {
+                if(secondCall)
+                {
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+            else
+            {
+                progressBar.setVisibility(View.GONE);
+            }
 
             try
             {
@@ -441,10 +451,14 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                     xAxis = new ArrayList<>();
                     xAxisLabels = new ArrayList<>();
                     tableValues = new ArrayList<>();
+                    totalVisits = 0;
+                    table.removeAllViews();
+                    table.addView(defaultTableRow);
                 }
                 if(totalPopPages == 0)
                 {
                     Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                    handleNoData(); //Reenable forward button and reset graph arrays
                 }
                 else
                 {
@@ -513,7 +527,8 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                         {
                             secondCall = true;
                             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                    "/analytics/content/most_popular_pages?page=1&page_size=10&period=yesterday";
+                                    "/analytics/content/most_popular_pages?page=1&page_size=10&period=" +
+                                    calculatePeriod(periodCounter+1);
                             new RetrieveFeedTask().execute();
                         }else
                         {
@@ -550,14 +565,33 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
 
                         secondCall = false;
                     }
+                    imgBtnBack.setClickable(true);
+                    imgBtnBack.setAlpha(1f);
+                    if(periodCounter != 0)
+                    {
+                        imgBtnForward.setClickable(true);
+                        imgBtnForward.setAlpha(1f);
+                    }
                 }
 
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (ClassCastException ce){
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+                handleNoData(); //Reenable forward button and reset graph arrays
             }
         }
+
+        private void handleNoData()
+        {
+            imgBtnForward.setClickable(true);
+            imgBtnForward.setAlpha(1f);
+            chart.setVisibility(View.VISIBLE);
+            xAxisLabels = new ArrayList<>();
+            dataSets = new ArrayList<>();
+            chart.clear();
+        }
+
         private void reverseXPosInList(ArrayList<BarEntry> list)
         {
             int xLabelSize = xAxisLabels.size()-1;

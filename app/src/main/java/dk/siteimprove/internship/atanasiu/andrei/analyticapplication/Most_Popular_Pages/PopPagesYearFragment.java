@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -41,9 +42,11 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
@@ -51,10 +54,11 @@ import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 public class PopPagesYearFragment extends Fragment implements View.OnClickListener
 {
     String API_URL = "";
+    String period;
     boolean landscapeMode, apiIdSelected;
     boolean tableIsVisible = false;
     boolean secondCall = false;
-    int totalVisits, totalPopPages;
+    int totalVisits, totalPopPages, periodCounter;
     ArrayList<BarEntry> valueSet1, valueSet2;
     ArrayList<IBarDataSet> dataSets;
     public static ArrayList<String> xAxis, xAxisLabels;
@@ -69,20 +73,15 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
     CustomMarkerViewPopular mv;
     private OnFragmentInteractionListener mListener;
     Button moreInfoButton;
+    ImageButton imgBtnBack, imgBtnForward;
+    TableRow defaultTableRow;
 
     public PopPagesYearFragment() { } //Required empty constructor
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
-        {
-            landscapeMode = true;
-        }
-        else
-        {
-            landscapeMode = false;
-        }
+        landscapeMode = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     @Override
@@ -90,16 +89,6 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
                              Bundle savedInstanceState)
     {
         MainActivity.currentFragment = "Year";
-
-        if(!MainActivity.API_ID.equalsIgnoreCase(""))
-        {
-            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/content/most_popular_pages?page=1&page_size=10&period=thisyear";
-            apiIdSelected = true;
-        }else
-        {
-            apiIdSelected = false;
-        }
 
         View rootView = inflater.inflate(R.layout.fragment_barchart, container, false);// Inflate the layout for this fragment
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
@@ -111,8 +100,25 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         columnTwo = (TextView) rootView.findViewById(R.id.columnTwo);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        defaultTableRow = (TableRow) rootView.findViewById(R.id.defaultTableRow);
+        imgBtnBack = (ImageButton) rootView.findViewById(R.id.imgBtnBack);
+        imgBtnForward = (ImageButton) rootView.findViewById(R.id.imgBtnForward);
         moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
         mv = new CustomMarkerViewPopular(getActivity().getApplicationContext(), R.layout.custom_marker_view);
+
+        imgBtnForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                getNextPeriod();
+            }
+        });
+        imgBtnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getPreviousPeriod();
+            }
+        });
 
         textViewInfo.setText("PAGE VIEWS THIS YEAR");
         tableToggler.setGravity(Gravity.LEFT);
@@ -124,7 +130,7 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
         moreInfoButton.setOnClickListener(this);
         table.setVisibility(View.GONE);
 
-        totalVisits = 0;
+        periodCounter = 0;
 
         //Get date period for text view
         int dayOfYear = new DateTime().getDayOfYear();
@@ -136,7 +142,18 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
         DateTime thisYear = new DateTime().minusYears(1);
         lastYear = thisYear.toString("yyyy");
 
-        if(haveNetworkConnection())
+        if(!MainActivity.API_ID.equalsIgnoreCase(""))
+        {
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/content/most_popular_pages?page=1&page_size=10&period=" +
+                    calculatePeriod(periodCounter);
+            apiIdSelected = true;
+        }else
+        {
+            apiIdSelected = false;
+        }
+
+        if(hasNetworkConnection())
         {
             if(apiIdSelected)
             {
@@ -161,22 +178,86 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
         return rootView;
     }
 
-    public boolean haveNetworkConnection()
+    private void getNextPeriod()
     {
-        boolean haveConnectedWifi = false;
-        boolean haveConnectedMobile = false;
+        if(periodCounter != 0)
+        {
+            imgBtnBack.setClickable(false);
+            imgBtnBack.setAlpha(0.5f);
+            imgBtnForward.setClickable(false);
+            imgBtnForward.setAlpha(0.5f);
+            chart.setVisibility(View.INVISIBLE);
+            textViewInfo.setText("VISITS THIS YEAR");
+            periodCounter--;
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/content/most_popular_pages?page=1&page_size=10&period="
+                    + calculatePeriod(periodCounter);
+            new RetrieveFeedTask().execute();
+        }
+    }
+
+    private void getPreviousPeriod()
+    {
+        imgBtnBack.setClickable(false);
+        imgBtnBack.setAlpha(0.5f);
+        imgBtnForward.setClickable(false);
+        imgBtnForward.setAlpha(0.5f);
+        chart.setVisibility(View.INVISIBLE);
+        textViewInfo.setText("VISITS THIS YEAR");
+        periodCounter ++;
+        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                "/analytics/content/most_popular_pages?page=1&page_size=10&period="
+                + calculatePeriod(periodCounter);
+        new RetrieveFeedTask().execute();
+    }
+
+    private String calculatePeriod(int periodCounter)
+    {
+        DateTime currentPeriod = new DateTime();
+        DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
+        String firstDayOfYear = currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("yyyyMMdd");
+        String period = firstDayOfYear + "_" + currentPeriod.toString("yyyyMMdd");
+        textViewDate.setText(currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("dd MMM yyyy")
+                + " - " + currentPeriod.toString("dd MMM yyyy"));
+        if(periodCounter != 0)
+        {
+            period = currentPeriod.minusYears(periodCounter).toString("yyyy") + "0101"
+                    + "_"
+                    + currentPeriod.minusYears(periodCounter).toString("yyyy") + "1231" ;
+            textViewDate.setText(currentPeriod.minusYears(periodCounter).dayOfYear().withMinimumValue().toString("dd MMM yyyy")
+                    + " - "
+                    + currentPeriod.minusYears(periodCounter).dayOfYear().withMaximumValue().toString("dd MMM yyyy") );
+            if(secondCall)
+            {
+                if(periodCounter == 1)
+                {
+                    textViewDate.setText(currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("dd MMM yyyy")
+                            + " - " + currentPeriod.toString("dd MMM yyyy"));
+                }
+            }
+        }
+        return period;
+    }
+
+    public boolean hasNetworkConnection()
+    {
+        boolean isConnectedWifi = false;
+        boolean isConnectedMobile = false;
 
         ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
-        for (NetworkInfo ni : netInfo) {
-            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
-                if (ni.isConnected())
-                    haveConnectedWifi = true;
-            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
-                if (ni.isConnected())
-                    haveConnectedMobile = true;
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null) // connected to the internet
+        {
+            if (netInfo.getType() == ConnectivityManager.TYPE_WIFI)
+            {
+                isConnectedWifi = true;
+            }
+            if (netInfo.getType() == ConnectivityManager.TYPE_MOBILE)
+            {
+                isConnectedMobile = true;
+            }
         }
-        return haveConnectedWifi || haveConnectedMobile;
+        return isConnectedWifi || isConnectedMobile;
     }
 
     @Override
@@ -300,6 +381,7 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
             chart.getAxisLeft().setDrawLabels(false);
             chart.getAxisRight().setDrawLabels(false);
         }
+        chart.setVisibility(View.VISIBLE);
     }
 
     // ===============================
@@ -348,7 +430,17 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
             if(response == null) {
                 response = "THERE WAS AN ERROR";
             }
-            progressBar.setVisibility(View.GONE);
+            if(landscapeMode)
+            {
+                if(secondCall)
+                {
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+            else
+            {
+                progressBar.setVisibility(View.GONE);
+            }
 
             try
             {
@@ -372,10 +464,14 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
                     xAxis = new ArrayList<>();
                     xAxisLabels = new ArrayList<>();
                     tableValues = new ArrayList<>();
+                    totalVisits = 0;
+                    table.removeAllViews();
+                    table.addView(defaultTableRow);
                 }
                 if(totalPopPages == 0)
                 {
                     Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                    handleNoData(); //Reenable forward button and reset graph arrays
                 }
                 else
                 {
@@ -445,7 +541,7 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
                             secondCall = true;
                             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                                     "/analytics/content/most_popular_pages?page=1&page_size=10&period="
-                                    + lastYear + "0101_" + lastYear + "1231";
+                                    + calculatePeriod(periodCounter + 1);
                             new RetrieveFeedTask().execute();
                         }else
                         {
@@ -482,13 +578,33 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
 
                         secondCall = false;
                     }
+                    imgBtnBack.setClickable(true);
+                    imgBtnBack.setAlpha(1f);
+                    if(periodCounter != 0)
+                    {
+                        imgBtnForward.setClickable(true);
+                        imgBtnForward.setAlpha(1f);
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (ClassCastException ce){
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+                handleNoData(); //Reenable forward button and reset graph arrays
+
             }
         }
+
+        private void handleNoData()
+        {
+            imgBtnForward.setClickable(true);
+            imgBtnForward.setAlpha(1f);
+            chart.setVisibility(View.VISIBLE);
+            xAxisLabels = new ArrayList<>();
+            dataSets = new ArrayList<>();
+            chart.clear();
+        }
+
         private void reverseXPosInList(ArrayList<BarEntry> list)
         {
             int xLabelSize = xAxisLabels.size()-1;
