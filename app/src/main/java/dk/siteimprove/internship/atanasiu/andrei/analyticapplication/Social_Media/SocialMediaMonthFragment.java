@@ -348,10 +348,6 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
 
     private void drawGraph()
     {
-        if(landscapeMode)
-        {
-            Log.i("AAAAAAAA", "DrawGraph is called");
-        }
         Collections.reverse(xAxisLabels);
         BarData data = new BarData(xAxisLabels, dataSets);
         chart.setData(data);

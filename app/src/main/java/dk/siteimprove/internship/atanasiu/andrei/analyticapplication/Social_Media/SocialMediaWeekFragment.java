@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -57,6 +58,7 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
     public static ArrayList<String> xAxisLabels;
     public static ProgressBar progressBar;
     String API_URL = "";
+    String period;
     private OnFragmentInteractionListener mListener;
     public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     TableLayout table;
@@ -67,10 +69,12 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
     boolean secondCall = false;
     boolean tableIsVisible = false;
     boolean landscapeMode, apiIdSelected;
-    int totalVisits, totalSocialMedia;
+    int totalVisits, totalSocialMedia, periodCounter;
     int[] tempValSet2 = new int[100];
     CustomMarkerViewSocial mv;
     Button moreInfoButton;
+    ImageButton imgBtnBack, imgBtnForward;
+    TableRow defaultTableRow;
 
     public SocialMediaWeekFragment()
     {
@@ -97,29 +101,6 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
     {
         MainActivity.currentFragment = "Week";
 
-        int dayOfWeek = new DateTime().getDayOfWeek();
-        DateTime currentDay = new DateTime();
-        String currentDate = currentDay.toString("yyyy-MM-dd");
-        currentDate = currentDate.replace("-","");
-
-        DateTime startOfWeek = new DateTime().minusDays(dayOfWeek - 1);
-        String mondayDate = startOfWeek.toString("yyyy-MM-dd");
-        mondayDate = mondayDate.replace("-","");
-        String period = mondayDate + "_" + currentDate;
-
-        //Get Time Period for the Text View
-        String textDatePeriod = startOfWeek.toString("dd MMMM") + " - " + currentDay.toString("dd MMMM");
-
-
-        if(!MainActivity.API_ID.equalsIgnoreCase(""))
-        {
-            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=" + period;
-            apiIdSelected = true;
-        }else
-        {
-            apiIdSelected = false;
-        }
         View rootView = inflater.inflate(R.layout.fragment_barchart, container, false); // Inflate the layout for this fragment
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);
@@ -128,19 +109,46 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        defaultTableRow = (TableRow) rootView.findViewById(R.id.defaultTableRow);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
+        imgBtnBack = (ImageButton) rootView.findViewById(R.id.imgBtnBack);
+        imgBtnForward = (ImageButton) rootView.findViewById(R.id.imgBtnForward);
         mv = new CustomMarkerViewSocial(getActivity().getApplicationContext(), R.layout.custom_marker_view);
+
+        imgBtnForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                getNextPeriod();
+            }
+        });
+        imgBtnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getPreviousPeriod();
+            }
+        });
 
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
         columnOne.setText("Social Media");
-        textViewDate.setText(textDatePeriod);
+        textViewDate.setText("");
 
         moreInfoButton.setOnClickListener(this);
         table.setVisibility(View.GONE);
 
-        totalVisits = 0;
+        periodCounter = 0;
+
+        if(!MainActivity.API_ID.equalsIgnoreCase(""))
+        {
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=" + calculatePeriod(periodCounter);
+            apiIdSelected = true;
+        }else
+        {
+            apiIdSelected = false;
+        }
 
         if(haveNetworkConnection())
         {
@@ -167,6 +175,75 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
         chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);
         return  rootView;
     }
+
+    private void getNextPeriod()
+    {
+        if(periodCounter != 0)
+        {
+            imgBtnBack.setClickable(false);
+            imgBtnBack.setAlpha(0.5f);
+            imgBtnForward.setClickable(false);
+            imgBtnForward.setAlpha(0.5f);
+            chart.setVisibility(View.INVISIBLE);
+            textViewInfo.setText("VISITS THIS WEEK");
+            periodCounter--;
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                    + calculatePeriod(periodCounter);
+            new RetrieveFeedTask().execute();
+        }
+    }
+
+    private String calculatePeriod(int periodCounter)
+    {
+        period = "";
+        DateTime currentPeriod = new DateTime();
+        String startPeriod = "";
+        int dayOfWeek = new DateTime().getDayOfWeek();
+        startPeriod = currentPeriod.minusDays(dayOfWeek - 1).toString("yyyyMMdd");
+        String stopPeriod = currentPeriod.toString("yyyyMMdd");
+        textViewDate.setText(currentPeriod.minusDays(dayOfWeek - 1).toString("dd MMM yyyy")
+                + " - " + currentPeriod.toString("dd MMM yyyy"));
+        if(periodCounter != 0)
+        {
+            startPeriod = currentPeriod.minusDays(dayOfWeek - 1).minusWeeks(periodCounter).toString("yyyyMMdd");
+            stopPeriod = currentPeriod.minusDays(dayOfWeek - 1).plusDays(6).minusWeeks(periodCounter).toString("yyyyMMdd");
+            textViewDate.setText(currentPeriod.minusDays(dayOfWeek - 1).minusWeeks(periodCounter).toString("dd MMM yyyy")
+                    + " - " + currentPeriod.minusDays(dayOfWeek - 1).plusDays(6).minusWeeks(periodCounter).toString("dd MMM yyyy"));
+            if(secondCall)
+            {
+                if(periodCounter == 1)
+                {
+                    textViewDate.setText(currentPeriod.minusDays(dayOfWeek - 1).toString("dd MMM yyyy")
+                            + " - " + currentPeriod.toString("dd MMM yyyy"));
+                }else
+                {
+                    textViewDate.setText(currentPeriod.minusDays(dayOfWeek - 1).minusWeeks(periodCounter - 1).toString("dd MMM yyyy")
+                            + " - "
+                            + currentPeriod.minusDays(dayOfWeek - 1).plusDays(6).minusWeeks(periodCounter -1).toString("dd MMM yyyy"));
+                }
+            }
+        }
+
+        period = startPeriod + "_" + stopPeriod;
+        return period;
+    }
+
+    private void getPreviousPeriod()
+    {
+        imgBtnBack.setClickable(false);
+        imgBtnBack.setAlpha(0.5f);
+        imgBtnForward.setClickable(false);
+        imgBtnForward.setAlpha(0.5f);
+        chart.setVisibility(View.INVISIBLE);
+        textViewInfo.setText("VISITS THIS WEEK");
+        periodCounter ++;
+        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                + calculatePeriod(periodCounter);
+        new RetrieveFeedTask().execute();
+    }
+
 
     public boolean haveNetworkConnection()
     {
@@ -305,6 +382,7 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
             chart.getAxisLeft().setDrawLabels(false);
             chart.getAxisRight().setDrawLabels(false);
         }
+        chart.setVisibility(View.VISIBLE);
     }
 
     public static void setValues(ArrayList<String> testList)
@@ -360,7 +438,17 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
             if(response == null) {
                 response = "THERE WAS AN ERROR";
             }
-            progressBar.setVisibility(View.GONE);
+            if(landscapeMode)
+            {
+                if(secondCall)
+                {
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+            else
+            {
+                progressBar.setVisibility(View.GONE);
+            }
 
             try
             {
@@ -383,11 +471,15 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
                     xAxis = new ArrayList<>();
                     xAxisLabels = new ArrayList<>();
                     tableValues = new ArrayList<>();
+                    totalVisits = 0;
+                    table.removeAllViews();
+                    table.addView(defaultTableRow);
                 }
 
                 if(totalSocialMedia == 0)
                 {
                     Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                    handleNoData(); //Reenable forward button and reset graph arrays
                 }
                 else
                 {
@@ -454,7 +546,8 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
                         {
                             secondCall = true;
                             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=lastweek";
+                                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                                    + calculatePeriod(periodCounter + 1);
                             new RetrieveFeedTask().execute();
                         }else
                         {
@@ -491,12 +584,30 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
 
                         secondCall = false;
                     }
+                    imgBtnBack.setClickable(true);
+                    imgBtnBack.setAlpha(1f);
+                    if(periodCounter != 0)
+                    {
+                        imgBtnForward.setClickable(true);
+                        imgBtnForward.setAlpha(1f);
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (ClassCastException ce){
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+                handleNoData(); //Reenable forward button and reset graph arrays
             }
+        }
+
+        private void handleNoData()
+        {
+            imgBtnForward.setClickable(true);
+            imgBtnForward.setAlpha(1f);
+            chart.setVisibility(View.VISIBLE);
+            xAxisLabels = new ArrayList<>();
+            dataSets = new ArrayList<>();
+            chart.clear();
         }
 
         private void reverseXPosInList(ArrayList<BarEntry> list)
