@@ -1,55 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/headerLayout"
               android:layout_width="match_parent"
               android:layout_height="@dimen/nav_header_height"
               android:background="@color/MineshaftGrey"
-              android:gravity="bottom"
-              android:orientation="horizontal"
+              android:gravity="top"
+              android:orientation="vertical"
               android:paddingBottom="@dimen/activity_vertical_margin"
               android:paddingLeft="@dimen/activity_horizontal_margin"
               android:paddingRight="@dimen/activity_horizontal_margin"
               android:paddingTop="@dimen/activity_vertical_margin"
+              android:clickable="true"
               android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        >
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_account_circle_white_36dp"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:layout_gravity="center"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal">
 
-        />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            android:src="@drawable/ic_account_circle_white_36dp"/>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        >
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/menuMail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="Name here"
-        android:drawablePadding="4dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+            <TextView
+                android:id="@+id/menuMail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="4dp"
+                android:paddingTop="@dimen/nav_header_vertical_spacing"
+                android:text="Name here"
+                android:textSize="14dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
-    <TextView
-        android:id="@+id/menuSiteName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_weight="1"
-        android:text="Analytics - siteimprove.com"
-        android:layout_below="@+id/menuMail"
-        android:textColor="@color/JavaBlue"/>
+            <TextView
+                android:id="@+id/menuSiteName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/menuMail"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                android:text="Site here"
+                android:textSize="12dp"
+                android:textColor="@color/White"
+                android:textStyle="italic"/>
 
         </LinearLayout>
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="22dp"
+        android:text="Choose Site"
+        android:textColor="@color/JavaBlue"
+        android:textSize="16dp"/>
 </LinearLayout>

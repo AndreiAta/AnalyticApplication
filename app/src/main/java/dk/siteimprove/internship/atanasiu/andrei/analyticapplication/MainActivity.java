@@ -36,6 +36,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -130,12 +131,11 @@ public class MainActivity extends AppCompatActivity
     View header;
     ListView lv;
     public static Button signInButton;
+    Button headerBtn;
     public static ProgressBar progressBarSignIn;
     public static float screenHeight;
     boolean showRotateDialog;
-
-
-    ArrayList<String> spinnerList = new ArrayList<>();
+    LinearLayout headerLayout;
 
 
     @Override
@@ -146,8 +146,6 @@ public class MainActivity extends AppCompatActivity
         wm.getDefaultDisplay().getMetrics(metrics);
         screenHeight = metrics.heightPixels;
 
-        spinnerList.add("Siteimproving.com");
-        spinnerList.add("Somethingelse.dk.uk.");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -157,14 +155,25 @@ public class MainActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         header = navigationView.getHeaderView(0);
+        headerLayout = (LinearLayout) header.findViewById(R.id.headerLayout);
         menuEmailTxt = (TextView) header.findViewById(R.id.menuMail);
         menuSiteName = (TextView) header.findViewById(R.id.menuSiteName);
+
+        headerLayout.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                createSitePickDialog();
+            }
+        });
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+
 
         if (initialLogin == null)
         {
