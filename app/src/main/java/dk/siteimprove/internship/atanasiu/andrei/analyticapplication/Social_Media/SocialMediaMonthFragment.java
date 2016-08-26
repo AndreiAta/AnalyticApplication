@@ -216,6 +216,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         String stopPeriod = "";
         int daysOfMonth = new DateTime().getDayOfMonth();
         DateTime firstDayOfMonth = new DateTime().minusDays(daysOfMonth - 1);
+        int monthAmount = currentPeriod.getMonthOfYear();
 
         if(periodCounter == 0)
         {
@@ -225,8 +226,16 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         }else
         {
             stopPeriod = currentPeriod.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("yyyyMMdd");
-            textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter).toString("dd MMMM") + " - "
-                    + currentPeriod.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("dd MMMM"));
+            if(periodCounter >= monthAmount)
+            {
+                textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter).toString("dd MMM yyyy") + " - "
+                        + currentPeriod.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("dd MMM yyyy"));
+            }else
+            {
+                textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter).toString("dd MMMM") + " - "
+                        + currentPeriod.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("dd MMMM"));
+            }
+
         }
 
 
@@ -335,6 +344,10 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
 
     private void drawGraph()
     {
+        if(landscapeMode)
+        {
+            Log.i("AAAAAAAA", "DrawGraph is called");
+        }
         Collections.reverse(xAxisLabels);
         BarData data = new BarData(xAxisLabels, dataSets);
         chart.setData(data);
@@ -373,6 +386,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
             chart.getAxisLeft().setDrawLabels(false);
             chart.getAxisRight().setDrawLabels(false);
         }
+        chart.setVisibility(View.VISIBLE);
     }
 
     // ===============================
@@ -423,7 +437,18 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
             if(response == null) {
                 response = "THERE WAS AN ERROR";
             }
-            progressBar.setVisibility(View.GONE);
+            if(landscapeMode)
+            {
+                if(secondCall)
+                {
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+            else
+            {
+                progressBar.setVisibility(View.GONE);
+            }
+
 
             try
             {
@@ -453,9 +478,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                 if(totalSocialMedia == 0)
                 {
                     Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
-                    imgBtnForward.setClickable(true);
-                    imgBtnForward.setAlpha(1f);
-                    chart.setVisibility(View.VISIBLE);
+                    handleNoData(); //Reenable forward button and reset graph arrays
                 }
                 else
                 {
@@ -562,7 +585,6 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                     }
                     imgBtnBack.setClickable(true);
                     imgBtnBack.setAlpha(1f);
-                    chart.setVisibility(View.VISIBLE);
                     if(periodCounter != 0)
                     {
                         imgBtnForward.setClickable(true);
@@ -574,11 +596,20 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                 e.printStackTrace();
             } catch (ClassCastException ce){
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
-                imgBtnForward.setClickable(true);
-                imgBtnForward.setAlpha(1f);
-                chart.setVisibility(View.VISIBLE);
+                handleNoData(); //Reenable forward button and reset graph arrays
             }
         }
+
+        private void handleNoData()
+        {
+            imgBtnForward.setClickable(true);
+            imgBtnForward.setAlpha(1f);
+            chart.setVisibility(View.VISIBLE);
+            xAxisLabels = new ArrayList<>();
+            dataSets = new ArrayList<>();
+            chart.clear();
+        }
+
         private void reverseXPosInList(ArrayList<BarEntry> list)
         {
             int xLabelSize = xAxisLabels.size()-1;
