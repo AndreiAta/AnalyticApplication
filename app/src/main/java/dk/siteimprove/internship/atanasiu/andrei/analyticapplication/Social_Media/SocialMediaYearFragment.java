@@ -140,13 +140,6 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
 
         periodCounter = 0;
 
-        //Get date period for text view
-        int dayOfYear = new DateTime().getDayOfYear();
-        DateTime firstDayOfMonth = new DateTime().minusDays(dayOfYear - 1);
-        DateTime today = new DateTime();
-        String textDatePeriod = firstDayOfMonth.toString("MMMMM yyyy") + " - " + today.toString("MMMMM yyyy");
-        textViewDate.setText(textDatePeriod);
-
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
@@ -201,6 +194,21 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
         }
     }
 
+    private void getPreviousPeriod()
+    {
+        imgBtnBack.setClickable(false);
+        imgBtnBack.setAlpha(0.5f);
+        imgBtnForward.setClickable(false);
+        imgBtnForward.setAlpha(0.5f);
+        chart.setVisibility(View.INVISIBLE);
+        textViewInfo.setText("VISITS THIS YEAR");
+        periodCounter ++;
+        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                + calculatePeriod(periodCounter);
+        new RetrieveFeedTask().execute();
+    }
+
     private String calculatePeriod(int periodCounter)
     {
         DateTime currentPeriod = new DateTime();
@@ -226,23 +234,7 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
                 }
             }
         }
-
         return period;
-    }
-
-    private void getPreviousPeriod()
-    {
-        imgBtnBack.setClickable(false);
-        imgBtnBack.setAlpha(0.5f);
-        imgBtnForward.setClickable(false);
-        imgBtnForward.setAlpha(0.5f);
-        chart.setVisibility(View.INVISIBLE);
-        textViewInfo.setText("VISITS THIS YEAR");
-        periodCounter ++;
-        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
-                + calculatePeriod(periodCounter);
-        new RetrieveFeedTask().execute();
     }
 
     public boolean hasNetworkConnection()
@@ -544,7 +536,7 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
                             secondCall = true;
                             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                                     "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
-                                    + lastYear + "0101_" + lastYear + "1231";
+                                    + calculatePeriod(periodCounter + 1);
                             new RetrieveFeedTask().execute();
                         }else
                         {
