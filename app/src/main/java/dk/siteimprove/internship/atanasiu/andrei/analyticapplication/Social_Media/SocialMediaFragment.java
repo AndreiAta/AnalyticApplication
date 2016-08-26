@@ -70,6 +70,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
     CustomMarkerViewSocial mv;
     Button moreInfoButton;
     ImageButton imgBtnBack, imgBtnForward;
+    TableRow defaultTableRow;
 
     private OnFragmentInteractionListener mListener;
 
@@ -103,6 +104,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        defaultTableRow = (TableRow) rootView.findViewById(R.id.defaultTableRow);
         moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
         imgBtnBack = (ImageButton) rootView.findViewById(R.id.imgBtnBack);
         imgBtnForward = (ImageButton) rootView.findViewById(R.id.imgBtnForward);
@@ -444,6 +446,8 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                     xAxisLabels = new ArrayList<>();
                     tableValues = new ArrayList<>();
                     totalVisits = 0;
+                    table.removeAllViews();
+                    table.addView(defaultTableRow);
                 }
                 if(totalSocialMedia == 0)
                 {

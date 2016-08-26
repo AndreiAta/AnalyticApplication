@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -41,9 +42,11 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
@@ -66,12 +69,13 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
     boolean secondCall = false;
     boolean tableIsVisible = false;
     boolean landscapeMode, apiIdSelected;
-    int totalVisits, totalSocialMedia;
+    int totalVisits, totalSocialMedia, periodCounter;
     int[] tempValSet2 = new int[100];
-    String lastYear;
+    String lastYear, period;
     CustomMarkerViewSocial mv;
     Button moreInfoButton;
-
+    ImageButton imgBtnBack, imgBtnForward;
+    TableRow defaultTableRow;
 
     public SocialMediaYearFragment()
     {
@@ -101,15 +105,7 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
 
         MainActivity.currentFragment = "Year";
 
-        if(!MainActivity.API_ID.equalsIgnoreCase(""))
-        {
-            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=thisyear";
-            apiIdSelected = true;
-        }else
-        {
-            apiIdSelected = false;
-        }
+
         View rootView = inflater.inflate(R.layout.fragment_barchart, container, false); // Inflate the layout for this fragment
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);
@@ -119,8 +115,25 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        defaultTableRow = (TableRow) rootView.findViewById(R.id.defaultTableRow);
         moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
+        imgBtnBack = (ImageButton) rootView.findViewById(R.id.imgBtnBack);
+        imgBtnForward = (ImageButton) rootView.findViewById(R.id.imgBtnForward);
         mv = new CustomMarkerViewSocial(getActivity().getApplicationContext(), R.layout.custom_marker_view);
+
+        imgBtnForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                getNextPeriod();
+            }
+        });
+        imgBtnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getPreviousPeriod();
+            }
+        });
 
         textViewDate.setText("0 - 0");
         textViewInfo.setText("VISITS THIS YEAR");
@@ -132,7 +145,7 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
         moreInfoButton.setOnClickListener(this);
         table.setVisibility(View.GONE);
 
-        totalVisits = 0;
+        periodCounter = 0;
 
         //Get date period for text view
         int dayOfYear = new DateTime().getDayOfYear();
@@ -140,6 +153,17 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
         DateTime today = new DateTime();
         String textDatePeriod = firstDayOfMonth.toString("MMMMM yyyy") + " - " + today.toString("MMMMM yyyy");
         textViewDate.setText(textDatePeriod);
+
+        if(!MainActivity.API_ID.equalsIgnoreCase(""))
+        {
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                    + calculatePeriod(periodCounter);
+            apiIdSelected = true;
+        }else
+        {
+            apiIdSelected = false;
+        }
 
         if(haveNetworkConnection())
         {
@@ -164,6 +188,68 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
         }
 
         return rootView;
+    }
+
+    private void getNextPeriod()
+    {
+        if(periodCounter != 0)
+        {
+            imgBtnBack.setClickable(false);
+            imgBtnBack.setAlpha(0.5f);
+            imgBtnForward.setClickable(false);
+            imgBtnForward.setAlpha(0.5f);
+            chart.setVisibility(View.INVISIBLE);
+            textViewInfo.setText("VISITS THIS YEAR");
+            periodCounter--;
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                    + calculatePeriod(periodCounter);
+            new RetrieveFeedTask().execute();
+        }
+    }
+
+    private String calculatePeriod(int periodCounter)
+    {
+        DateTime currentPeriod = new DateTime();
+        DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
+        String firstDayOfYear = currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("yyyyMMdd");
+        String period = firstDayOfYear + "_" + currentPeriod.toString("yyyyMMdd");
+        textViewDate.setText(currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("dd MMM yyyy")
+                + " - " + currentPeriod.toString("dd MMM yyyy"));
+        if(periodCounter != 0)
+        {
+            period = currentPeriod.minusYears(periodCounter).toString("yyyy") + "0101"
+                    + "_"
+                    + currentPeriod.minusYears(periodCounter).toString("yyyy") + "1231" ;
+            textViewDate.setText(currentPeriod.minusYears(periodCounter).dayOfYear().withMinimumValue().toString("dd MMM yyyy")
+                                 + " - "
+                                 + currentPeriod.minusYears(periodCounter).dayOfYear().withMaximumValue().toString("dd MMM yyyy") );
+            if(secondCall)
+            {
+                if(periodCounter == 1)
+                {
+                    textViewDate.setText(currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("dd MMM yyyy")
+                            + " - " + currentPeriod.toString("dd MMM yyyy"));
+                }
+            }
+        }
+
+        return period;
+    }
+
+    private void getPreviousPeriod()
+    {
+        imgBtnBack.setClickable(false);
+        imgBtnBack.setAlpha(0.5f);
+        imgBtnForward.setClickable(false);
+        imgBtnForward.setAlpha(0.5f);
+        chart.setVisibility(View.INVISIBLE);
+        textViewInfo.setText("VISITS THIS YEAR");
+        periodCounter ++;
+        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                + calculatePeriod(periodCounter);
+        new RetrieveFeedTask().execute();
     }
 
     public boolean haveNetworkConnection()
@@ -304,6 +390,7 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
             chart.getAxisLeft().setDrawLabels(false);
             chart.getAxisRight().setDrawLabels(false);
         }
+        chart.setVisibility(View.VISIBLE);
     }
 
     // ===============================
@@ -349,12 +436,20 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
 
         protected void onPostExecute(String response)
         {
-            Log.i("ERROR", response);
-
             if(response == null) {
                 response = "THERE WAS AN ERROR";
             }
-            progressBar.setVisibility(View.GONE);
+            if(landscapeMode)
+            {
+                if(secondCall)
+                {
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+            else
+            {
+                progressBar.setVisibility(View.GONE);
+            }
 
             try
             {
@@ -377,11 +472,15 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
                     xAxis = new ArrayList<>();
                     xAxisLabels = new ArrayList<>();
                     tableValues = new ArrayList<>();
+                    totalVisits = 0;
+                    table.removeAllViews();
+                    table.addView(defaultTableRow);
                 }
 
                 if(totalSocialMedia == 0)
                 {
                     Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                    handleNoData(); //Reenable forward button and reset graph arrays
                 }
                 else
                 {
@@ -486,13 +585,32 @@ public class SocialMediaYearFragment extends Fragment implements View.OnClickLis
 
                         secondCall = false;
                     }
+                    imgBtnBack.setClickable(true);
+                    imgBtnBack.setAlpha(1f);
+                    if(periodCounter != 0)
+                    {
+                        imgBtnForward.setClickable(true);
+                        imgBtnForward.setAlpha(1f);
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (ClassCastException ce){
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+                handleNoData(); //Reenable forward button and reset graph arrays
             }
         }
+
+        private void handleNoData()
+        {
+            imgBtnForward.setClickable(true);
+            imgBtnForward.setAlpha(1f);
+            chart.setVisibility(View.VISIBLE);
+            xAxisLabels = new ArrayList<>();
+            dataSets = new ArrayList<>();
+            chart.clear();
+        }
+
         private void reverseXPosInList(ArrayList<BarEntry> list)
         {
             int xLabelSize = xAxisLabels.size()-1;
