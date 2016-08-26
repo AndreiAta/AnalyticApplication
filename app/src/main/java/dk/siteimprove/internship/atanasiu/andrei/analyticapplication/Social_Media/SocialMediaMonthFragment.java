@@ -73,7 +73,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
     int[] tempValSet2 = new int[100];
     CustomMarkerViewSocial mv;
     Button moreInfoButton;
-    ImageButton imgBtnBack;
+    ImageButton imgBtnBack, imgBtnForward;
     TableRow defaultTableRow;
 
     public SocialMediaMonthFragment()
@@ -114,8 +114,16 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         defaultTableRow = (TableRow) rootView.findViewById(R.id.defaultTableRow);
         moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
         imgBtnBack = (ImageButton) rootView.findViewById(R.id.imgBtnBack);
+        imgBtnForward = (ImageButton) rootView.findViewById(R.id.imgBtnForward);
         mv = new CustomMarkerViewSocial(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
+        imgBtnForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                getNextPeriod();
+            }
+        });
         imgBtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,6 +177,39 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         return rootView;
     }
 
+    private void getNextPeriod()
+    {
+        if(periodCounter != 0)
+        {
+            imgBtnBack.setClickable(false);
+            imgBtnBack.setAlpha(0.5f);
+            imgBtnForward.setClickable(false);
+            imgBtnForward.setAlpha(0.5f);
+            chart.setVisibility(View.INVISIBLE);
+            textViewInfo.setText("VISITS THIS MONTH");
+            periodCounter--;
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                    + calculatePeriod(periodCounter);
+            new RetrieveFeedTask().execute();
+        }
+    }
+
+    private void getPreviousPeriod()
+    {
+        imgBtnBack.setClickable(false);
+        imgBtnBack.setAlpha(0.5f);
+        imgBtnForward.setClickable(false);
+        imgBtnForward.setAlpha(0.5f);
+        chart.setVisibility(View.INVISIBLE);
+        textViewInfo.setText("VISITS THIS MONTH");
+        periodCounter ++;
+        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                + calculatePeriod(periodCounter);
+        new RetrieveFeedTask().execute();
+    }
+
     private String calculatePeriod(int periodCounter)
     {
         period = "";
@@ -176,6 +217,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         String stopPeriod = "";
         int daysOfMonth = new DateTime().getDayOfMonth();
         DateTime firstDayOfMonth = new DateTime().minusDays(daysOfMonth - 1);
+        int monthAmount = currentPeriod.getMonthOfYear();
 
         if(periodCounter == 0)
         {
@@ -185,30 +227,22 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         }else
         {
             stopPeriod = currentPeriod.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("yyyyMMdd");
-            textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter).toString("dd MMMM") + " - "
-                    + currentPeriod.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("dd MMMM"));
+            if(periodCounter >= monthAmount)
+            {
+                textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter).toString("dd MMM yyyy") + " - "
+                        + currentPeriod.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("dd MMM yyyy"));
+            }else
+            {
+                textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter).toString("dd MMMM") + " - "
+                        + currentPeriod.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("dd MMMM"));
+            }
+
         }
 
-        //Get date period for text view
-//        int daysOfMonth = new DateTime().getDayOfMonth();
-//        DateTime firstDayOfMonth = new DateTime().minusDays(daysOfMonth - 1);
-//        DateTime today = new DateTime();
-//        String textDatePeriod = firstDayOfMonth.toString("dd MMMM") + " - " + today.toString("dd MMMM");
-//        textViewDate.setText(textDatePeriod);
 
         String startPeriod = currentPeriod.minusMonths(periodCounter).toString("yyyyMM") + "01";
         period = startPeriod + "_" + stopPeriod;
         return period;
-    }
-
-    private void getPreviousPeriod()
-    {
-        textViewInfo.setText("VISITS THIS MONTH");
-        periodCounter ++;
-        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
-                + calculatePeriod(periodCounter);
-        new RetrieveFeedTask().execute();
     }
 
     public boolean haveNetworkConnection()
@@ -311,6 +345,10 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
 
     private void drawGraph()
     {
+        if(landscapeMode)
+        {
+            Log.i("AAAAAAAA", "DrawGraph is called");
+        }
         Collections.reverse(xAxisLabels);
         BarData data = new BarData(xAxisLabels, dataSets);
         chart.setData(data);
@@ -349,6 +387,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
             chart.getAxisLeft().setDrawLabels(false);
             chart.getAxisRight().setDrawLabels(false);
         }
+        chart.setVisibility(View.VISIBLE);
     }
 
     // ===============================
@@ -399,7 +438,18 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
             if(response == null) {
                 response = "THERE WAS AN ERROR";
             }
-            progressBar.setVisibility(View.GONE);
+            if(landscapeMode)
+            {
+                if(secondCall)
+                {
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+            else
+            {
+                progressBar.setVisibility(View.GONE);
+            }
+
 
             try
             {
@@ -429,6 +479,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                 if(totalSocialMedia == 0)
                 {
                     Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                    handleNoData(); //Reenable forward button and reset graph arrays
                 }
                 else
                 {
@@ -533,14 +584,33 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
 
                         secondCall = false;
                     }
+                    imgBtnBack.setClickable(true);
+                    imgBtnBack.setAlpha(1f);
+                    if(periodCounter != 0)
+                    {
+                        imgBtnForward.setClickable(true);
+                        imgBtnForward.setAlpha(1f);
+                    }
                 }
 
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (ClassCastException ce){
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+                handleNoData(); //Reenable forward button and reset graph arrays
             }
         }
+
+        private void handleNoData()
+        {
+            imgBtnForward.setClickable(true);
+            imgBtnForward.setAlpha(1f);
+            chart.setVisibility(View.VISIBLE);
+            xAxisLabels = new ArrayList<>();
+            dataSets = new ArrayList<>();
+            chart.clear();
+        }
+
         private void reverseXPosInList(ArrayList<BarEntry> list)
         {
             int xLabelSize = xAxisLabels.size()-1;
