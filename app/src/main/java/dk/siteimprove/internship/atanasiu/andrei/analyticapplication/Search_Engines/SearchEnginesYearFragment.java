@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -41,9 +42,11 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
@@ -56,7 +59,7 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
     public static ArrayList<String> xAxisLabels;
     ProgressBar progressBar;
     String API_URL = "";
-    String lastYear;
+    String lastYear, period;
     public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler, columnOne;
     TableLayout table;
     ArrayList<Integer> tableValues;
@@ -65,10 +68,12 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
     boolean secondCall = false;
     boolean tableIsVisible = false;
     boolean landscapeMode, apiIdSelected;
-    int totalVisits, totalSearchEngines;
+    int totalVisits, totalSearchEngines, periodCounter;
     int[] tempValSet2 = new int[100];
     CustomMarkerViewSearch mv;
     Button moreInfoButton;
+    ImageButton imgBtnBack, imgBtnForward;
+    TableRow defaultTableRow;
 
     private OnFragmentInteractionListener mListener;
 
@@ -97,15 +102,7 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
         DateTime thisYear = new DateTime().minusYears(1);
         lastYear = thisYear.toString("yyyy");
 
-        if(!MainActivity.API_ID.equalsIgnoreCase(""))
-        {
-            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/traffic_sources/search_engines?page=1&page_size=10&period=thisyear";
-            apiIdSelected = true;
-        }else
-        {
-            apiIdSelected = false;
-        }
+
         View rootView = inflater.inflate(R.layout.fragment_barchart, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);
@@ -115,8 +112,25 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        defaultTableRow = (TableRow) rootView.findViewById(R.id.defaultTableRow);
         moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
+        imgBtnBack = (ImageButton) rootView.findViewById(R.id.imgBtnBack);
+        imgBtnForward = (ImageButton) rootView.findViewById(R.id.imgBtnForward);
         mv = new CustomMarkerViewSearch(getActivity().getApplicationContext(), R.layout.custom_marker_view);
+
+        imgBtnForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                getNextPeriod();
+            }
+        });
+        imgBtnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getPreviousPeriod();
+            }
+        });
 
         textViewDate.setText("0 - 0");
         textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS THIS YEAR");
@@ -128,13 +142,23 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
         moreInfoButton.setOnClickListener(this);
         table.setVisibility(View.GONE);
 
-        totalVisits = 0;
+        periodCounter = 0;
         //Get date period for text view
         int dayOfYear = new DateTime().getDayOfYear();
         DateTime firstDayOfMonth = new DateTime().minusDays(dayOfYear - 1);
         DateTime today = new DateTime();
         String textDatePeriod = firstDayOfMonth.toString("MMMMM yyyy") + " - " + today.toString("MMMMM yyyy");
         textViewDate.setText(textDatePeriod);
+
+        if(!MainActivity.API_ID.equalsIgnoreCase("")) {
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
+                    + calculatePeriod(periodCounter);
+            apiIdSelected = true;
+        }else
+        {
+            apiIdSelected = false;
+        }
 
         if(haveNetworkConnection())
         {
@@ -159,6 +183,67 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
         }
 
         return  rootView;
+    }
+
+    private void getNextPeriod()
+    {
+        if(periodCounter != 0)
+        {
+            imgBtnBack.setClickable(false);
+            imgBtnBack.setAlpha(0.5f);
+            imgBtnForward.setClickable(false);
+            imgBtnForward.setAlpha(0.5f);
+            chart.setVisibility(View.INVISIBLE);
+            textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS THIS YEAR");
+            periodCounter--;
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
+                    + calculatePeriod(periodCounter);
+            new RetrieveFeedTask().execute();
+        }
+    }
+
+    private String calculatePeriod(int periodCounter)
+    {
+        DateTime currentPeriod = new DateTime();
+        String firstDayOfYear = currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("yyyyMMdd");
+        String period = firstDayOfYear + "_" + currentPeriod.toString("yyyyMMdd");
+        textViewDate.setText(currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("dd MMM yyyy")
+                + " - " + currentPeriod.toString("dd MMM yyyy"));
+        if(periodCounter != 0)
+        {
+            period = currentPeriod.minusYears(periodCounter).toString("yyyy") + "0101"
+                    + "_"
+                    + currentPeriod.minusYears(periodCounter).toString("yyyy") + "1231" ;
+            textViewDate.setText(currentPeriod.minusYears(periodCounter).dayOfYear().withMinimumValue().toString("dd MMM yyyy")
+                    + " - "
+                    + currentPeriod.minusYears(periodCounter).dayOfYear().withMaximumValue().toString("dd MMM yyyy") );
+            if(secondCall)
+            {
+                if(periodCounter == 1)
+                {
+                    textViewDate.setText(currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("dd MMM yyyy")
+                            + " - " + currentPeriod.toString("dd MMM yyyy"));
+                }
+            }
+        }
+
+        return period;
+    }
+
+    private void getPreviousPeriod()
+    {
+        imgBtnBack.setClickable(false);
+        imgBtnBack.setAlpha(0.5f);
+        imgBtnForward.setClickable(false);
+        imgBtnForward.setAlpha(0.5f);
+        chart.setVisibility(View.INVISIBLE);
+        textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS THIS YEAR");
+        periodCounter ++;
+        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
+                + calculatePeriod(periodCounter);
+        new RetrieveFeedTask().execute();
     }
 
     public boolean haveNetworkConnection()
@@ -299,7 +384,7 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
             chart.getAxisLeft().setDrawLabels(false);
             chart.getAxisRight().setDrawLabels(false);
         }
-
+        chart.setVisibility(View.VISIBLE);
     }
 
     // ===============================
@@ -350,8 +435,17 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
             if(response == null) {
                 response = "THERE WAS AN ERROR";
             }
-            progressBar.setVisibility(View.GONE);
-            Log.i("INFO", response);
+            if(landscapeMode)
+            {
+                if(secondCall)
+                {
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+            else
+            {
+                progressBar.setVisibility(View.GONE);
+            }
 
             try
             {
@@ -374,10 +468,14 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
                     xAxis = new ArrayList<>();
                     xAxisLabels = new ArrayList<>();
                     tableValues = new ArrayList<>();
+                    totalVisits = 0;
+                    table.removeAllViews();
+                    table.addView(defaultTableRow);
                 }
                 if(totalSearchEngines == 0)
                 {
                     Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                    handleNoData(); //Reenable forward button and reset graph arrays
                 }
                 else
                 {
@@ -449,7 +547,7 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
                             secondCall = true;
                             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                                     "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
-                                    + lastYear + "0101_" + lastYear + "1231";
+                                    + calculatePeriod(periodCounter + 1);
                             new RetrieveFeedTask().execute();
                         }
                         else//Portrait Mode
@@ -486,13 +584,31 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
                         drawGraph();
                         secondCall = false;
                     }
+                    imgBtnBack.setClickable(true);
+                    imgBtnBack.setAlpha(1f);
+                    if(periodCounter != 0)
+                    {
+                        imgBtnForward.setClickable(true);
+                        imgBtnForward.setAlpha(1f);
+                    }
                 }
 
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (ClassCastException ce){
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+                handleNoData(); //Reenable forward button and reset graph arrays
             }
+        }
+
+        private void handleNoData()
+        {
+            imgBtnForward.setClickable(true);
+            imgBtnForward.setAlpha(1f);
+            chart.setVisibility(View.VISIBLE);
+            xAxisLabels = new ArrayList<>();
+            dataSets = new ArrayList<>();
+            chart.clear();
         }
 
         private void reverseXPosInList(ArrayList<BarEntry> list)
