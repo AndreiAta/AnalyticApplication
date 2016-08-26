@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -51,10 +52,11 @@ import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 public class PopPagesWeekFragment extends Fragment implements View.OnClickListener
 {
     String API_URL = "";
+    String period;
     boolean landscapeMode, apiIdSelected;
     boolean tableIsVisible = false;
     boolean secondCall = false;
-    int totalVisits, totalPopPages;
+    int totalVisits, totalPopPages, periodCounter;
     ArrayList<BarEntry> valueSet1, valueSet2;
     ArrayList<IBarDataSet> dataSets;
     public static ArrayList<String> xAxis, xAxisLabels;
@@ -67,6 +69,8 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
     TableLayout table;
     CustomMarkerViewPopular mv;
     Button moreInfoButton;
+    ImageButton imgBtnBack, imgBtnForward;
+    TableRow defaultTableRow;
 
     private OnFragmentInteractionListener mListener;
 
@@ -76,14 +80,7 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
-        {
-            landscapeMode = true;
-        }
-        else
-        {
-            landscapeMode = false;
-        }
+        landscapeMode = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     @Override
@@ -91,29 +88,6 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
                              Bundle savedInstanceState)
     {
         MainActivity.currentFragment = "Week";
-
-        int dayOfWeek = new DateTime().getDayOfWeek();
-        DateTime currentDay = new DateTime();
-        String currentDate = currentDay.toString("yyyy-MM-dd");
-        currentDate = currentDate.replace("-","");
-
-        DateTime startOfWeek = new DateTime().minusDays(dayOfWeek - 1);
-        String mondayDate = startOfWeek.toString("yyyy-MM-dd");
-        mondayDate = mondayDate.replace("-","");
-        String period = mondayDate + "_" + currentDate;
-
-        //Get Time Period for the Text View
-        String textDatePeriod = startOfWeek.toString("dd MMMM") + " - " + currentDay.toString("dd MMMM");
-
-        if(!MainActivity.API_ID.equalsIgnoreCase(""))
-        {
-            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/content/most_popular_pages?page=1&page_size=10&period=" + period;
-            apiIdSelected = true;
-        }else
-        {
-            apiIdSelected = false;
-        }
 
         View rootView = inflater.inflate(R.layout.fragment_barchart, container, false);// Inflate the layout for this fragment
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
@@ -125,10 +99,28 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         columnTwo = (TextView) rootView.findViewById(R.id.columnTwo);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        defaultTableRow = (TableRow) rootView.findViewById(R.id.defaultTableRow);
+        imgBtnBack = (ImageButton) rootView.findViewById(R.id.imgBtnBack);
+        imgBtnForward = (ImageButton) rootView.findViewById(R.id.imgBtnForward);
         moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
         mv = new CustomMarkerViewPopular(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
-        textViewDate.setText(textDatePeriod);
+        imgBtnForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                getNextPeriod();
+            }
+        });
+        imgBtnBack.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                getPreviousPeriod();
+            }
+        });
+
         textViewInfo.setText("PAGE VIEWS THIS WEEK");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
@@ -139,9 +131,20 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
         moreInfoButton.setOnClickListener(this);
         table.setVisibility(View.GONE);
 
-        totalVisits = 0;
+        periodCounter = 0;
 
-        if(haveNetworkConnection())
+        if(!MainActivity.API_ID.equalsIgnoreCase(""))
+        {
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/content/most_popular_pages?page=1&page_size=10&period=" +
+                    calculatePeriod(periodCounter);
+            apiIdSelected = true;
+        }else
+        {
+            apiIdSelected = false;
+        }
+
+        if(hasNetworkConnection())
         {
             if(apiIdSelected)
             {
@@ -166,22 +169,93 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
         return rootView;
     }
 
-    public boolean haveNetworkConnection()
+    private void getNextPeriod()
     {
-        boolean haveConnectedWifi = false;
-        boolean haveConnectedMobile = false;
+        if(periodCounter != 0)
+        {
+            imgBtnBack.setClickable(false);
+            imgBtnBack.setAlpha(0.5f);
+            imgBtnForward.setClickable(false);
+            imgBtnForward.setAlpha(0.5f);
+            chart.setVisibility(View.INVISIBLE);
+            textViewInfo.setText("VISITS THIS WEEK");
+            periodCounter--;
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/content/most_popular_pages?page=1&page_size=10&period="
+                    + calculatePeriod(periodCounter);
+            new RetrieveFeedTask().execute();
+        }
+    }
+
+    private void getPreviousPeriod()
+    {
+        imgBtnBack.setClickable(false);
+        imgBtnBack.setAlpha(0.5f);
+        imgBtnForward.setClickable(false);
+        imgBtnForward.setAlpha(0.5f);
+        chart.setVisibility(View.INVISIBLE);
+        textViewInfo.setText("VISITS THIS WEEK");
+        periodCounter ++;
+        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                "/analytics/content/most_popular_pages?page=1&page_size=10&period="
+                + calculatePeriod(periodCounter);
+        new RetrieveFeedTask().execute();
+    }
+
+    private String calculatePeriod(int periodCounter)
+    {
+        period = "";
+        DateTime currentPeriod = new DateTime();
+        String startPeriod = "";
+        int dayOfWeek = new DateTime().getDayOfWeek();
+        startPeriod = currentPeriod.minusDays(dayOfWeek - 1).toString("yyyyMMdd");
+        String stopPeriod = currentPeriod.toString("yyyyMMdd");
+        textViewDate.setText(currentPeriod.minusDays(dayOfWeek - 1).toString("dd MMM yyyy")
+                + " - " + currentPeriod.toString("dd MMM yyyy"));
+        if(periodCounter != 0)
+        {
+            startPeriod = currentPeriod.minusDays(dayOfWeek - 1).minusWeeks(periodCounter).toString("yyyyMMdd");
+            stopPeriod = currentPeriod.minusDays(dayOfWeek - 1).plusDays(6).minusWeeks(periodCounter).toString("yyyyMMdd");
+            textViewDate.setText(currentPeriod.minusDays(dayOfWeek - 1).minusWeeks(periodCounter).toString("dd MMM yyyy")
+                    + " - " + currentPeriod.minusDays(dayOfWeek - 1).plusDays(6).minusWeeks(periodCounter).toString("dd MMM yyyy"));
+            if(secondCall)
+            {
+                if(periodCounter == 1)
+                {
+                    textViewDate.setText(currentPeriod.minusDays(dayOfWeek - 1).toString("dd MMM yyyy")
+                            + " - " + currentPeriod.toString("dd MMM yyyy"));
+                }else
+                {
+                    textViewDate.setText(currentPeriod.minusDays(dayOfWeek - 1).minusWeeks(periodCounter - 1).toString("dd MMM yyyy")
+                            + " - "
+                            + currentPeriod.minusDays(dayOfWeek - 1).plusDays(6).minusWeeks(periodCounter -1).toString("dd MMM yyyy"));
+                }
+            }
+        }
+
+        period = startPeriod + "_" + stopPeriod;
+        return period;
+    }
+
+    public boolean hasNetworkConnection()
+    {
+        boolean isConnectedWifi = false;
+        boolean isConnectedMobile = false;
 
         ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
-        for (NetworkInfo ni : netInfo) {
-            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
-                if (ni.isConnected())
-                    haveConnectedWifi = true;
-            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
-                if (ni.isConnected())
-                    haveConnectedMobile = true;
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null) // connected to the internet
+        {
+            if (netInfo.getType() == ConnectivityManager.TYPE_WIFI)
+            {
+                isConnectedWifi = true;
+            }
+            if (netInfo.getType() == ConnectivityManager.TYPE_MOBILE)
+            {
+                isConnectedMobile = true;
+            }
         }
-        return haveConnectedWifi || haveConnectedMobile;
+        return isConnectedWifi || isConnectedMobile;
     }
 
     @Override
@@ -305,6 +379,7 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
             chart.getAxisLeft().setDrawLabels(false);
             chart.getAxisRight().setDrawLabels(false);
         }
+        chart.setVisibility(View.VISIBLE);
     }
 
     // ===============================
@@ -353,7 +428,17 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
             if(response == null) {
                 response = "THERE WAS AN ERROR";
             }
-            progressBar.setVisibility(View.GONE);
+            if(landscapeMode)
+            {
+                if(secondCall)
+                {
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+            else
+            {
+                progressBar.setVisibility(View.GONE);
+            }
 
             try
             {
@@ -377,10 +462,14 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
                     xAxis = new ArrayList<>();
                     xAxisLabels = new ArrayList<>();
                     tableValues = new ArrayList<>();
+                    totalVisits = 0;
+                    table.removeAllViews();
+                    table.addView(defaultTableRow);
                 }
                 if(totalPopPages == 0)
                 {
                     Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                    handleNoData(); //Reenable forward button and reset graph arrays
                 }
                 else
                 {
@@ -449,7 +538,8 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
                         {
                             secondCall = true;
                             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                    "/analytics/content/most_popular_pages?page=1&page_size=10&period=lastweek";
+                                    "/analytics/content/most_popular_pages?page=1&page_size=10&period=" +
+                                    calculatePeriod(periodCounter+1);
                             new RetrieveFeedTask().execute();
                         }else
                         {
@@ -486,14 +576,33 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
 
                         secondCall = false;
                     }
+                    imgBtnBack.setClickable(true);
+                    imgBtnBack.setAlpha(1f);
+                    if(periodCounter != 0)
+                    {
+                        imgBtnForward.setClickable(true);
+                        imgBtnForward.setAlpha(1f);
+                    }
                 }
 
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (ClassCastException ce){
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+                handleNoData(); //Reenable forward button and reset graph arrays
             }
         }
+
+        private void handleNoData()
+        {
+            imgBtnForward.setClickable(true);
+            imgBtnForward.setAlpha(1f);
+            chart.setVisibility(View.VISIBLE);
+            xAxisLabels = new ArrayList<>();
+            dataSets = new ArrayList<>();
+            chart.clear();
+        }
+
         private void reverseXPosInList(ArrayList<BarEntry> list)
         {
             int xLabelSize = xAxisLabels.size()-1;
