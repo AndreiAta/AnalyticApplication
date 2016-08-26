@@ -102,7 +102,6 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
         DateTime thisYear = new DateTime().minusYears(1);
         lastYear = thisYear.toString("yyyy");
 
-
         View rootView = inflater.inflate(R.layout.fragment_linechart, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         table = (TableLayout) rootView.findViewById(R.id.table);
@@ -151,7 +150,7 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
             String month = months[i];
             monthList .add(months[i]);
         }
-        Log.i("XXXXXX", monthList.toString());
+
 
         if(!MainActivity.API_ID.equalsIgnoreCase("")) //Check if the user has selected a website
         {
