@@ -73,7 +73,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
     int[] tempValSet2 = new int[100];
     CustomMarkerViewSocial mv;
     Button moreInfoButton;
-    ImageButton imgBtnBack;
+    ImageButton imgBtnBack, imgBtnForward;
     TableRow defaultTableRow;
 
     public SocialMediaMonthFragment()
@@ -114,8 +114,16 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         defaultTableRow = (TableRow) rootView.findViewById(R.id.defaultTableRow);
         moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
         imgBtnBack = (ImageButton) rootView.findViewById(R.id.imgBtnBack);
+        imgBtnForward = (ImageButton) rootView.findViewById(R.id.imgBtnForward);
         mv = new CustomMarkerViewSocial(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
+        imgBtnForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                getNextPeriod();
+            }
+        });
         imgBtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,6 +176,39 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         return rootView;
     }
 
+    private void getNextPeriod()
+    {
+        if(periodCounter != 0)
+        {
+            imgBtnBack.setClickable(false);
+            imgBtnBack.setAlpha(0.5f);
+            imgBtnForward.setClickable(false);
+            imgBtnForward.setAlpha(0.5f);
+            chart.setVisibility(View.INVISIBLE);
+            textViewInfo.setText("VISITS THIS MONTH");
+            periodCounter--;
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                    + calculatePeriod(periodCounter);
+            new RetrieveFeedTask().execute();
+        }
+    }
+
+    private void getPreviousPeriod()
+    {
+        imgBtnBack.setClickable(false);
+        imgBtnBack.setAlpha(0.5f);
+        imgBtnForward.setClickable(false);
+        imgBtnForward.setAlpha(0.5f);
+        chart.setVisibility(View.INVISIBLE);
+        textViewInfo.setText("VISITS THIS MONTH");
+        periodCounter ++;
+        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                + calculatePeriod(periodCounter);
+        new RetrieveFeedTask().execute();
+    }
+
     private String calculatePeriod(int periodCounter)
     {
         period = "";
@@ -188,26 +229,10 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                     + currentPeriod.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("dd MMMM"));
         }
 
-        //Get date period for text view
-//        int daysOfMonth = new DateTime().getDayOfMonth();
-//        DateTime firstDayOfMonth = new DateTime().minusDays(daysOfMonth - 1);
-//        DateTime today = new DateTime();
-//        String textDatePeriod = firstDayOfMonth.toString("dd MMMM") + " - " + today.toString("dd MMMM");
-//        textViewDate.setText(textDatePeriod);
 
         String startPeriod = currentPeriod.minusMonths(periodCounter).toString("yyyyMM") + "01";
         period = startPeriod + "_" + stopPeriod;
         return period;
-    }
-
-    private void getPreviousPeriod()
-    {
-        textViewInfo.setText("VISITS THIS MONTH");
-        periodCounter ++;
-        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
-                + calculatePeriod(periodCounter);
-        new RetrieveFeedTask().execute();
     }
 
     public boolean haveNetworkConnection()
@@ -428,6 +453,9 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                 if(totalSocialMedia == 0)
                 {
                     Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                    imgBtnForward.setClickable(true);
+                    imgBtnForward.setAlpha(1f);
+                    chart.setVisibility(View.VISIBLE);
                 }
                 else
                 {
@@ -532,12 +560,23 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
 
                         secondCall = false;
                     }
+                    imgBtnBack.setClickable(true);
+                    imgBtnBack.setAlpha(1f);
+                    chart.setVisibility(View.VISIBLE);
+                    if(periodCounter != 0)
+                    {
+                        imgBtnForward.setClickable(true);
+                        imgBtnForward.setAlpha(1f);
+                    }
                 }
 
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (ClassCastException ce){
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+                imgBtnForward.setClickable(true);
+                imgBtnForward.setAlpha(1f);
+                chart.setVisibility(View.VISIBLE);
             }
         }
         private void reverseXPosInList(ArrayList<BarEntry> list)
