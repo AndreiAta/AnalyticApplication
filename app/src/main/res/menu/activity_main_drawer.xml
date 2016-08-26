@@ -7,7 +7,8 @@
         android:id="@+id/menu_top">
         <item
             android:id="@+id/chooseSite"
-            android:title="Choose Site"/>
+            android:title="Choose Site"
+            android:visible="false"/>
     </group>
 
     <group

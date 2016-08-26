@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -51,10 +52,11 @@ import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 public class PopPagesFragment extends Fragment implements View.OnClickListener
 {
     String API_URL = "";
+    String period;
     boolean landscapeMode, apiIdSelected;
     boolean tableIsVisible = false;
     boolean secondCall = false;
-    int totalVisits, totalPopPages;
+    int totalVisits, totalPopPages, periodCounter;
     ArrayList<BarEntry> valueSet1, valueSet2;
     ArrayList<IBarDataSet> dataSets;
     public static ArrayList<String> xAxis, xAxisLabels;
@@ -67,6 +69,8 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
     TableLayout table;
     CustomMarkerViewPopular mv;
     Button moreInfoButton;
+    ImageButton imgBtnBack, imgBtnForward;
+    TableRow defaultTableRow;
     private OnFragmentInteractionListener mListener;
 
     public PopPagesFragment() { } //Required empty constructor
@@ -91,16 +95,6 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
         MainActivity.currentFragment = "Today";
         DateTime today = new DateTime();
 
-        if(!MainActivity.API_ID.equalsIgnoreCase(""))
-        {
-            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/content/most_popular_pages?page=1&page_size=10&period=today";
-            apiIdSelected = true;
-        }else
-        {
-            apiIdSelected = false;
-        }
-
         View rootView = inflater.inflate(R.layout.fragment_barchart, container, false);// Inflate the layout for this fragment
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         chart = (HorizontalBarChart) rootView.findViewById(R.id.chart);
@@ -111,8 +105,25 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
         columnOne = (TextView) rootView.findViewById(R.id.columnOne);
         columnTwo = (TextView) rootView.findViewById(R.id.columnTwo);
         table = (TableLayout) rootView.findViewById(R.id.table);
+        defaultTableRow = (TableRow) rootView.findViewById(R.id.defaultTableRow);
         moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
+        imgBtnBack = (ImageButton) rootView.findViewById(R.id.imgBtnBack);
+        imgBtnForward = (ImageButton) rootView.findViewById(R.id.imgBtnForward);
         mv = new CustomMarkerViewPopular(getActivity().getApplicationContext(), R.layout.custom_marker_view);
+
+        imgBtnForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                getNextPeriod();
+            }
+        });
+        imgBtnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getPreviousPeriod();
+            }
+        });
 
         textViewDate.setText(today.toString("dd MMMM"));
         textViewInfo.setText("PAGE VIEWS TODAY");
@@ -125,9 +136,19 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
         moreInfoButton.setOnClickListener(this);
         table.setVisibility(View.GONE);
 
-        totalVisits = 0;
+        periodCounter = 0;
 
-        if(haveNetworkConnection())
+        if(!MainActivity.API_ID.equalsIgnoreCase(""))
+        {
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/content/most_popular_pages?page=1&page_size=10&period=" +
+                    calculatePeriod(periodCounter);
+            apiIdSelected = true;
+        }else
+        {
+            apiIdSelected = false;
+        }
+        if(hasNetworkConnection())
         {
             if(apiIdSelected)
             {
@@ -152,22 +173,78 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
         return rootView;
     }
 
-    public boolean haveNetworkConnection()
+    private void getNextPeriod()
     {
-        boolean haveConnectedWifi = false;
-        boolean haveConnectedMobile = false;
+        if(periodCounter != 0)
+        {
+            imgBtnBack.setClickable(false);
+            imgBtnBack.setAlpha(0.5f);
+            imgBtnForward.setClickable(false);
+            imgBtnForward.setAlpha(0.5f);
+            chart.setVisibility(View.INVISIBLE);
+            textViewInfo.setText("VISITS TODAY");
+            periodCounter--;
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/content/most_popular_pages?page=1&page_size=10&period="
+                    + calculatePeriod(periodCounter);
+            new RetrieveFeedTask().execute();
+        }
+    }
+
+    private void getPreviousPeriod()
+    {
+        imgBtnBack.setClickable(false);
+        imgBtnBack.setAlpha(0.5f);
+        imgBtnForward.setClickable(false);
+        imgBtnForward.setAlpha(0.5f);
+        chart.setVisibility(View.INVISIBLE);
+        textViewInfo.setText("VISITS TODAY");
+        periodCounter ++;
+        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                "/analytics/content/most_popular_pages?page=1&page_size=10&period="
+                + calculatePeriod(periodCounter);
+        new RetrieveFeedTask().execute();
+    }
+
+    private String calculatePeriod(int periodCounter)
+    {
+        period = "";
+        DateTime currentPeriod = new DateTime();
+        String currentDay = currentPeriod.toString("yyyyMMdd");
+        textViewDate.setText(currentPeriod.minusDays(periodCounter).toString("dd MMM yyyy"));
+        if(periodCounter != 0)
+        {
+            currentDay = currentPeriod.minusDays(periodCounter).toString("yyyyMMdd");
+
+            if(secondCall)
+            {
+                textViewDate.setText(currentPeriod.minusDays(periodCounter - 1).toString("dd MMM yyyy"));
+            }
+        }
+
+        period = currentDay;
+        return period;
+    }
+
+    public boolean hasNetworkConnection()
+    {
+        boolean isConnectedWifi = false;
+        boolean isConnectedMobile = false;
 
         ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
-        for (NetworkInfo ni : netInfo) {
-            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
-                if (ni.isConnected())
-                    haveConnectedWifi = true;
-            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
-                if (ni.isConnected())
-                    haveConnectedMobile = true;
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null) // connected to the internet
+        {
+            if (netInfo.getType() == ConnectivityManager.TYPE_WIFI)
+            {
+                isConnectedWifi = true;
+            }
+            if (netInfo.getType() == ConnectivityManager.TYPE_MOBILE)
+            {
+                isConnectedMobile = true;
+            }
         }
-        return haveConnectedWifi || haveConnectedMobile;
+        return isConnectedWifi || isConnectedMobile;
     }
 
     @Override
@@ -291,6 +368,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
             chart.getAxisLeft().setDrawLabels(false);
             chart.getAxisRight().setDrawLabels(false);
         }
+        chart.setVisibility(View.VISIBLE);
     }
 
     // ===============================

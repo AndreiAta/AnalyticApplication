@@ -33,7 +33,6 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -85,14 +84,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
-        {
-            landscapeMode = true;
-        }
-        else
-        {
-            landscapeMode = false;
-        }
+        landscapeMode = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     @Override
@@ -144,14 +136,15 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=" + calculatePeriod(periodCounter);
+                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=" +
+                    calculatePeriod(periodCounter);
             apiIdSelected = true;
         }else
         {
             apiIdSelected= false;
         }
 
-        if(haveNetworkConnection())
+        if(hasNetworkConnection())
         {
             if(apiIdSelected)
             {
@@ -213,7 +206,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
     {
         period = "";
         DateTime currentPeriod = new DateTime();
-        String stopPeriod = "";
+        String stopPeriod;
         int daysOfMonth = new DateTime().getDayOfMonth();
         DateTime firstDayOfMonth = new DateTime().minusDays(daysOfMonth - 1);
 
@@ -234,7 +227,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                 if(periodCounter == 1)
                 {
                     textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter - 1).toString("dd MMM yyyy") + " - "
-                            + currentPeriod.minusMonths(periodCounter - 1).toString("dd MMM yyyy"));
+                            + currentPeriod.toString("dd MMM yyyy"));
                 }else
                 {
                     textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter - 1).toString("dd MMM yyyy") + " - "
@@ -248,22 +241,25 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         return period;
     }
 
-    public boolean haveNetworkConnection()
+    public boolean hasNetworkConnection()
     {
-        boolean haveConnectedWifi = false;
-        boolean haveConnectedMobile = false;
+        boolean isConnectedWifi = false;
+        boolean isConnectedMobile = false;
 
         ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
-        for (NetworkInfo ni : netInfo) {
-            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
-                if (ni.isConnected())
-                    haveConnectedWifi = true;
-            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
-                if (ni.isConnected())
-                    haveConnectedMobile = true;
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null) // connected to the internet
+        {
+            if (netInfo.getType() == ConnectivityManager.TYPE_WIFI)
+            {
+                isConnectedWifi = true;
+            }
+            if (netInfo.getType() == ConnectivityManager.TYPE_MOBILE)
+            {
+                isConnectedMobile = true;
+            }
         }
-        return haveConnectedWifi || haveConnectedMobile;
+        return isConnectedWifi || isConnectedMobile;
     }
 
     @Override
