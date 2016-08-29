@@ -107,7 +107,7 @@ public class LoginChecker extends AsyncTask<Void, Void, String>
 
                 }
 
-                // Login is a sucess?
+                // Login is a success?
                 MainActivity.initialLogin = "Logged in!";
                 MainActivity.dialog.dismiss();
                 MainActivity.API_ID = String.valueOf(MainActivity.websites.get(0).getId());
