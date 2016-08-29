@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.res.ResourcesCompat;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.util.Base64;
@@ -123,7 +124,7 @@ public class PopPagesYearFragment extends Fragment implements View.OnClickListen
         textViewInfo.setText("PAGE VIEWS THIS YEAR");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
+                ResourcesCompat.getDrawable(getResources(),R.drawable.ic_keyboard_arrow_down_white_18dp, null), null);
         columnOne.setText("Popular Pages");
         columnTwo.setText("Page Views");
 
