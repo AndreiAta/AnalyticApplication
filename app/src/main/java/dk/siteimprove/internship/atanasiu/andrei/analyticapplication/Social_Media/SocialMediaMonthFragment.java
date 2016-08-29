@@ -66,7 +66,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
     ArrayList<BarEntry> valueSet1;
     ArrayList<BarEntry> valueSet2;
     boolean secondCall = false;
-    boolean tableIsVisible = false;
+    boolean tableIsVisible = true;
     boolean landscapeMode, apiIdSelected;
     int totalVisits, totalSocialMedia, periodCounter;
     int[] tempValSet2 = new int[100];
@@ -127,11 +127,10 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         textViewInfo.setText("VISITS THIS MONTH");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
+                getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_18dp), null);
 
         columnOne.setText("Social Media");
         moreInfoButton.setOnClickListener(this);
-        table.setVisibility(View.GONE);
 
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
@@ -286,16 +285,16 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
     @Override
     public void onClick(View v)
     {
-        if(tableIsVisible)
+        if(!tableIsVisible)
         {
             table.setVisibility(View.GONE);
-            tableIsVisible = false;
+            tableIsVisible = true;
             tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
         }else
         {
             table.setVisibility(View.VISIBLE);
-            tableIsVisible = true;
+            tableIsVisible = false;
             tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_18dp), null);
         }
