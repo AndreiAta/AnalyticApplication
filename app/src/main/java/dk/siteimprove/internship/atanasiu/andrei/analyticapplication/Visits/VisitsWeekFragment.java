@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -59,12 +60,10 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
     ArrayList<Entry> valueSet2;
     String API_URL = "";
     Boolean secondCall = false;
-    int dayOfWeek;
+    int periodCounter;
     Integer totalVisits;
-    String thisWeekCompareMonDate;
-    String lastWeekCompareMonDate;
     DateTime startOfWeek;
-    String lastSunday;
+    String period;
     boolean landscapeMode;
     public static TextView textViewDate, textViewInfo, textViewTotal, tableToggler;
     boolean apiIdSelected;
@@ -74,6 +73,9 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
     boolean tableIsVisible = false;
     CustomMarkerViewVisits mv;
     Button moreInfoButton;
+    ImageButton imgBtnBack, imgBtnForward;
+    TableRow defaultTableRow;
+    ArrayList<String> xAxis;
 
     public VisitsWeekFragment()
     {
@@ -85,14 +87,7 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
     {
         super.onCreate(savedInstanceState);
 
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
-        {
-            landscapeMode = true;
-        }
-        else
-        {
-            landscapeMode = false;
-        }
+        landscapeMode = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     @Override
@@ -101,41 +96,32 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
     {
         MainActivity.currentFragment = "Week";
 
-        //Get time period for the API Call
-        dayOfWeek = new DateTime().getDayOfWeek();
-        DateTime currentDay = new DateTime();
-        String currentDate = currentDay.toString("yyyy-MM-dd");
-        currentDate = currentDate.replace("-", "");
-        startOfWeek = new DateTime().minusDays(dayOfWeek - 1);
-        lastSunday = startOfWeek.minusDays(1).toString("dd");
-        lastWeekCompareMonDate = startOfWeek.minusDays(7).toString("dd");
-        String mondayDate = startOfWeek.toString("yyyy-MM-dd");
-        mondayDate = mondayDate.replace("-", "");
-        thisWeekCompareMonDate = startOfWeek.toString("dd");
-        String period = mondayDate + "_" + currentDate;
-        Log.i("XXXXX", thisWeekCompareMonDate);
-
-        //Get Time Period for the Text View
-        String textDatePeriod = startOfWeek.toString("dd MMMM") + " - " + currentDay.toString("dd MMMM");
-
-        if(!MainActivity.API_ID.equalsIgnoreCase(""))
-        {
-            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/behavior/visits_by_weekday?page=1&page_size=10&period=" + period;
-            apiIdSelected = true;
-
-        }else
-        {
-            apiIdSelected = false;
-        }
         View rootView = inflater.inflate(R.layout.fragment_linechart, container, false);
+        chart = (LineChart) rootView.findViewById(R.id.chart);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         textViewDate = (TextView) rootView.findViewById(R.id.textViewDate);
         textViewInfo = (TextView) rootView.findViewById(R.id.textViewInfo);
         textViewTotal = (TextView) rootView.findViewById(R.id.textViewTotal);
         tableToggler = (TextView) rootView.findViewById(R.id.tableToggler);
         moreInfoButton = (Button) rootView.findViewById(R.id.moreInfoButton);
+        defaultTableRow = (TableRow) rootView.findViewById(R.id.defaultTableRow);
+        imgBtnBack = (ImageButton) rootView.findViewById(R.id.imgBtnBack);
+        imgBtnForward = (ImageButton) rootView.findViewById(R.id.imgBtnForward);
         mv = new CustomMarkerViewVisits(getActivity().getApplicationContext(), R.layout.custom_marker_view);
+
+        imgBtnForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                getNextPeriod();
+            }
+        });
+        imgBtnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getPreviousPeriod();
+            }
+        });
 
         moreInfoButton.setOnClickListener(this);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
@@ -144,10 +130,21 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
         table = (TableLayout) rootView.findViewById(R.id.table);
         table.setVisibility(View.GONE);
 
-        textViewDate.setText(textDatePeriod);
         totalVisits = 0;
 
-        if(haveNetworkConnection())
+        if(!MainActivity.API_ID.equalsIgnoreCase(""))
+        {
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/behavior/visits_by_weekday?page=1&page_size=10&period=" +
+                    calculatePeriod(periodCounter);
+            apiIdSelected = true;
+
+        }else
+        {
+            apiIdSelected = false;
+        }
+
+        if(hasNetworkConnection())
         {
             if(apiIdSelected)
             {
@@ -168,9 +165,76 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
             tableToggler.setVisibility(View.GONE);
             moreInfoButton.setVisibility(View.GONE);
         }
-        chart = (LineChart) rootView.findViewById(R.id.chart);
+
 
         return  rootView;
+    }
+    private void getNextPeriod()
+    {
+        if(periodCounter != 0)
+        {
+            imgBtnBack.setClickable(false);
+            imgBtnBack.setAlpha(0.5f);
+            imgBtnForward.setClickable(false);
+            imgBtnForward.setAlpha(0.5f);
+            chart.setVisibility(View.INVISIBLE);
+            textViewInfo.setText("VISITS THIS WEEK");
+            periodCounter--;
+            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                    "/analytics/behavior/visits_by_weekday?page=1&page_size=10&period="
+                    + calculatePeriod(periodCounter);
+            new RetrieveFeedTask().execute();
+        }
+    }
+
+    private void getPreviousPeriod()
+    {
+        imgBtnBack.setClickable(false);
+        imgBtnBack.setAlpha(0.5f);
+        imgBtnForward.setClickable(false);
+        imgBtnForward.setAlpha(0.5f);
+        chart.setVisibility(View.INVISIBLE);
+        textViewInfo.setText("VISITS THIS WEEK");
+        periodCounter ++;
+        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                "/analytics/behavior/visits_by_weekday?page=1&page_size=10&period="
+                + calculatePeriod(periodCounter);
+        new RetrieveFeedTask().execute();
+    }
+
+    private String calculatePeriod(int periodCounter)
+    {
+        period = "";
+        DateTime currentPeriod = new DateTime();
+        String startPeriod = "";
+        int dayOfWeek = new DateTime().getDayOfWeek();
+        startPeriod = currentPeriod.minusDays(dayOfWeek - 1).toString("yyyyMMdd");
+        String stopPeriod = currentPeriod.toString("yyyyMMdd");
+        textViewDate.setText(currentPeriod.minusDays(dayOfWeek - 1).toString("dd MMM yyyy")
+                + " - " + currentPeriod.toString("dd MMM yyyy"));
+        if(periodCounter != 0)
+        {
+            startPeriod = currentPeriod.minusDays(dayOfWeek - 1).minusWeeks(periodCounter).toString("yyyyMMdd");
+            stopPeriod = currentPeriod.minusDays(dayOfWeek - 1).plusDays(6).minusWeeks(periodCounter).toString("yyyyMMdd");
+            textViewDate.setText(currentPeriod.minusDays(dayOfWeek - 1).minusWeeks(periodCounter).toString("dd MMM yyyy")
+                    + " - " + currentPeriod.minusDays(dayOfWeek - 1).plusDays(6).minusWeeks(periodCounter).toString("dd MMM yyyy"));
+            if(secondCall)
+            {
+                if(periodCounter == 1)
+                {
+                    textViewDate.setText(currentPeriod.minusDays(dayOfWeek - 1).toString("dd MMM yyyy")
+                            + " - " + currentPeriod.toString("dd MMM yyyy"));
+                }else
+                {
+                    textViewDate.setText(currentPeriod.minusDays(dayOfWeek - 1).minusWeeks(periodCounter - 1).toString("dd MMM yyyy")
+                            + " - "
+                            + currentPeriod.minusDays(dayOfWeek - 1).plusDays(6).minusWeeks(periodCounter -1).toString("dd MMM yyyy"));
+                }
+            }
+        }
+
+        period = startPeriod + "_" + stopPeriod;
+        return period;
     }
 
     public void createTable()
@@ -266,26 +330,30 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
         void onFragmentInteraction(Uri uri);
     }
 
-    public boolean haveNetworkConnection() {
-        boolean haveConnectedWifi = false;
-        boolean haveConnectedMobile = false;
+    public boolean hasNetworkConnection()
+    {
+        boolean isConnectedWifi = false;
+        boolean isConnectedMobile = false;
 
         ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
-        for (NetworkInfo ni : netInfo) {
-            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
-                if (ni.isConnected())
-                    haveConnectedWifi = true;
-            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
-                if (ni.isConnected())
-                    haveConnectedMobile = true;
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null) // connected to the internet
+        {
+            if (netInfo.getType() == ConnectivityManager.TYPE_WIFI)
+            {
+                isConnectedWifi = true;
+            }
+            if (netInfo.getType() == ConnectivityManager.TYPE_MOBILE)
+            {
+                isConnectedMobile = true;
+            }
         }
-        return haveConnectedWifi || haveConnectedMobile;
+        return isConnectedWifi || isConnectedMobile;
     }
 
     private ArrayList<String> getXAxisValues()
     {
-        ArrayList<String> xAxis = new ArrayList<>();
+        xAxis = new ArrayList<>();
 
         xAxis.add("Mon");
         xAxis.add("Tue");
@@ -335,6 +403,7 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
             chart.getAxisLeft().setDrawLabels(false);
             chart.getAxisRight().setDrawLabels(false);
         }
+        chart.setVisibility(View.VISIBLE);
     }
 
     // ===============================
@@ -388,8 +457,17 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
             if(response == null) {
                 response = "THERE WAS AN ERROR";
             }
-            progressBar.setVisibility(View.GONE);
-            Log.i("INFO", response);
+            if(landscapeMode)
+            {
+                if(secondCall)
+                {
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+            else
+            {
+                progressBar.setVisibility(View.GONE);
+            }
 
             try
             {
@@ -404,13 +482,18 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
                 {
                     valueSet1 = new ArrayList<>();
                     tableValues = new ArrayList<>();
+                    xAxis = new ArrayList<>();
+                    totalVisits = 0;
+                    table.removeAllViews();
+                    table.addView(defaultTableRow);
                 }
 
                 if(totalDays == 0)
                 {
                     Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
-                    totalVisits = 0;
-                }else
+                    handleNoData(); //Reenable forward button and reset graph arrays
+                }
+                else
                 {
                     for (Integer i = 0; i < totalDays; i++)
                     {
@@ -419,20 +502,17 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
 
                         //Check if you are doing the current week or last week
                         //then check if any entries are missing and create them
-                        if (secondCall)
+                        if (secondCall)//Last Week
                         {
-                            //Last Week
-
-                                Entry entry = new Entry((float)visits, i);
-                                valueSet2.add(entry);
+                            Entry entry = new Entry((float)visits, i);
+                            valueSet2.add(entry);
 
                         } else  //Current Week
                         {
-
-                                Entry entry = new Entry((float)visits, i);
-                                valueSet1.add(entry);
-                                tableValues.add(visits);
-                                totalVisits = totalVisits + visits;
+                            Entry entry = new Entry((float)visits, i);
+                            valueSet1.add(entry);
+                            tableValues.add(visits);
+                            totalVisits = totalVisits + visits;
                         }
                     }
 
@@ -464,7 +544,7 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
                         {
                             secondCall = true;
                             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                    "/analytics/behavior/visits_by_weekday?page=1&page_size=10&period=lastweek";
+                                    "/analytics/behavior/visits_by_weekday?page=1&page_size=10&period=" + calculatePeriod(periodCounter+1);
                             new RetrieveFeedTask().execute();
                         }else
                         {
@@ -472,14 +552,33 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
                             drawGraph();
                         }
                     }
+                    imgBtnBack.setClickable(true);
+                    imgBtnBack.setAlpha(1f);
+                    if(periodCounter != 0)
+                    {
+                        imgBtnForward.setClickable(true);
+                        imgBtnForward.setAlpha(1f);
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (ClassCastException ce){
                 Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+                handleNoData(); //Reenable forward button and reset graph arrays
+
             }
 
 
+        }
+
+        private void handleNoData()
+        {
+            imgBtnForward.setClickable(true);
+            imgBtnForward.setAlpha(1f);
+            chart.setVisibility(View.VISIBLE);
+            xAxis = new ArrayList<>();
+            dataSets = new ArrayList<>();
+            chart.clear();
         }
     }
 }
