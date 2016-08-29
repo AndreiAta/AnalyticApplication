@@ -454,121 +454,122 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
 
         protected void onPostExecute(String response)
         {
-            if(response == null) {
-                response = "THERE WAS AN ERROR";
-            }
-            if(landscapeMode)
+            if(getActivity() != null)
             {
-                if(secondCall)
-                {
-                    progressBar.setVisibility(View.GONE);
+                if(response == null) {
+                    response = "THERE WAS AN ERROR";
                 }
-            }
-            else
-            {
-                progressBar.setVisibility(View.GONE);
-            }
-
-            try
-            {
-                JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
-                JSONArray items = object.getJSONArray("items");
-                int totalDays = items.length();
-
-                if(secondCall)
+                if(landscapeMode)
                 {
-                    valueSet2 = new ArrayList<>();
-                }else
-                {
-                    valueSet1 = new ArrayList<>();
-                    tableValues = new ArrayList<>();
-                    xAxis = new ArrayList<>();
-                    totalVisits = 0;
-                    table.removeAllViews();
-                    table.addView(defaultTableRow);
-                }
-
-                if(totalDays == 0)
-                {
-                    Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
-                    handleNoData(); //Reenable forward button and reset graph arrays
+                    if(secondCall)
+                    {
+                        progressBar.setVisibility(View.GONE);
+                    }
                 }
                 else
                 {
-                    for (Integer i = 0; i < totalDays; i++)
-                    {
-                        int visits = items.getJSONObject(i).getInt("visits");
-                        int day_of_week = items.getJSONObject(i).getInt("day_of_week");
-
-                        //Check if you are doing the current week or last week
-                        //then check if any entries are missing and create them
-                        if (secondCall)//Last Week
-                        {
-                            Entry entry = new Entry((float)visits, i);
-                            valueSet2.add(entry);
-
-                        } else  //Current Week
-                        {
-                            Entry entry = new Entry((float)visits, i);
-                            valueSet1.add(entry);
-                            tableValues.add(visits);
-                            totalVisits = totalVisits + visits;
-                        }
-                    }
-
-                    if (secondCall)
-                    {
-                        LineDataSet lineDataSet2 = new LineDataSet(valueSet2, "LAST WEEK");
-                        lineDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
-                        Drawable drawable = ContextCompat.getDrawable(getActivity().getApplication(), R.drawable.chart_lastperiod_background);
-                        lineDataSet2.setFillDrawable(drawable);
-                        lineDataSet2.setDrawFilled(true);
-                        lineDataSet2.setHighLightColor(Color.rgb(255,255,255));
-                        dataSets.add(lineDataSet2);
-                        drawGraph();
-
-                        secondCall = false;
-                    } else
-                    {
-                        Log.i("XXXXX", String.valueOf(totalVisits));
-                        dataSets = new ArrayList<>();
-                        LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "THIS WEEK");
-                        lineDataSet1.setColor(Color.rgb(5, 184, 198));
-                        Drawable drawable = ContextCompat.getDrawable(getActivity().getApplication(), R.drawable.chart_thisperiod_background);
-                        lineDataSet1.setFillDrawable(drawable);
-                        lineDataSet1.setDrawFilled(true);
-                        lineDataSet1.setHighLightColor(Color.rgb(255,255,255));
-                        dataSets.add(lineDataSet1);
-                        textViewTotal.setText(totalVisits.toString());
-                        if(landscapeMode)
-                        {
-                            secondCall = true;
-                            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                    "/analytics/behavior/visits_by_weekday?page=1&page_size=10&period=" + calculatePeriod(periodCounter+1);
-                            new RetrieveFeedTask().execute();
-                        }else
-                        {
-                            createTable();
-                            drawGraph();
-                        }
-                    }
-                    imgBtnBack.setClickable(true);
-                    imgBtnBack.setAlpha(1f);
-                    if(periodCounter != 0)
-                    {
-                        imgBtnForward.setClickable(true);
-                        imgBtnForward.setAlpha(1f);
-                    }
+                    progressBar.setVisibility(View.GONE);
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (ClassCastException ce){
-                Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
-                handleNoData(); //Reenable forward button and reset graph arrays
 
+                try
+                {
+                    JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
+                    JSONArray items = object.getJSONArray("items");
+                    int totalDays = items.length();
+
+                    if(secondCall)
+                    {
+                        valueSet2 = new ArrayList<>();
+                    }else
+                    {
+                        valueSet1 = new ArrayList<>();
+                        tableValues = new ArrayList<>();
+                        xAxis = new ArrayList<>();
+                        totalVisits = 0;
+                        table.removeAllViews();
+                        table.addView(defaultTableRow);
+                    }
+
+                    if(totalDays == 0)
+                    {
+                        Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                        handleNoData(); //Reenable forward button and reset graph arrays
+                    }
+                    else
+                    {
+                        for (Integer i = 0; i < totalDays; i++)
+                        {
+                            int visits = items.getJSONObject(i).getInt("visits");
+                            int day_of_week = items.getJSONObject(i).getInt("day_of_week");
+
+                            //Check if you are doing the current week or last week
+                            //then check if any entries are missing and create them
+                            if (secondCall)//Last Week
+                            {
+                                Entry entry = new Entry((float)visits, i);
+                                valueSet2.add(entry);
+
+                            } else  //Current Week
+                            {
+                                Entry entry = new Entry((float)visits, i);
+                                valueSet1.add(entry);
+                                tableValues.add(visits);
+                                totalVisits = totalVisits + visits;
+                            }
+                        }
+
+                        if (secondCall)
+                        {
+                            LineDataSet lineDataSet2 = new LineDataSet(valueSet2, "LAST WEEK");
+                            lineDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
+                            Drawable drawable = ContextCompat.getDrawable(getActivity().getApplication(), R.drawable.chart_lastperiod_background);
+                            lineDataSet2.setFillDrawable(drawable);
+                            lineDataSet2.setDrawFilled(true);
+                            lineDataSet2.setHighLightColor(Color.rgb(255,255,255));
+                            dataSets.add(lineDataSet2);
+                            drawGraph();
+
+                            secondCall = false;
+                        } else
+                        {
+                            Log.i("XXXXX", String.valueOf(totalVisits));
+                            dataSets = new ArrayList<>();
+                            LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "THIS WEEK");
+                            lineDataSet1.setColor(Color.rgb(5, 184, 198));
+                            Drawable drawable = ContextCompat.getDrawable(getActivity().getApplication(), R.drawable.chart_thisperiod_background);
+                            lineDataSet1.setFillDrawable(drawable);
+                            lineDataSet1.setDrawFilled(true);
+                            lineDataSet1.setHighLightColor(Color.rgb(255,255,255));
+                            dataSets.add(lineDataSet1);
+                            textViewTotal.setText(totalVisits.toString());
+                            if(landscapeMode)
+                            {
+                                secondCall = true;
+                                API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                                        "/analytics/behavior/visits_by_weekday?page=1&page_size=10&period=" + calculatePeriod(periodCounter+1);
+                                new RetrieveFeedTask().execute();
+                            }else
+                            {
+                                createTable();
+                                drawGraph();
+                            }
+                        }
+                        imgBtnBack.setClickable(true);
+                        imgBtnBack.setAlpha(1f);
+                        if(periodCounter != 0)
+                        {
+                            imgBtnForward.setClickable(true);
+                            imgBtnForward.setAlpha(1f);
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ClassCastException ce){
+                    Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+                    handleNoData(); //Reenable forward button and reset graph arrays
+
+                }
             }
-
-
         }
 
         private void handleNoData()

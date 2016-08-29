@@ -414,122 +414,138 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
 
         protected void onPostExecute(String response)
         {
-            if(response == null) {
-                response = "THERE WAS AN ERROR";
-            }
-            if(landscapeMode)
+            if(getActivity() != null)
             {
-                if(secondCall)
-                {
-                    progressBar.setVisibility(View.GONE);
+                if(response == null) {
+                    response = "THERE WAS AN ERROR";
                 }
-            }
-            else
-            {
-                progressBar.setVisibility(View.GONE);
-            }
-
-            try
-            {
-                JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
-                JSONArray items = object.getJSONArray("items");
-                totalPopPages = items.length();
-                int pos = 0;
-
-                if (secondCall) // second time we call the API, prepare lists, and fill tempArray with 0's
+                if(landscapeMode)
                 {
-                    valueSet2 = new ArrayList<>();
-                    //Filling the array with 0
-                    for (int i = 0; i < totalPopPages ; i++)
+                    if(secondCall)
                     {
-                        tempValSet2[i] = 0;
+                        progressBar.setVisibility(View.GONE);
                     }
-
-                } else // first time we call API, prepare lists
-                {
-                    valueSet1 = new ArrayList<>();
-                    xAxis = new ArrayList<>();
-                    xAxisLabels = new ArrayList<>();
-                    tableValues = new ArrayList<>();
-                    totalVisits = 0;
-                    table.removeAllViews();
-                    table.addView(defaultTableRow);
-                }
-                if(totalPopPages == 0)
-                {
-                    Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
-                    handleNoData(); //Reenable forward button and reset graph arrays
                 }
                 else
                 {
-                    for (int i = 0; i < totalPopPages; i++) // Loop through all the items in the JSON Array
-                    {
-                        Integer pageViews = items.getJSONObject(i).getInt("page_views");
-                        String title = items.getJSONObject(i).getString("title");
-                        String url = items.getJSONObject(i).getString("url");
+                    progressBar.setVisibility(View.GONE);
+                }
 
-                        if(!secondCall) //This Period
+                try
+                {
+                    JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
+                    JSONArray items = object.getJSONArray("items");
+                    totalPopPages = items.length();
+                    int pos = 0;
+
+                    if (secondCall) // second time we call the API, prepare lists, and fill tempArray with 0's
+                    {
+                        valueSet2 = new ArrayList<>();
+                        //Filling the array with 0
+                        for (int i = 0; i < totalPopPages ; i++)
                         {
-                            if (i < 10) // we only want top 10
-                            {
-                                BarEntry entry = new BarEntry((float) pageViews, pos);
-                                valueSet1.add(entry);
-                                xAxis.add(url);
-                                if (title.length() > 20)
-                                {
-                                    xAxisLabels.add(title.substring(0, 19) + "...");
-                                } else
-                                {
-                                    xAxisLabels.add(title);
-                                }
-                                pos++;
-                                tableValues.add(pageViews);
-                                totalVisits = totalVisits + pageViews;
-                            }
-                            else// calculating the totalVisits (after top 10)
-                            {
-                                totalVisits = totalVisits + pageViews;
-                            }
+                            tempValSet2[i] = 0;
                         }
-                        else //Last Period
-                        {
-                            if (xAxis.contains(url)) // If the name is already in list, don't add it again.
-                            {
-                                tempValSet2[xAxis.indexOf(url)] = pageViews;
-                            }
-                            else if (!xAxis.contains(url) && xAxis.size() < 10) // if it isn't in list, and there is space - add it
-                            {
-                                xAxis.add(url);
-                                if (title.length() > 20)
-                                {
-                                    xAxisLabels.add(title.substring(0, 19) + "...");
-                                } else
-                                {
-                                    xAxisLabels.add(title);
-                                }
-                                tempValSet2[xAxis.indexOf(url)] = pageViews;
-                            }
-                            if (i == totalPopPages - 1) // last time through the loop, move from tempArray to valueSet2.
-                            {
-                                for (int j = 0; j < xAxis.size(); j++)
-                                {
-                                    BarEntry entry = new BarEntry(tempValSet2[j], j);
-                                    valueSet2.add(entry);
-                                }
-                            }
-                        }
+
+                    } else // first time we call API, prepare lists
+                    {
+                        valueSet1 = new ArrayList<>();
+                        xAxis = new ArrayList<>();
+                        xAxisLabels = new ArrayList<>();
+                        tableValues = new ArrayList<>();
+                        totalVisits = 0;
+                        table.removeAllViews();
+                        table.addView(defaultTableRow);
                     }
-                    if(!secondCall)
+                    if(totalPopPages == 0)
                     {
-                        textViewTotal.setText(String.valueOf(totalVisits));
-
-                        if(landscapeMode)
+                        Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                        handleNoData(); //Reenable forward button and reset graph arrays
+                    }
+                    else
+                    {
+                        for (int i = 0; i < totalPopPages; i++) // Loop through all the items in the JSON Array
                         {
-                            secondCall = true;
-                            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                    "/analytics/content/most_popular_pages?page=1&page_size=10&period=" +
-                                    calculatePeriod(periodCounter+1);
-                            new RetrieveFeedTask().execute();
+                            Integer pageViews = items.getJSONObject(i).getInt("page_views");
+                            String title = items.getJSONObject(i).getString("title");
+                            String url = items.getJSONObject(i).getString("url");
+
+                            if(!secondCall) //This Period
+                            {
+                                if (i < 10) // we only want top 10
+                                {
+                                    BarEntry entry = new BarEntry((float) pageViews, pos);
+                                    valueSet1.add(entry);
+                                    xAxis.add(url);
+                                    if (title.length() > 20)
+                                    {
+                                        xAxisLabels.add(title.substring(0, 19) + "...");
+                                    } else
+                                    {
+                                        xAxisLabels.add(title);
+                                    }
+                                    pos++;
+                                    tableValues.add(pageViews);
+                                    totalVisits = totalVisits + pageViews;
+                                }
+                                else// calculating the totalVisits (after top 10)
+                                {
+                                    totalVisits = totalVisits + pageViews;
+                                }
+                            }
+                            else //Last Period
+                            {
+                                if (xAxis.contains(url)) // If the name is already in list, don't add it again.
+                                {
+                                    tempValSet2[xAxis.indexOf(url)] = pageViews;
+                                }
+                                else if (!xAxis.contains(url) && xAxis.size() < 10) // if it isn't in list, and there is space - add it
+                                {
+                                    xAxis.add(url);
+                                    if (title.length() > 20)
+                                    {
+                                        xAxisLabels.add(title.substring(0, 19) + "...");
+                                    } else
+                                    {
+                                        xAxisLabels.add(title);
+                                    }
+                                    tempValSet2[xAxis.indexOf(url)] = pageViews;
+                                }
+                                if (i == totalPopPages - 1) // last time through the loop, move from tempArray to valueSet2.
+                                {
+                                    for (int j = 0; j < xAxis.size(); j++)
+                                    {
+                                        BarEntry entry = new BarEntry(tempValSet2[j], j);
+                                        valueSet2.add(entry);
+                                    }
+                                }
+                            }
+                        }
+                        if(!secondCall)
+                        {
+                            textViewTotal.setText(String.valueOf(totalVisits));
+
+                            if(landscapeMode)
+                            {
+                                secondCall = true;
+                                API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                                        "/analytics/content/most_popular_pages?page=1&page_size=10&period=" +
+                                        calculatePeriod(periodCounter+1);
+                                new RetrieveFeedTask().execute();
+                            }else
+                            {
+                                reverseXPosInList(valueSet1);
+                                Collections.reverse(valueSet1);
+                                dataSets = new ArrayList<>();
+                                BarDataSet barDataSet1 = new BarDataSet(valueSet1, "TODAY");
+                                barDataSet1.setColor(Color.rgb(5, 184, 198));
+                                barDataSet1.setBarSpacePercent(50f);
+                                dataSets.add(barDataSet1);
+
+                                createTable();
+                                drawGraph();
+                            }
+
                         }else
                         {
                             reverseXPosInList(valueSet1);
@@ -540,45 +556,32 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                             barDataSet1.setBarSpacePercent(50f);
                             dataSets.add(barDataSet1);
 
-                            createTable();
+
+                            reverseXPosInList(valueSet2);
+                            Collections.reverse(valueSet2);
+                            BarDataSet barDataSet2 = new BarDataSet(valueSet2, "YESTERDAY");
+                            barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
+                            barDataSet2.setBarSpacePercent(50f);
+                            dataSets.add(barDataSet2);
                             drawGraph();
+
+                            secondCall = false;
                         }
-
-                    }else
-                    {
-                        reverseXPosInList(valueSet1);
-                        Collections.reverse(valueSet1);
-                        dataSets = new ArrayList<>();
-                        BarDataSet barDataSet1 = new BarDataSet(valueSet1, "TODAY");
-                        barDataSet1.setColor(Color.rgb(5, 184, 198));
-                        barDataSet1.setBarSpacePercent(50f);
-                        dataSets.add(barDataSet1);
-
-
-                        reverseXPosInList(valueSet2);
-                        Collections.reverse(valueSet2);
-                        BarDataSet barDataSet2 = new BarDataSet(valueSet2, "YESTERDAY");
-                        barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
-                        barDataSet2.setBarSpacePercent(50f);
-                        dataSets.add(barDataSet2);
-                        drawGraph();
-
-                        secondCall = false;
+                        imgBtnBack.setClickable(true);
+                        imgBtnBack.setAlpha(1f);
+                        if(periodCounter != 0)
+                        {
+                            imgBtnForward.setClickable(true);
+                            imgBtnForward.setAlpha(1f);
+                        }
                     }
-                    imgBtnBack.setClickable(true);
-                    imgBtnBack.setAlpha(1f);
-                    if(periodCounter != 0)
-                    {
-                        imgBtnForward.setClickable(true);
-                        imgBtnForward.setAlpha(1f);
-                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ClassCastException ce){
+                    Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+                    handleNoData(); //Reenable forward button and reset graph arrays
                 }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (ClassCastException ce){
-                Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
-                handleNoData(); //Reenable forward button and reset graph arrays
             }
         }
 
