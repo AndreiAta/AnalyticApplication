@@ -419,126 +419,142 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
 
         protected void onPostExecute(String response)
         {
-            if(response == null) {
-                response = "THERE WAS AN ERROR";
-            }
-            if(landscapeMode)
+            if(getActivity() != null)
             {
-                if(secondCall)
+                if(response == null) {
+                    response = "THERE WAS AN ERROR";
+                }
+                if(landscapeMode)
+                {
+                    if(secondCall)
+                    {
+                        progressBar.setVisibility(View.GONE);
+                    }
+                }
+                else
                 {
                     progressBar.setVisibility(View.GONE);
                 }
-            }
-            else
-            {
-                progressBar.setVisibility(View.GONE);
-            }
 
-            try
-            {
-                JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
-                JSONArray items = object.getJSONArray("items");
-                totalSearchEngines = items.length();
-                int pos = 0;
-
-                if(secondCall)
+                try
                 {
-                    valueSet2 = new ArrayList<>();
-                    //Filling the array with 0
-                    for (int i = 0; i < totalSearchEngines ; i++)
+                    JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
+                    JSONArray items = object.getJSONArray("items");
+                    totalSearchEngines = items.length();
+                    int pos = 0;
+
+                    if(secondCall)
                     {
-                        tempValSet2[i] = 0;
+                        valueSet2 = new ArrayList<>();
+                        //Filling the array with 0
+                        for (int i = 0; i < totalSearchEngines ; i++)
+                        {
+                            tempValSet2[i] = 0;
+                        }
+                    }else
+                    {
+                        valueSet1 = new ArrayList<>();
+                        xAxis = new ArrayList<>();
+                        xAxisLabels = new ArrayList<>();
+                        tableValues = new ArrayList<>();
+                        totalVisits = 0;
+                        table.removeAllViews();
+                        table.addView(defaultTableRow);
                     }
-                }else
-                {
-                    valueSet1 = new ArrayList<>();
-                    xAxis = new ArrayList<>();
-                    xAxisLabels = new ArrayList<>();
-                    tableValues = new ArrayList<>();
-                    totalVisits = 0;
-                    table.removeAllViews();
-                    table.addView(defaultTableRow);
-                }
 
-                if(totalSearchEngines == 0)
-                {
-                    Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
-                    handleNoData(); //Reenable forward button and reset graph arrays
-                }else
-                {
-                    for (int i = 0; i < totalSearchEngines; i++)
+                    if(totalSearchEngines == 0)
                     {
-                        Integer visits = items.getJSONObject(i).getInt("visits");
-                        String search_engine = items.getJSONObject(i).getString("search_engine");
-
-                        if (!secondCall) //Current Period
+                        Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                        handleNoData(); //Reenable forward button and reset graph arrays
+                    }else
+                    {
+                        for (int i = 0; i < totalSearchEngines; i++)
                         {
-                            if (xAxis.contains(search_engine))
-                            {
-                                tempValSet2[xAxis.indexOf(search_engine)] = visits;
-                                BarEntry entry = new BarEntry(visits, xAxis.indexOf(search_engine));
-                                valueSet2.add(entry);
-                            } else if (!xAxis.contains(search_engine) && xAxis.size() < 10)
-                            {
-                                BarEntry entry = new BarEntry((float) visits, pos);
-                                valueSet1.add(entry);
-                                xAxis.add(search_engine);
-                                if (search_engine.length() > 20)
-                                {
-                                    xAxisLabels.add(search_engine.substring(0, 19) + "...");
-                                } else
-                                {
-                                    xAxisLabels.add(search_engine);
-                                }
-                                pos++;
-                                tableValues.add(visits);
-                                totalVisits = totalVisits + visits;
-                            } else
-                            {
-                                totalVisits = totalVisits + visits;
-                            }
+                            Integer visits = items.getJSONObject(i).getInt("visits");
+                            String search_engine = items.getJSONObject(i).getString("search_engine");
 
-                        } else //Today
-                        {
-                            if (xAxis.contains(search_engine))
+                            if (!secondCall) //Current Period
                             {
-                                tempValSet2[xAxis.indexOf(search_engine)] = visits;
-                            } else if (!xAxis.contains(search_engine) && xAxis.size() < 10)
-                            {
-                                xAxis.add(search_engine);
-                                if (search_engine.length() > 20)
+                                if (xAxis.contains(search_engine))
                                 {
-                                    xAxisLabels.add(search_engine.substring(0, 19) + "...");
-                                } else
-                                {
-                                    xAxisLabels.add(search_engine);
-                                }
-                                tempValSet2[xAxis.indexOf(search_engine)] = visits;
-                            }
-                            if (i == totalSearchEngines - 1)
-                            {
-                                for (int j = 0; j < xAxis.size(); j++)
-                                {
-
-                                    BarEntry entry = new BarEntry(tempValSet2[j], j);
+                                    tempValSet2[xAxis.indexOf(search_engine)] = visits;
+                                    BarEntry entry = new BarEntry(visits, xAxis.indexOf(search_engine));
                                     valueSet2.add(entry);
+                                } else if (!xAxis.contains(search_engine) && xAxis.size() < 10)
+                                {
+                                    BarEntry entry = new BarEntry((float) visits, pos);
+                                    valueSet1.add(entry);
+                                    xAxis.add(search_engine);
+                                    if (search_engine.length() > 20)
+                                    {
+                                        xAxisLabels.add(search_engine.substring(0, 19) + "...");
+                                    } else
+                                    {
+                                        xAxisLabels.add(search_engine);
+                                    }
+                                    pos++;
+                                    tableValues.add(visits);
+                                    totalVisits = totalVisits + visits;
+                                } else
+                                {
+                                    totalVisits = totalVisits + visits;
+                                }
 
+                            } else //Today
+                            {
+                                if (xAxis.contains(search_engine))
+                                {
+                                    tempValSet2[xAxis.indexOf(search_engine)] = visits;
+                                } else if (!xAxis.contains(search_engine) && xAxis.size() < 10)
+                                {
+                                    xAxis.add(search_engine);
+                                    if (search_engine.length() > 20)
+                                    {
+                                        xAxisLabels.add(search_engine.substring(0, 19) + "...");
+                                    } else
+                                    {
+                                        xAxisLabels.add(search_engine);
+                                    }
+                                    tempValSet2[xAxis.indexOf(search_engine)] = visits;
+                                }
+                                if (i == totalSearchEngines - 1)
+                                {
+                                    for (int j = 0; j < xAxis.size(); j++)
+                                    {
+
+                                        BarEntry entry = new BarEntry(tempValSet2[j], j);
+                                        valueSet2.add(entry);
+
+                                    }
                                 }
                             }
                         }
-                    }
-                    if (!secondCall)//First Call
-                    {
-                        textViewTotal.setText(String.valueOf(totalVisits));
+                        if (!secondCall)//First Call
+                        {
+                            textViewTotal.setText(String.valueOf(totalVisits));
 
-                        if (landscapeMode) {
-                            secondCall = true;
-                            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                    "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
-                                    + calculatePeriod(periodCounter + 1) ;
-                            new RetrieveFeedTask().execute();
+                            if (landscapeMode) {
+                                secondCall = true;
+                                API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                                        "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
+                                        + calculatePeriod(periodCounter + 1) ;
+                                new RetrieveFeedTask().execute();
+                            }
+                            else//Portrait Mode
+                            {
+                                reverseXPosInList(valueSet1);
+                                Collections.reverse(valueSet1);
+                                dataSets = new ArrayList<>();
+                                BarDataSet barDataSet1 = new BarDataSet(valueSet1, "TODAY");
+                                barDataSet1.setColor(Color.rgb(5, 184, 198));
+                                barDataSet1.setBarSpacePercent(50f);
+                                dataSets.add(barDataSet1);
+
+                                createTable();
+                                drawGraph();
+                            }
                         }
-                        else//Portrait Mode
+                        else //Second Call
                         {
                             reverseXPosInList(valueSet1);
                             Collections.reverse(valueSet1);
@@ -548,44 +564,31 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
                             barDataSet1.setBarSpacePercent(50f);
                             dataSets.add(barDataSet1);
 
-                            createTable();
+                            reverseXPosInList(valueSet2);
+                            Collections.reverse(valueSet2);
+                            BarDataSet barDataSet2 = new BarDataSet(valueSet2, "YESTERDAY");
+                            barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
+                            barDataSet2.setBarSpacePercent(50f);
+                            dataSets.add(barDataSet2);
+
                             drawGraph();
+                            secondCall = false;
+                        }
+                        imgBtnBack.setClickable(true);
+                        imgBtnBack.setAlpha(1f);
+                        if(periodCounter != 0)
+                        {
+                            imgBtnForward.setClickable(true);
+                            imgBtnForward.setAlpha(1f);
                         }
                     }
-                    else //Second Call
-                    {
-                        reverseXPosInList(valueSet1);
-                        Collections.reverse(valueSet1);
-                        dataSets = new ArrayList<>();
-                        BarDataSet barDataSet1 = new BarDataSet(valueSet1, "TODAY");
-                        barDataSet1.setColor(Color.rgb(5, 184, 198));
-                        barDataSet1.setBarSpacePercent(50f);
-                        dataSets.add(barDataSet1);
 
-                        reverseXPosInList(valueSet2);
-                        Collections.reverse(valueSet2);
-                        BarDataSet barDataSet2 = new BarDataSet(valueSet2, "YESTERDAY");
-                        barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
-                        barDataSet2.setBarSpacePercent(50f);
-                        dataSets.add(barDataSet2);
-
-                        drawGraph();
-                        secondCall = false;
-                    }
-                    imgBtnBack.setClickable(true);
-                    imgBtnBack.setAlpha(1f);
-                    if(periodCounter != 0)
-                    {
-                        imgBtnForward.setClickable(true);
-                        imgBtnForward.setAlpha(1f);
-                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ClassCastException ce){
+                    Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+                    handleNoData(); //Reenable forward button and reset graph arrays
                 }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (ClassCastException ce){
-                Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
-                handleNoData(); //Reenable forward button and reset graph arrays
             }
         }
 

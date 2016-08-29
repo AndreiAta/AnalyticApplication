@@ -348,154 +348,156 @@ public class TrafficSourcesYearFragment extends Fragment implements View.OnClick
 
         protected void onPostExecute(String response)
         {
+           if(getActivity() != null)
+           {
+               if(response == null) {
+                   response = "THERE WAS AN ERROR";
+               }
+               progressBar.setVisibility(View.GONE);
 
-            if(response == null) {
-                response = "THERE WAS AN ERROR";
-            }
-            progressBar.setVisibility(View.GONE);
+               try
+               {
+                   JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
+                   JSONArray items = object.getJSONArray("items");
+                   totalItems = items.length();
 
-            try
-            {
-                JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
-                JSONArray items = object.getJSONArray("items");
-                totalItems = items.length();
+                   if(secondCall)
+                   {
+                       visitsAmount = 0;
 
-                if(secondCall)
-                {
-                    visitsAmount = 0;
+                   }else
+                   {
+                       visitsAmount = 0;
 
-                }else
-                {
-                    visitsAmount = 0;
+                   }
 
-                }
+                   for (int i = 0; i < totalItems; i++)
+                   {
+                       Integer visits = items.getJSONObject(i).getInt("visits");
 
-                for (int i = 0; i < totalItems; i++)
-                {
-                    Integer visits = items.getJSONObject(i).getInt("visits");
+                       visitsAmount = visitsAmount + visits;
 
-                    visitsAmount = visitsAmount + visits;
+                       if(secondCall)
+                       {
+                           if (i == totalItems - 1)
+                           {
+                               tableValues.add(visitsAmount);
 
-                    if(secondCall)
-                    {
-                        if (i == totalItems - 1)
-                        {
-                            tableValues.add(visitsAmount);
+                               if (xAxisPlacement == 0)
+                               {
+                                   API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
+                                           + "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
+                                           + lastYear + "0101_" + lastYear + "1231";
+                                   entry = new BarEntry(visitsAmount, xAxisPlacement);
+                                   valueSet2.add(entry);
+                               } else if (xAxisPlacement == 1)
+                               {
+                                   API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
+                                           + "/analytics/traffic_sources/external_referring_domains?page=1&page_size=10&period="
+                                           + lastYear + "0101_" + lastYear + "1231";
+                                   entry = new BarEntry(visitsAmount, xAxisPlacement);
+                                   valueSet2.add(entry);
+                               } else if (xAxisPlacement == 2)
+                               {
+                                   API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
+                                           + "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                                           + lastYear + "0101_" + lastYear + "1231";
+                                   entry = new BarEntry(visitsAmount, xAxisPlacement);
+                                   valueSet2.add(entry);
+                               } else if (xAxisPlacement == 3)
+                               {
+                                   entry = new BarEntry(visitsAmount, xAxisPlacement);
+                                   valueSet2.add(entry);
+                                   madeAllApiCalls = true;
+                                   Log.i("IMPORTANT", valueSet2.toString());
+                               }
+                           }
+                       }else
+                       {
+                           if (i == totalItems - 1)
+                           {
+                               tableValues.add(visitsAmount);
 
-                            if (xAxisPlacement == 0)
-                            {
-                                API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
-                                        + "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
-                                        + lastYear + "0101_" + lastYear + "1231";
-                                entry = new BarEntry(visitsAmount, xAxisPlacement);
-                                valueSet2.add(entry);
-                            } else if (xAxisPlacement == 1)
-                            {
-                                API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
-                                        + "/analytics/traffic_sources/external_referring_domains?page=1&page_size=10&period="
-                                        + lastYear + "0101_" + lastYear + "1231";
-                                entry = new BarEntry(visitsAmount, xAxisPlacement);
-                                valueSet2.add(entry);
-                            } else if (xAxisPlacement == 2)
-                            {
-                                API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
-                                        + "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
-                                        + lastYear + "0101_" + lastYear + "1231";
-                                entry = new BarEntry(visitsAmount, xAxisPlacement);
-                                valueSet2.add(entry);
-                            } else if (xAxisPlacement == 3)
-                            {
-                                entry = new BarEntry(visitsAmount, xAxisPlacement);
-                                valueSet2.add(entry);
-                                madeAllApiCalls = true;
-                                Log.i("IMPORTANT", valueSet2.toString());
-                            }
-                        }
-                    }else
-                    {
-                        if (i == totalItems - 1)
-                        {
-                            tableValues.add(visitsAmount);
+                               if (xAxisPlacement == 0)
+                               {
+                                   API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
+                                           + "/analytics/traffic_sources/search_engines?page=1&page_size=10&period=thisyear";
+                                   entry = new BarEntry(visitsAmount, xAxisPlacement);
+                                   valueSet1.add(entry);
+                                   totalVisits = totalVisits + visitsAmount;
+                               } else if (xAxisPlacement == 1)
+                               {
+                                   API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
+                                           + "/analytics/traffic_sources/external_referring_domains?page=1&page_size=10&period=thisyear";
+                                   entry = new BarEntry(visitsAmount, xAxisPlacement);
+                                   valueSet1.add(entry);
+                                   totalVisits = totalVisits + visitsAmount;
+                               } else if (xAxisPlacement == 2)
+                               {
+                                   API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
+                                           + "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=thisyear";
+                                   entry = new BarEntry(visitsAmount, xAxisPlacement);
+                                   valueSet1.add(entry);
+                                   totalVisits = totalVisits + visitsAmount;
+                               } else if (xAxisPlacement == 3)
+                               {
+                                   entry = new BarEntry(visitsAmount, xAxisPlacement);
+                                   valueSet1.add(entry);
+                                   madeAllApiCalls = true;
+                                   totalVisits = totalVisits + visitsAmount;
+                               }
+                           }
+                       }
+                   }
 
-                            if (xAxisPlacement == 0)
-                            {
-                                API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
-                                        + "/analytics/traffic_sources/search_engines?page=1&page_size=10&period=thisyear";
-                                entry = new BarEntry(visitsAmount, xAxisPlacement);
-                                valueSet1.add(entry);
-                                totalVisits = totalVisits + visitsAmount;
-                            } else if (xAxisPlacement == 1)
-                            {
-                                API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
-                                        + "/analytics/traffic_sources/external_referring_domains?page=1&page_size=10&period=thisyear";
-                                entry = new BarEntry(visitsAmount, xAxisPlacement);
-                                valueSet1.add(entry);
-                                totalVisits = totalVisits + visitsAmount;
-                            } else if (xAxisPlacement == 2)
-                            {
-                                API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID
-                                        + "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=thisyear";
-                                entry = new BarEntry(visitsAmount, xAxisPlacement);
-                                valueSet1.add(entry);
-                                totalVisits = totalVisits + visitsAmount;
-                            } else if (xAxisPlacement == 3)
-                            {
-                                entry = new BarEntry(visitsAmount, xAxisPlacement);
-                                valueSet1.add(entry);
-                                madeAllApiCalls = true;
-                                totalVisits = totalVisits + visitsAmount;
-                            }
-                        }
-                    }
-                }
+                   if (madeAllApiCalls)
+                   {
+                       if(secondCall)
+                       {
+                           BarDataSet barDataSet2 = new BarDataSet(valueSet2, "YESTERDAY");
+                           barDataSet2.setColor(Color.rgb(181, 0, 97));
+                           barDataSet2.setBarSpacePercent(50f);
+                           dataSets.add(barDataSet2);
+                           drawGraph();
 
-                if (madeAllApiCalls)
-                {
-                    if(secondCall)
-                    {
-                        BarDataSet barDataSet2 = new BarDataSet(valueSet2, "YESTERDAY");
-                        barDataSet2.setColor(Color.rgb(181, 0, 97));
-                        barDataSet2.setBarSpacePercent(50f);
-                        dataSets.add(barDataSet2);
-                        drawGraph();
+                           secondCall = false;
+                       }else
+                       {
+                           BarDataSet barDataSet1 = new BarDataSet(valueSet1, "TODAY");
+                           barDataSet1.setColor(Color.rgb(5, 184, 198));
+                           barDataSet1.setBarSpacePercent(50f);
+                           dataSets.add(barDataSet1);
+                           textViewTotal.setText(String.valueOf(totalVisits));
 
-                        secondCall = false;
-                    }else
-                    {
-                        BarDataSet barDataSet1 = new BarDataSet(valueSet1, "TODAY");
-                        barDataSet1.setColor(Color.rgb(5, 184, 198));
-                        barDataSet1.setBarSpacePercent(50f);
-                        dataSets.add(barDataSet1);
-                        textViewTotal.setText(String.valueOf(totalVisits));
+                           if(!landscapeMode)
+                           {
+                               createTable();
+                               drawGraph();
+                           }else
+                           {
+                               Log.i("Important", "inside the else");
+                               secondCall = true;
+                               API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                                       "/analytics/traffic_sources/direct_traffic_entry_pages?page=1&page_size=10&period="
+                                       + lastYear + "0101_" + lastYear + "1231";
+                               xAxisPlacement = 0;
+                               madeAllApiCalls = false;
+                               new RetrieveFeedTask().execute();
+                           }
+                       }
 
-                        if(!landscapeMode)
-                        {
-                            createTable();
-                            drawGraph();
-                        }else
-                        {
-                            Log.i("Important", "inside the else");
-                            secondCall = true;
-                            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                    "/analytics/traffic_sources/direct_traffic_entry_pages?page=1&page_size=10&period="
-                                    + lastYear + "0101_" + lastYear + "1231";
-                            xAxisPlacement = 0;
-                            madeAllApiCalls = false;
-                            new RetrieveFeedTask().execute();
-                        }
-                    }
+                   }else
+                   {
+                       xAxisPlacement++;
+                       new RetrieveFeedTask().execute();
+                   }
 
-                }else
-                {
-                    xAxisPlacement++;
-                    new RetrieveFeedTask().execute();
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (ClassCastException ce){
-                Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
-            }
+               } catch (JSONException e) {
+                   e.printStackTrace();
+               } catch (ClassCastException ce){
+                   Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+               }
+           }
         }
     }
 }
