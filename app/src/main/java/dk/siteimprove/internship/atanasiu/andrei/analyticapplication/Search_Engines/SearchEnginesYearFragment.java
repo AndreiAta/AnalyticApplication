@@ -43,11 +43,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Locale;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
@@ -84,14 +82,7 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
-        {
-            landscapeMode = true;
-        }
-        else
-        {
-            landscapeMode = false;
-        }
+        landscapeMode = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     @Override
@@ -160,7 +151,7 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
             apiIdSelected = false;
         }
 
-        if(haveNetworkConnection())
+        if(hasNetworkConnection())
         {
             if(apiIdSelected)
             {
@@ -246,7 +237,7 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
         new RetrieveFeedTask().execute();
     }
 
-    public boolean haveNetworkConnection()
+    public boolean hasNetworkConnection()
     {
         boolean haveConnectedWifi = false;
         boolean haveConnectedMobile = false;
