@@ -443,117 +443,119 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
 
         protected void onPostExecute(String response)
         {
-            if(response == null) {
-                response = "THERE WAS AN ERROR";
-            }
-            if(landscapeMode)
+            if(getActivity() != null)
             {
-                if(secondCall)
+                if(response == null) {
+                    response = "THERE WAS AN ERROR";
+                }
+                if(landscapeMode)
+                {
+                    if(secondCall)
+                    {
+                        progressBar.setVisibility(View.GONE);
+                    }
+                }
+                else
                 {
                     progressBar.setVisibility(View.GONE);
                 }
-            }
-            else
-            {
-                progressBar.setVisibility(View.GONE);
-            }
 
-            try
-            {
-                JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
-                JSONArray items = object.getJSONArray("items");
-                totalDays = items.length();
+                try
+                {
+                    JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
+                    JSONArray items = object.getJSONArray("items");
+                    totalDays = items.length();
 
-                if(secondCall)
-                {
-                    valueSet2 = new ArrayList<>();
-                }else
-                {
-                    valueSet1 = new ArrayList<>();
-                    tableValues = new ArrayList<>();
-                    xAxis = new ArrayList<>();
-                    totalVisits = 0;
-                    table.removeAllViews();
-                    table.addView(defaultTableRow);
-                }
-                if(totalDays == 0)
-                {
-                    Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
-                    handleNoData(); //Reenable forward button and reset graph arrays
-                }else
-                {
-                    for (Integer i = 0; i < totalDays; i++)
+                    if(secondCall)
                     {
-                        int visits = items.getJSONObject(i).getInt("visits");
-
-                        if(secondCall)
+                        valueSet2 = new ArrayList<>();
+                    }else
+                    {
+                        valueSet1 = new ArrayList<>();
+                        tableValues = new ArrayList<>();
+                        xAxis = new ArrayList<>();
+                        totalVisits = 0;
+                        table.removeAllViews();
+                        table.addView(defaultTableRow);
+                    }
+                    if(totalDays == 0)
+                    {
+                        Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                        handleNoData(); //Reenable forward button and reset graph arrays
+                    }else
+                    {
+                        for (Integer i = 0; i < totalDays; i++)
                         {
+                            int visits = items.getJSONObject(i).getInt("visits");
+
+                            if(secondCall)
+                            {
                                 Entry entry = new Entry((float)visits, i);
                                 valueSet2.add(entry);
 
-                        }else
-                        {
+                            }else
+                            {
 
                                 Entry entry = new Entry((float) visits, i);
                                 valueSet1.add(entry);
                                 tableValues.add(visits);
                                 totalVisits = totalVisits + visits;
+                            }
                         }
-                    }
 
-                    if (secondCall)
-                    {
-                        LineDataSet lineDataSet2 = new LineDataSet(valueSet2, "LAST MONTH");
-                        lineDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
-                        Drawable drawable = ContextCompat.getDrawable(getActivity().getApplication(), R.drawable.chart_lastperiod_background);
-                        lineDataSet2.setFillDrawable(drawable);
-                        lineDataSet2.setDrawFilled(true);
-                        lineDataSet2.setHighLightColor(Color.rgb(255,255,255));
-                        dataSets.add(lineDataSet2);
-                        drawGraph();
-
-                        secondCall = false;
-                    } else
-                    {
-                        dataSets = new ArrayList<>();
-                        LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "THIS MONTH");
-                        lineDataSet1.setColor(Color.rgb(5, 184, 198));
-                        Drawable drawable = ContextCompat.getDrawable(getActivity().getApplication(), R.drawable.chart_thisperiod_background);
-                        lineDataSet1.setFillDrawable(drawable);
-                        lineDataSet1.setDrawFilled(true);
-                        lineDataSet1.setHighLightColor(Color.rgb(255, 255, 255));
-                        dataSets.add(lineDataSet1);
-                        Log.i("Total VISISTS", totalVisits.toString());
-                        textViewTotal.setText(totalVisits.toString());
-                        if(landscapeMode)
+                        if (secondCall)
                         {
-                            secondCall = true;
-                            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                    "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=" +
-                                    calculatePeriod(periodCounter+1);
-                            new RetrieveFeedTask().execute();
-                        }else
-                        {
-                            Log.i("I AM CALLEDNOLANDSCAPE","XXXXXX");
-                            createTable();
+                            LineDataSet lineDataSet2 = new LineDataSet(valueSet2, "LAST MONTH");
+                            lineDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
+                            Drawable drawable = ContextCompat.getDrawable(getActivity().getApplication(), R.drawable.chart_lastperiod_background);
+                            lineDataSet2.setFillDrawable(drawable);
+                            lineDataSet2.setDrawFilled(true);
+                            lineDataSet2.setHighLightColor(Color.rgb(255,255,255));
+                            dataSets.add(lineDataSet2);
                             drawGraph();
+
+                            secondCall = false;
+                        } else
+                        {
+                            dataSets = new ArrayList<>();
+                            LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "THIS MONTH");
+                            lineDataSet1.setColor(Color.rgb(5, 184, 198));
+                            Drawable drawable = ContextCompat.getDrawable(getActivity().getApplication(), R.drawable.chart_thisperiod_background);
+                            lineDataSet1.setFillDrawable(drawable);
+                            lineDataSet1.setDrawFilled(true);
+                            lineDataSet1.setHighLightColor(Color.rgb(255, 255, 255));
+                            dataSets.add(lineDataSet1);
+                            Log.i("Total VISISTS", totalVisits.toString());
+                            textViewTotal.setText(totalVisits.toString());
+                            if(landscapeMode)
+                            {
+                                secondCall = true;
+                                API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                                        "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period=" +
+                                        calculatePeriod(periodCounter+1);
+                                new RetrieveFeedTask().execute();
+                            }else
+                            {
+                                Log.i("I AM CALLEDNOLANDSCAPE","XXXXXX");
+                                createTable();
+                                drawGraph();
+                            }
+                        }
+                        imgBtnBack.setClickable(true);
+                        imgBtnBack.setAlpha(1f);
+                        if(periodCounter != 0)
+                        {
+                            imgBtnForward.setClickable(true);
+                            imgBtnForward.setAlpha(1f);
                         }
                     }
-                    imgBtnBack.setClickable(true);
-                    imgBtnBack.setAlpha(1f);
-                    if(periodCounter != 0)
-                    {
-                        imgBtnForward.setClickable(true);
-                        imgBtnForward.setAlpha(1f);
-                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ClassCastException ce){
+                    Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+                    handleNoData(); //Reenable forward button and reset graph arrays
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (ClassCastException ce){
-                Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
-                handleNoData(); //Reenable forward button and reset graph arrays
             }
-
         }
 
         private void handleNoData()

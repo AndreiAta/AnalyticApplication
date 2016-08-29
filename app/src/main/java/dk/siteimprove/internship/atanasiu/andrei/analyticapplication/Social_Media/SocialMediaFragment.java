@@ -401,129 +401,145 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
 
         protected void onPostExecute(String response)
         {
-            if(response != null) Log.i("ERROR", response);
-
-            if(response == null) {
-                response = "THERE WAS AN ERROR";
-            }
-            if(landscapeMode)
+            if(getActivity() != null)
             {
-                if(secondCall)
-                {
-                    progressBar.setVisibility(View.GONE);
+                if(response != null) Log.i("ERROR", response);
+
+                if(response == null) {
+                    response = "THERE WAS AN ERROR";
                 }
-            }
-            else
-            {
-                progressBar.setVisibility(View.GONE);
-            }
-
-            try
-            {
-                JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
-                JSONArray items = object.getJSONArray("items");
-                totalSocialMedia = items.length();
-                int pos = 0;
-
-                if(secondCall)
+                if(landscapeMode)
                 {
-                    valueSet2 = new ArrayList<>();
-                    //Filling the array with 0
-                    for (int i = 0; i < totalSocialMedia ; i++)
+                    if(secondCall)
                     {
-                        tempValSet2[i] = 0;
+                        progressBar.setVisibility(View.GONE);
                     }
-
-                }else
-                {
-                    valueSet1 = new ArrayList<>();
-                    xAxis = new ArrayList<>();
-                    xAxisLabels = new ArrayList<>();
-                    tableValues = new ArrayList<>();
-                    totalVisits = 0;
-                    table.removeAllViews();
-                    table.addView(defaultTableRow);
-                }
-                if(totalSocialMedia == 0)
-                {
-                    Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
-                    handleNoData(); //Reenable forward button and reset graph arrays
                 }
                 else
                 {
-                    for (int i = 0; i < totalSocialMedia; i++)
+                    progressBar.setVisibility(View.GONE);
+                }
+
+                try
+                {
+                    JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
+                    JSONArray items = object.getJSONArray("items");
+                    totalSocialMedia = items.length();
+                    int pos = 0;
+
+                    if(secondCall)
                     {
-                        Integer visits = items.getJSONObject(i).getInt("visits");
-                        String organisation = items.getJSONObject(i).getString("organisation");
-
-                        if (!secondCall) //Current Period
+                        valueSet2 = new ArrayList<>();
+                        //Filling the array with 0
+                        for (int i = 0; i < totalSocialMedia ; i++)
                         {
-                            if (xAxis.contains(organisation))
-                            {
-                                tempValSet2[xAxis.indexOf(organisation)] = visits;
-                                BarEntry entry = new BarEntry(visits, xAxis.indexOf(organisation));
-                                valueSet2.add(entry);
-                            } else if (!xAxis.contains(organisation) && xAxis.size() < 10)
-                            {
-                                BarEntry entry = new BarEntry((float) visits, pos);
-                                valueSet1.add(entry);
-                                xAxis.add(organisation);
-                                if (organisation.length() > 20)
-                                {
-                                    xAxisLabels.add(organisation.substring(0, 19) + "...");
-                                } else
-                                {
-                                    xAxisLabels.add(organisation);
-                                }
-                                pos++;
-                                tableValues.add(visits);
-                                totalVisits = totalVisits + visits;
-                            } else
-                            {
-                                totalVisits = totalVisits + visits;
-                            }
+                            tempValSet2[i] = 0;
+                        }
 
-                        }
-                        else //Last Period
-                        {
-                            if (xAxis.contains(organisation))
-                            {
-                                tempValSet2[xAxis.indexOf(organisation)] = visits;
-                            } else if (!xAxis.contains(organisation) && xAxis.size() < 10)
-                            {
-                                xAxis.add(organisation);
-                                if (organisation.length() > 20)
-                                {
-                                    xAxisLabels.add(organisation.substring(0, 19) + "...");
-                                } else
-                                {
-                                    xAxisLabels.add(organisation);
-                                }
-                                tempValSet2[xAxis.indexOf(organisation)] = visits;
-                            }
-                            if (i == totalSocialMedia - 1)
-                            {
-                                for (int j = 0; j < xAxis.size(); j++)
-                                {
-                                    BarEntry entry = new BarEntry(tempValSet2[j], j);
-                                    valueSet2.add(entry);
-                                }
-                            }
-                        }
+                    }else
+                    {
+                        valueSet1 = new ArrayList<>();
+                        xAxis = new ArrayList<>();
+                        xAxisLabels = new ArrayList<>();
+                        tableValues = new ArrayList<>();
+                        totalVisits = 0;
+                        table.removeAllViews();
+                        table.addView(defaultTableRow);
                     }
-                    if (!secondCall)//First Call
+                    if(totalSocialMedia == 0)
                     {
-                        textViewTotal.setText(String.valueOf(totalVisits));
-
-                        if (landscapeMode)
+                        Toast.makeText(getActivity().getApplicationContext(), "No Data Available", Toast.LENGTH_LONG).show();
+                        handleNoData(); //Reenable forward button and reset graph arrays
+                    }
+                    else
+                    {
+                        for (int i = 0; i < totalSocialMedia; i++)
                         {
-                            secondCall = true;
-                            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
-                                    + calculatePeriod(periodCounter + 1);
-                            new RetrieveFeedTask().execute();
+                            Integer visits = items.getJSONObject(i).getInt("visits");
+                            String organisation = items.getJSONObject(i).getString("organisation");
+
+                            if (!secondCall) //Current Period
+                            {
+                                if (xAxis.contains(organisation))
+                                {
+                                    tempValSet2[xAxis.indexOf(organisation)] = visits;
+                                    BarEntry entry = new BarEntry(visits, xAxis.indexOf(organisation));
+                                    valueSet2.add(entry);
+                                } else if (!xAxis.contains(organisation) && xAxis.size() < 10)
+                                {
+                                    BarEntry entry = new BarEntry((float) visits, pos);
+                                    valueSet1.add(entry);
+                                    xAxis.add(organisation);
+                                    if (organisation.length() > 20)
+                                    {
+                                        xAxisLabels.add(organisation.substring(0, 19) + "...");
+                                    } else
+                                    {
+                                        xAxisLabels.add(organisation);
+                                    }
+                                    pos++;
+                                    tableValues.add(visits);
+                                    totalVisits = totalVisits + visits;
+                                } else
+                                {
+                                    totalVisits = totalVisits + visits;
+                                }
+
+                            }
+                            else //Last Period
+                            {
+                                if (xAxis.contains(organisation))
+                                {
+                                    tempValSet2[xAxis.indexOf(organisation)] = visits;
+                                } else if (!xAxis.contains(organisation) && xAxis.size() < 10)
+                                {
+                                    xAxis.add(organisation);
+                                    if (organisation.length() > 20)
+                                    {
+                                        xAxisLabels.add(organisation.substring(0, 19) + "...");
+                                    } else
+                                    {
+                                        xAxisLabels.add(organisation);
+                                    }
+                                    tempValSet2[xAxis.indexOf(organisation)] = visits;
+                                }
+                                if (i == totalSocialMedia - 1)
+                                {
+                                    for (int j = 0; j < xAxis.size(); j++)
+                                    {
+                                        BarEntry entry = new BarEntry(tempValSet2[j], j);
+                                        valueSet2.add(entry);
+                                    }
+                                }
+                            }
                         }
-                        else//Portrait Mode
+                        if (!secondCall)//First Call
+                        {
+                            textViewTotal.setText(String.valueOf(totalVisits));
+
+                            if (landscapeMode)
+                            {
+                                secondCall = true;
+                                API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                                        "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
+                                        + calculatePeriod(periodCounter + 1);
+                                new RetrieveFeedTask().execute();
+                            }
+                            else//Portrait Mode
+                            {
+                                reverseXPosInList(valueSet1);
+                                Collections.reverse(valueSet1);
+                                dataSets = new ArrayList<>();
+                                BarDataSet barDataSet1 = new BarDataSet(valueSet1, "TODAY");
+                                barDataSet1.setColor(Color.rgb(5, 184, 198));
+                                barDataSet1.setBarSpacePercent(50f);
+                                dataSets.add(barDataSet1);
+
+                                createTable();
+                                drawGraph();
+                            }
+                        }
+                        else //Second Call
                         {
                             reverseXPosInList(valueSet1);
                             Collections.reverse(valueSet1);
@@ -533,44 +549,31 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                             barDataSet1.setBarSpacePercent(50f);
                             dataSets.add(barDataSet1);
 
-                            createTable();
+                            reverseXPosInList(valueSet2);
+                            Collections.reverse(valueSet2);
+                            BarDataSet barDataSet2 = new BarDataSet(valueSet2, "YESTERDAY");
+                            barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
+                            barDataSet2.setBarSpacePercent(50f);
+                            dataSets.add(barDataSet2);
+
                             drawGraph();
+                            secondCall = false;
+                        }
+                        imgBtnBack.setClickable(true);
+                        imgBtnBack.setAlpha(1f);
+                        if(periodCounter != 0)
+                        {
+                            imgBtnForward.setClickable(true);
+                            imgBtnForward.setAlpha(1f);
                         }
                     }
-                    else //Second Call
-                    {
-                        reverseXPosInList(valueSet1);
-                        Collections.reverse(valueSet1);
-                        dataSets = new ArrayList<>();
-                        BarDataSet barDataSet1 = new BarDataSet(valueSet1, "TODAY");
-                        barDataSet1.setColor(Color.rgb(5, 184, 198));
-                        barDataSet1.setBarSpacePercent(50f);
-                        dataSets.add(barDataSet1);
 
-                        reverseXPosInList(valueSet2);
-                        Collections.reverse(valueSet2);
-                        BarDataSet barDataSet2 = new BarDataSet(valueSet2, "YESTERDAY");
-                        barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
-                        barDataSet2.setBarSpacePercent(50f);
-                        dataSets.add(barDataSet2);
-
-                        drawGraph();
-                        secondCall = false;
-                    }
-                    imgBtnBack.setClickable(true);
-                    imgBtnBack.setAlpha(1f);
-                    if(periodCounter != 0)
-                    {
-                        imgBtnForward.setClickable(true);
-                        imgBtnForward.setAlpha(1f);
-                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ClassCastException ce){
+                    Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
+                    handleNoData(); //Reenable forward button and reset graph arrays
                 }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (ClassCastException ce){
-                Toast.makeText(getActivity().getApplicationContext(), "Invalid Data from API", Toast.LENGTH_SHORT).show();
-                handleNoData(); //Reenable forward button and reset graph arrays
             }
         }
 
