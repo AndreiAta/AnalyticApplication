@@ -589,8 +589,15 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
 
         private void handleNoData()
         {
-            imgBtnForward.setClickable(true);
-            imgBtnForward.setAlpha(1f);
+            if(periodCounter == 0)
+            {
+                imgBtnForward.setClickable(false);
+                imgBtnForward.setAlpha(0.5f);
+            }else
+            {
+                imgBtnForward.setClickable(true);
+                imgBtnForward.setAlpha(1f);
+            }
             chart.setVisibility(View.VISIBLE);
             xAxis = new ArrayList<>();
             dataSets = new ArrayList<>();
