@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.res.ResourcesCompat;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.util.Base64;
@@ -60,7 +61,7 @@ public class TrafficSourcesWeekFragment extends Fragment implements View.OnClick
     ArrayList<BarEntry> valueSet1;
     ArrayList<BarEntry> valueSet2;
     boolean secondCall = false;
-    boolean tableIsVisible = false;
+    boolean tableIsVisible = true;
     boolean landscapeMode, apiIdSelected,madeAllApiCalls;
     int visitsAmount, totalItems, xAxisPlacement, totalVisits;
     BarEntry entry;
@@ -90,20 +91,6 @@ public class TrafficSourcesWeekFragment extends Fragment implements View.OnClick
     {
         MainActivity.currentFragment = "Week";
 
-        int dayOfWeek = new DateTime().getDayOfWeek();
-        DateTime currentDay = new DateTime();
-        String currentDate = currentDay.toString("yyyy-MM-dd");
-        currentDate = currentDate.replace("-","");
-
-        DateTime startOfWeek = new DateTime().minusDays(dayOfWeek - 1);
-        String mondayDate = startOfWeek.toString("yyyy-MM-dd");
-        mondayDate = mondayDate.replace("-","");
-        period = mondayDate + "_" + currentDate;
-
-        //Get Time Period for the Text View
-        String textDatePeriod = startOfWeek.toString("dd MMMM") + " - " + currentDay.toString("dd MMMM");
-
-
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
@@ -130,12 +117,10 @@ public class TrafficSourcesWeekFragment extends Fragment implements View.OnClick
         textViewInfo.setText("VISITS THIS WEEK");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
+                ResourcesCompat.getDrawable(getResources(), R.drawable.ic_keyboard_arrow_up_white_18dp, null), null);
         columnOne.setText("Traffic Sources");
 
         moreInfoButton.setOnClickListener(this);
-        table.setVisibility(View.GONE);
-        textViewDate.setText(textDatePeriod);
 
         tableValues = new ArrayList<>();
         xAxisLabels = new ArrayList<>();
@@ -197,18 +182,18 @@ public class TrafficSourcesWeekFragment extends Fragment implements View.OnClick
     @Override
     public void onClick(View v)
     {
-        if(tableIsVisible)
+        if(!tableIsVisible)
         {
             table.setVisibility(View.GONE);
-            tableIsVisible = false;
+            tableIsVisible = true;
             tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
+                    ResourcesCompat.getDrawable(getResources(), R.drawable.ic_keyboard_arrow_down_white_18dp, null), null);
         }else
         {
             table.setVisibility(View.VISIBLE);
-            tableIsVisible = true;
+            tableIsVisible = false;
             tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_18dp), null);
+                    ResourcesCompat.getDrawable(getResources(), R.drawable.ic_keyboard_arrow_up_white_18dp, null), null);
         }
     }
 

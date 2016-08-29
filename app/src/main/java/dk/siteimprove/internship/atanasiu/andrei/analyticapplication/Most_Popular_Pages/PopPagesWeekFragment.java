@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.res.ResourcesCompat;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.util.Base64;
@@ -54,7 +55,7 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
     String API_URL = "";
     String period;
     boolean landscapeMode, apiIdSelected;
-    boolean tableIsVisible = false;
+    boolean tableIsVisible = true;
     boolean secondCall = false;
     int totalVisits, totalPopPages, periodCounter;
     ArrayList<BarEntry> valueSet1, valueSet2;
@@ -124,12 +125,11 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
         textViewInfo.setText("PAGE VIEWS THIS WEEK");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
+                ResourcesCompat.getDrawable(getResources(), R.drawable.ic_keyboard_arrow_up_white_18dp, null), null);
         columnOne.setText("Popular Pages");
         columnTwo.setText("Page Views");
 
         moreInfoButton.setOnClickListener(this);
-        table.setVisibility(View.GONE);
 
         periodCounter = 0;
 
@@ -261,18 +261,18 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
     @Override
     public void onClick(View v)
     {
-        if(tableIsVisible)
+        if(!tableIsVisible)
         {
             table.setVisibility(View.GONE);
-            tableIsVisible = false;
+            tableIsVisible = true;
             tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
+                    ResourcesCompat.getDrawable(getResources(), R.drawable.ic_keyboard_arrow_down_white_18dp, null), null);
         }else
         {
             table.setVisibility(View.VISIBLE);
-            tableIsVisible = true;
+            tableIsVisible = false;
             tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_18dp), null);
+                    ResourcesCompat.getDrawable(getResources(), R.drawable.ic_keyboard_arrow_up_white_18dp, null), null);
         }
     }
 

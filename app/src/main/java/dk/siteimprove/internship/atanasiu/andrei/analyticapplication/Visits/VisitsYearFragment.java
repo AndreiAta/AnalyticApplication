@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.util.Base64;
@@ -65,7 +66,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
     ArrayList<String> xAxis;
     boolean landscapeMode, apiIdSelected;
     boolean secondCall = false;
-    boolean tableIsVisible = false;
+    boolean tableIsVisible = true;
     private OnFragmentInteractionListener mListener;
     String API_URL = "";
     String lastYear, period;
@@ -134,11 +135,10 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
         columnOne.setText("Month of Year");
         textViewInfo.setText("VISITS THIS YEAR");
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
+                ResourcesCompat.getDrawable(getResources(), R.drawable.ic_keyboard_arrow_up_white_18dp, null), null);
         moreInfoButton.setOnClickListener(this);
 
         table = (TableLayout) rootView.findViewById(R.id.table);
-        table.setVisibility(View.GONE);
         periodCounter = 0;
 
         //Get month List for the table
@@ -337,18 +337,18 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View v)
     {
-        if(tableIsVisible)
+        if(!tableIsVisible)
         {
             table.setVisibility(View.GONE);
-            tableIsVisible = false;
+            tableIsVisible = true;
             tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
+                    ResourcesCompat.getDrawable(getResources(), R.drawable.ic_keyboard_arrow_down_white_18dp, null), null);
         }else
         {
             table.setVisibility(View.VISIBLE);
-            tableIsVisible = true;
+            tableIsVisible = false;
             tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_18dp), null);
+                    ResourcesCompat.getDrawable(getResources(), R.drawable.ic_keyboard_arrow_up_white_18dp, null), null);
         }
     }
 

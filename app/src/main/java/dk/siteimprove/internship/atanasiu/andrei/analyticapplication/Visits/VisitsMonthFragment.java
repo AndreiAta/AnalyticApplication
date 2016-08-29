@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.util.Base64;
@@ -68,7 +69,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
     TableLayout table;
     ArrayList<Integer> tableValues;
     ArrayList<String> tableWeekDays = new ArrayList<>();
-    boolean tableIsVisible = false;
+    boolean tableIsVisible = true;
     boolean secondCall = false;
     int totalDays;
     CustomMarkerViewVisits mv;
@@ -130,10 +131,8 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         columnOne.setText("Day of Month");
         textViewInfo.setText("VISITS THIS MONTH");
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
+                ResourcesCompat.getDrawable(getResources(), R.drawable.ic_keyboard_arrow_up_white_18dp, null), null);
         moreInfoButton.setOnClickListener(this);
-        table.setVisibility(View.GONE);
-
 
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
@@ -282,18 +281,18 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
     @Override
     public void onClick(View v)
     {
-        if(tableIsVisible)
+        if(!tableIsVisible)
         {
             table.setVisibility(View.GONE);
-            tableIsVisible = false;
+            tableIsVisible = true;
             tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_18dp), null);
+                    ResourcesCompat.getDrawable(getResources(), R.drawable.ic_keyboard_arrow_down_white_18dp, null), null);
         }else
         {
             table.setVisibility(View.VISIBLE);
-            tableIsVisible = true;
+            tableIsVisible = false;
             tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_18dp), null);
+                    ResourcesCompat.getDrawable(getResources(), R.drawable.ic_keyboard_arrow_up_white_18dp, null), null);
         }
     }
 
