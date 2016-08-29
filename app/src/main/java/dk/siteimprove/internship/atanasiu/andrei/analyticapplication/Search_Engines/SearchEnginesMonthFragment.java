@@ -164,7 +164,7 @@ public class SearchEnginesMonthFragment extends Fragment implements View.OnClick
         }
         else
         {
-            Toast.makeText(getActivity().getApplicationContext(), "You have no Internet", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity().getApplicationContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
         }
         if(landscapeMode)
         {
@@ -178,20 +178,27 @@ public class SearchEnginesMonthFragment extends Fragment implements View.OnClick
 
     private void getNextPeriod()
     {
-        if(periodCounter != 0)
+        if(hasNetworkConnection())
         {
-            imgBtnBack.setClickable(false);
-            imgBtnBack.setAlpha(0.5f);
-            imgBtnForward.setClickable(false);
-            imgBtnForward.setAlpha(0.5f);
-            chart.setVisibility(View.INVISIBLE);
-            textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS THIS MONTH");
-            periodCounter--;
-            API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
-                    + calculatePeriod(periodCounter);
-            new RetrieveFeedTask().execute();
+            if(periodCounter != 0)
+            {
+                imgBtnBack.setClickable(false);
+                imgBtnBack.setAlpha(0.5f);
+                imgBtnForward.setClickable(false);
+                imgBtnForward.setAlpha(0.5f);
+                chart.setVisibility(View.INVISIBLE);
+                textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS THIS MONTH");
+                periodCounter--;
+                API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                        "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
+                        + calculatePeriod(periodCounter);
+                new RetrieveFeedTask().execute();
+            }
+        }else
+        {
+            Toast.makeText(getActivity().getApplicationContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     private void getPreviousPeriod()

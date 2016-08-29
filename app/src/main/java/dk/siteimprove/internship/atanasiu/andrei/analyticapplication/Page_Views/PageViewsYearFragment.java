@@ -169,7 +169,7 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
         }
         else
         {
-            Toast.makeText(getActivity().getApplicationContext(), "You have no Internet", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity().getApplicationContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
         }
         if(landscapeMode)
         {
@@ -184,7 +184,31 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
 
     private void getNextPeriod()
     {
-        if(periodCounter != 0)
+        if(hasNetworkConnection())
+        {
+            if(periodCounter != 0)
+            {
+                imgBtnBack.setClickable(false);
+                imgBtnBack.setAlpha(0.5f);
+                imgBtnForward.setClickable(false);
+                imgBtnForward.setAlpha(0.5f);
+                chart.setVisibility(View.INVISIBLE);
+                textViewInfo.setText("PAGE VIEWS THIS YEAR");
+                periodCounter--;
+                API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                        "/analytics/overview/history?period="
+                        + calculatePeriod(periodCounter);
+                new RetrieveFeedTask().execute();
+            }
+        }else
+        {
+            Toast.makeText(getActivity().getApplicationContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void getPreviousPeriod()
+    {
+        if(hasNetworkConnection())
         {
             imgBtnBack.setClickable(false);
             imgBtnBack.setAlpha(0.5f);
@@ -192,13 +216,17 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
             imgBtnForward.setAlpha(0.5f);
             chart.setVisibility(View.INVISIBLE);
             textViewInfo.setText("PAGE VIEWS THIS YEAR");
-            periodCounter--;
+            periodCounter ++;
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/overview/history?period="
                     + calculatePeriod(periodCounter);
             new RetrieveFeedTask().execute();
+        }else
+        {
+            Toast.makeText(getActivity().getApplicationContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private String calculatePeriod(int periodCounter)
     {
@@ -227,21 +255,6 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
         }
 
         return period;
-    }
-
-    private void getPreviousPeriod()
-    {
-        imgBtnBack.setClickable(false);
-        imgBtnBack.setAlpha(0.5f);
-        imgBtnForward.setClickable(false);
-        imgBtnForward.setAlpha(0.5f);
-        chart.setVisibility(View.INVISIBLE);
-        textViewInfo.setText("PAGE VIEWS THIS YEAR");
-        periodCounter ++;
-        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                "/analytics/overview/history?period="
-                + calculatePeriod(periodCounter);
-        new RetrieveFeedTask().execute();
     }
 
     public boolean hasNetworkConnection()

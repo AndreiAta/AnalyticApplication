@@ -161,7 +161,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
         }
         else
         {
-            Toast.makeText(getActivity().getApplicationContext(), "You have no Internet", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity().getApplicationContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
         }
         if(landscapeMode)
         {
@@ -175,7 +175,32 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
 
     private void getNextPeriod()
     {
-        if(periodCounter != 0)
+        if(hasNetworkConnection())
+        {
+            if(periodCounter != 0)
+            {
+                imgBtnBack.setClickable(false);
+                imgBtnBack.setAlpha(0.5f);
+                imgBtnForward.setClickable(false);
+                imgBtnForward.setAlpha(0.5f);
+                chart.setVisibility(View.INVISIBLE);
+                textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS TODAY");
+                periodCounter--;
+                API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
+                        "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
+                        + calculatePeriod(periodCounter);
+                new RetrieveFeedTask().execute();
+            }
+        }else
+        {
+            Toast.makeText(getActivity().getApplicationContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void getPreviousPeriod()
+    {
+        if(hasNetworkConnection())
         {
             imgBtnBack.setClickable(false);
             imgBtnBack.setAlpha(0.5f);
@@ -183,27 +208,15 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
             imgBtnForward.setAlpha(0.5f);
             chart.setVisibility(View.INVISIBLE);
             textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS TODAY");
-            periodCounter--;
+            periodCounter ++;
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
                     + calculatePeriod(periodCounter);
             new RetrieveFeedTask().execute();
+        }else
+        {
+            Toast.makeText(getActivity().getApplicationContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void getPreviousPeriod()
-    {
-        imgBtnBack.setClickable(false);
-        imgBtnBack.setAlpha(0.5f);
-        imgBtnForward.setClickable(false);
-        imgBtnForward.setAlpha(0.5f);
-        chart.setVisibility(View.INVISIBLE);
-        textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS TODAY");
-        periodCounter ++;
-        API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
-                + calculatePeriod(periodCounter);
-        new RetrieveFeedTask().execute();
     }
 
     private String calculatePeriod(int periodCounter)
