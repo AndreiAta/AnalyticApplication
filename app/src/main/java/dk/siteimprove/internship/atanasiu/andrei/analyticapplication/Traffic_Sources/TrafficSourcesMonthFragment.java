@@ -148,7 +148,7 @@ public class TrafficSourcesMonthFragment extends Fragment implements View.OnClic
         }
         else
         {
-            Toast.makeText(getActivity().getApplicationContext(), "You have no Internet", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity().getApplicationContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
         }
         if(landscapeMode)
         {
