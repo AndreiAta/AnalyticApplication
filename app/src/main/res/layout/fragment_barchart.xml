@@ -147,6 +147,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="right"
+                        android:minEms="16"
                         android:text="Visits"
                         android:textColor="@color/White"/>
                 </TableRow>
