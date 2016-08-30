@@ -256,6 +256,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
             }
         }
 
+
         return period;
     }
 
@@ -287,10 +288,11 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
     {
 
         String[] months = new DateFormatSymbols().getMonths();
-        for (int i = 0; i <= totalMonths; i++)
+        Log.i("EEEEEETotal", String.valueOf(totalMonths));
+        for (int i = 0; i < totalMonths; i++)
         {
+            Log.i("EEEEEEMonths", months[i]);
             String month = months[i];
-            System.out.println("month = " + month);
             monthList.add(months[i]);
         }
 
