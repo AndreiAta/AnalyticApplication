@@ -224,12 +224,7 @@ public class SearchEnginesMonthFragment extends Fragment implements View.OnClick
         int daysOfMonth = new DateTime().getDayOfMonth();
         DateTime firstDayOfMonth = new DateTime().minusDays(daysOfMonth - 1);
 
-        if(periodCounter == 0)
-        {
-            stopPeriod = currentPeriod.minusMonths(periodCounter).toString("yyyyMMdd");
-            textViewDate.setText(firstDayOfMonth.toString("dd MMM yyyy") + " - "
-                    + currentPeriod.minusMonths(periodCounter).toString("dd MMM yyyy"));
-        }else
+        if(periodCounter != 0)
         {
             stopPeriod = currentPeriod.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("yyyyMMdd");
             if(!secondCall)
@@ -241,13 +236,27 @@ public class SearchEnginesMonthFragment extends Fragment implements View.OnClick
                 if(periodCounter == 1)
                 {
                     textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter - 1).toString("dd MMM yyyy") + " - "
-                            + currentPeriod.minusMonths(periodCounter - 1).toString("dd MMM yyyy"));
+                            + currentPeriod.toString("dd MMM yyyy"));
                 }else
                 {
                     textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter - 1).toString("dd MMM yyyy") + " - "
                             + currentPeriod.minusMonths(periodCounter - 1).dayOfMonth().withMaximumValue().toString("dd MMM yyyy"));
                 }
             }
+        }else
+        {
+            if(currentPeriod.getDayOfMonth() == 1)
+            {
+                stopPeriod = currentPeriod.minusMonths(periodCounter).toString("yyyyMMdd");
+                textViewDate.setText(firstDayOfMonth.toString("dd MMM yyyy") + " - "
+                        + currentPeriod.minusMonths(periodCounter).toString("dd MMM yyyy"));
+            }else
+            {
+                stopPeriod = currentPeriod.minusMonths(periodCounter).minusDays(1).toString("yyyyMMdd");
+                textViewDate.setText(firstDayOfMonth.toString("dd MMM yyyy") + " - "
+                        + currentPeriod.minusMonths(periodCounter).minusDays(1).toString("dd MMM yyyy"));
+            }
+
         }
 
         String startPeriod = currentPeriod.minusMonths(periodCounter).toString("yyyyMM") + "01";

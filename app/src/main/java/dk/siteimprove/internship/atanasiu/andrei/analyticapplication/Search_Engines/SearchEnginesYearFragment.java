@@ -225,7 +225,6 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
     {
         DateTime currentPeriod = new DateTime();
         String firstDayOfYear = currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("yyyyMMdd");
-        String period = firstDayOfYear + "_" + currentPeriod.toString("yyyyMMdd");
         textViewDate.setText(currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("dd MMM yyyy")
                 + " - " + currentPeriod.toString("dd MMM yyyy"));
         if(periodCounter != 0)
@@ -244,8 +243,20 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
                             + " - " + currentPeriod.toString("dd MMM yyyy"));
                 }
             }
+        }else
+        {
+            if(currentPeriod.getDayOfYear() == 1)
+            {
+                period = firstDayOfYear + "_" + currentPeriod.toString("yyyyMMdd");
+                textViewDate.setText(currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("dd MMM yyyy")
+                        + " - " + currentPeriod.toString("dd MMM yyyy"));
+            }else
+            {
+                period = firstDayOfYear + "_" + currentPeriod.minusDays(1).toString("yyyyMMdd");
+                textViewDate.setText(currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("dd MMM yyyy")
+                        + " - " + currentPeriod.minusDays(1).toString("dd MMM yyyy"));
+            }
         }
-
         return period;
     }
 
