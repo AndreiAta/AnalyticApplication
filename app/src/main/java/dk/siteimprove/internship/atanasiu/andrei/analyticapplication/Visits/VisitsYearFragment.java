@@ -263,6 +263,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
             }
         }
 
+
         return period;
     }
 
