@@ -67,7 +67,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
     boolean secondCall = false;
     boolean tableIsVisible = true;
     boolean landscapeMode, apiIdSelected;
-    int totalVisits, totalSocialMedia, periodCounter;
+    int totalVisits, totalSocialMedia;
     CustomMarkerViewSocial mv;
     Button moreInfoButton;
     ImageButton imgBtnBack, imgBtnForward;
@@ -111,9 +111,11 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                 getNextPeriod();
             }
         });
-        imgBtnBack.setOnClickListener(new View.OnClickListener() {
+        imgBtnBack.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 getPreviousPeriod();
             }
         });
@@ -128,13 +130,13 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
 
         moreInfoButton.setOnClickListener(this);
 
-        periodCounter = 0;
+        //MainActivity.todayPeriodCounter = 0;
 
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
-                    + calculatePeriod(periodCounter);
+                    + calculatePeriod(MainActivity.todayPeriodCounter);
             apiIdSelected = true;
         }else
         {
@@ -170,7 +172,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
     {
         if(hasNetworkConnection())
         {
-            if(periodCounter != 0)
+            if(MainActivity.todayPeriodCounter != 0)
             {
                 imgBtnBack.setClickable(false);
                 imgBtnBack.setAlpha(0.5f);
@@ -178,10 +180,10 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                 imgBtnForward.setAlpha(0.5f);
                 chart.setVisibility(View.INVISIBLE);
                 textViewInfo.setText("VISITS TODAY");
-                periodCounter--;
+                MainActivity.todayPeriodCounter--;
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=" +
-                        calculatePeriod(periodCounter);
+                        calculatePeriod(MainActivity.todayPeriodCounter);
                 new RetrieveFeedTask().execute();
             }
         }
@@ -202,10 +204,10 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
             imgBtnForward.setAlpha(0.5f);
             chart.setVisibility(View.INVISIBLE);
             textViewInfo.setText("VISITS TODAY");
-            periodCounter ++;
+            MainActivity.todayPeriodCounter ++;
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=" +
-                    calculatePeriod(periodCounter);
+                    calculatePeriod(MainActivity.todayPeriodCounter);
             new RetrieveFeedTask().execute();
         }
         else
@@ -538,7 +540,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                                 secondCall = true;
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                                         "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
-                                        + calculatePeriod(periodCounter + 1);
+                                        + calculatePeriod(MainActivity.todayPeriodCounter + 1);
                                 new RetrieveFeedTask().execute();
                             }
                             else//Portrait Mode
@@ -577,7 +579,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                         }
                         imgBtnBack.setClickable(true);
                         imgBtnBack.setAlpha(1f);
-                        if(periodCounter != 0)
+                        if(MainActivity.todayPeriodCounter != 0)
                         {
                             imgBtnForward.setClickable(true);
                             imgBtnForward.setAlpha(1f);
@@ -595,7 +597,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
 
         private void handleNoData()
         {
-            if(periodCounter == 0)
+            if(MainActivity.todayPeriodCounter == 0)
             {
                 imgBtnForward.setClickable(false);
                 imgBtnForward.setAlpha(0.5f);

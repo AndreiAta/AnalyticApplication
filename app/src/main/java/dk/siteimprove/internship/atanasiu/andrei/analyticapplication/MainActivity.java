@@ -124,6 +124,7 @@ public class MainActivity extends AppCompatActivity
     public static TextView headerTxt, loginAlert, menuEmailTxt, menuSiteName;
     public static Dialog dialog;
     public Toolbar toolbar;
+    public static int todayPeriodCounter, weekPeriodCounter, monthPeriodCounter, yearPeriodCounter = 0;
     NavigationView navigationView;
     DrawerLayout drawer;
     public static ArrayList<Site> websites;
@@ -141,6 +142,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        todayPeriodCounter = 0;
+        weekPeriodCounter = 0;
+        monthPeriodCounter = 0;
+        yearPeriodCounter = 0; //TODO maybe a method for counters, so we can reset?
         DisplayMetrics metrics = new DisplayMetrics();
         WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         wm.getDefaultDisplay().getMetrics(metrics);
