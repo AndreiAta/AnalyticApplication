@@ -290,12 +290,9 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
 
     public void createTable()
     {
-        //Log.i()
         String[] months = new DateFormatSymbols().getMonths();
         for (int i = 0; i < totalMonths; i++)
         {
-            String month = months[i];
-            System.out.println("month = " + month);
             monthList.add(months[i]);
         }
 
