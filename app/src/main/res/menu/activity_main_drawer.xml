@@ -31,7 +31,7 @@
                 android:id="@+id/trafficSources"
                 android:icon="@drawable/ic_keyboard_tab_white_18dp"
                 android:title="Traffic Sources"
-                android:visible="true"/>
+                android:visible="false"/>
             <item
                 android:id="@+id/entryPages"
                 android:icon="@drawable/ic_exit_to_app_white_18dp"

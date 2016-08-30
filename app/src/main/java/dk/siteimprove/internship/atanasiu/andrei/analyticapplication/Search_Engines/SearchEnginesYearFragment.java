@@ -144,7 +144,7 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
         if(!MainActivity.API_ID.equalsIgnoreCase("")) {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
-                    + calculatePeriod(periodCounter);
+                    + calculatePeriod(MainActivity.yearPeriodCounter);
             apiIdSelected = true;
         }else
         {
@@ -180,7 +180,7 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
     {
         if(hasNetworkConnection())
         {
-            if(periodCounter != 0)
+            if(MainActivity.yearPeriodCounter != 0)
             {
                 imgBtnBack.setClickable(false);
                 imgBtnBack.setAlpha(0.5f);
@@ -188,10 +188,10 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
                 imgBtnForward.setAlpha(0.5f);
                 chart.setVisibility(View.INVISIBLE);
                 textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS THIS YEAR");
-                periodCounter--;
+                MainActivity.yearPeriodCounter--;
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
-                        + calculatePeriod(periodCounter);
+                        + calculatePeriod(MainActivity.yearPeriodCounter);
                 new RetrieveFeedTask().execute();
             }
         }else
@@ -210,10 +210,10 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
             imgBtnForward.setAlpha(0.5f);
             chart.setVisibility(View.INVISIBLE);
             textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS THIS YEAR");
-            periodCounter ++;
+            MainActivity.yearPeriodCounter ++;
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
-                    + calculatePeriod(periodCounter);
+                    + calculatePeriod(MainActivity.yearPeriodCounter);
             new RetrieveFeedTask().execute();
         }else
         {
@@ -225,7 +225,6 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
     {
         DateTime currentPeriod = new DateTime();
         String firstDayOfYear = currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("yyyyMMdd");
-        String period = firstDayOfYear + "_" + currentPeriod.toString("yyyyMMdd");
         textViewDate.setText(currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("dd MMM yyyy")
                 + " - " + currentPeriod.toString("dd MMM yyyy"));
         if(periodCounter != 0)
@@ -244,8 +243,20 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
                             + " - " + currentPeriod.toString("dd MMM yyyy"));
                 }
             }
+        }else
+        {
+            if(currentPeriod.getDayOfYear() == 1)
+            {
+                period = firstDayOfYear + "_" + currentPeriod.toString("yyyyMMdd");
+                textViewDate.setText(currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("dd MMM yyyy")
+                        + " - " + currentPeriod.toString("dd MMM yyyy"));
+            }else
+            {
+                period = firstDayOfYear + "_" + currentPeriod.minusDays(1).toString("yyyyMMdd");
+                textViewDate.setText(currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("dd MMM yyyy")
+                        + " - " + currentPeriod.minusDays(1).toString("dd MMM yyyy"));
+            }
         }
-
         return period;
     }
 
@@ -552,7 +563,7 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
                                secondCall = true;
                                API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                                        "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
-                                       + calculatePeriod(periodCounter + 1);
+                                       + calculatePeriod(MainActivity.yearPeriodCounter + 1);
                                new RetrieveFeedTask().execute();
                            }
                            else//Portrait Mode
@@ -591,7 +602,7 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
                        }
                        imgBtnBack.setClickable(true);
                        imgBtnBack.setAlpha(1f);
-                       if(periodCounter != 0)
+                       if(MainActivity.yearPeriodCounter != 0)
                        {
                            imgBtnForward.setClickable(true);
                            imgBtnForward.setAlpha(1f);
@@ -609,7 +620,7 @@ public class SearchEnginesYearFragment extends Fragment implements View.OnClickL
 
         private void handleNoData()
         {
-            if(periodCounter == 0)
+            if(MainActivity.yearPeriodCounter == 0)
             {
                 imgBtnForward.setClickable(false);
                 imgBtnForward.setAlpha(0.5f);

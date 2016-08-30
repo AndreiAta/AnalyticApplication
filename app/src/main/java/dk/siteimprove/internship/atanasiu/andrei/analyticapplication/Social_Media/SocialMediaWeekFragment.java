@@ -131,12 +131,11 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
 
         moreInfoButton.setOnClickListener(this);
 
-        periodCounter = 0;
-
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=" + calculatePeriod(periodCounter);
+                    "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=" +
+                    calculatePeriod(MainActivity.weekPeriodCounter);
             apiIdSelected = true;
         }else
         {
@@ -173,7 +172,7 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
     {
         if(hasNetworkConnection())
         {
-            if(periodCounter != 0)
+            if(MainActivity.weekPeriodCounter != 0)
             {
                 imgBtnBack.setClickable(false);
                 imgBtnBack.setAlpha(0.5f);
@@ -181,7 +180,7 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
                 imgBtnForward.setAlpha(0.5f);
                 chart.setVisibility(View.INVISIBLE);
                 textViewInfo.setText("VISITS THIS WEEK");
-                periodCounter--;
+                MainActivity.weekPeriodCounter--;
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
                         + calculatePeriod(periodCounter);
@@ -205,10 +204,10 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
             imgBtnForward.setAlpha(0.5f);
             chart.setVisibility(View.INVISIBLE);
             textViewInfo.setText("VISITS THIS WEEK");
-            periodCounter ++;
+            MainActivity.weekPeriodCounter ++;
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
-                    + calculatePeriod(periodCounter);
+                    + calculatePeriod(MainActivity.weekPeriodCounter);
             new RetrieveFeedTask().execute();
         }
         else
@@ -558,7 +557,7 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
                                 secondCall = true;
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                                         "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
-                                        + calculatePeriod(periodCounter + 1);
+                                        + calculatePeriod(MainActivity.weekPeriodCounter + 1);
                                 new RetrieveFeedTask().execute();
                             }else
                             {
@@ -597,7 +596,7 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
                         }
                         imgBtnBack.setClickable(true);
                         imgBtnBack.setAlpha(1f);
-                        if(periodCounter != 0)
+                        if(MainActivity.weekPeriodCounter != 0)
                         {
                             imgBtnForward.setClickable(true);
                             imgBtnForward.setAlpha(1f);
@@ -614,7 +613,7 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
 
         private void handleNoData()
         {
-            if(periodCounter == 0)
+            if(MainActivity.weekPeriodCounter == 0)
             {
                 imgBtnForward.setClickable(false);
                 imgBtnForward.setAlpha(0.5f);

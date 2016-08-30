@@ -141,7 +141,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
-                    + calculatePeriod(periodCounter);
+                    + calculatePeriod(MainActivity.todayPeriodCounter);
             apiIdSelected = true;
         }else
         {
@@ -177,7 +177,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
     {
         if(hasNetworkConnection())
         {
-            if(periodCounter != 0)
+            if(MainActivity.todayPeriodCounter != 0)
             {
                 imgBtnBack.setClickable(false);
                 imgBtnBack.setAlpha(0.5f);
@@ -185,10 +185,10 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
                 imgBtnForward.setAlpha(0.5f);
                 chart.setVisibility(View.INVISIBLE);
                 textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS TODAY");
-                periodCounter--;
+                MainActivity.todayPeriodCounter--;
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
-                        + calculatePeriod(periodCounter);
+                        + calculatePeriod(MainActivity.todayPeriodCounter);
                 new RetrieveFeedTask().execute();
             }
         }else
@@ -208,10 +208,10 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
             imgBtnForward.setAlpha(0.5f);
             chart.setVisibility(View.INVISIBLE);
             textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS TODAY");
-            periodCounter ++;
+            MainActivity.todayPeriodCounter ++;
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
-                    + calculatePeriod(periodCounter);
+                    + calculatePeriod(MainActivity.todayPeriodCounter);
             new RetrieveFeedTask().execute();
         }else
         {
@@ -545,7 +545,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
                                 secondCall = true;
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                                         "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
-                                        + calculatePeriod(periodCounter + 1) ;
+                                        + calculatePeriod(MainActivity.todayPeriodCounter + 1) ;
                                 new RetrieveFeedTask().execute();
                             }
                             else//Portrait Mode
@@ -584,7 +584,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
                         }
                         imgBtnBack.setClickable(true);
                         imgBtnBack.setAlpha(1f);
-                        if(periodCounter != 0)
+                        if(MainActivity.todayPeriodCounter != 0)
                         {
                             imgBtnForward.setClickable(true);
                             imgBtnForward.setAlpha(1f);
@@ -602,7 +602,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
 
         private void handleNoData()
         {
-            if(periodCounter == 0)
+            if(MainActivity.todayPeriodCounter == 0)
             {
                 imgBtnForward.setClickable(false);
                 imgBtnForward.setAlpha(0.5f);

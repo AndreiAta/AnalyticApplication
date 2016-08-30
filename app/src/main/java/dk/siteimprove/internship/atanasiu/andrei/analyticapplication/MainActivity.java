@@ -152,6 +152,13 @@ public class MainActivity extends AppCompatActivity
         screenHeight = metrics.heightPixels;
 
         super.onCreate(savedInstanceState);
+        if(savedInstanceState != null)
+        {
+            todayPeriodCounter = savedInstanceState.getInt("Today");
+            weekPeriodCounter = savedInstanceState.getInt("Week");
+            monthPeriodCounter = savedInstanceState.getInt("Month");
+            yearPeriodCounter = savedInstanceState.getInt("Year");
+        }
         setContentView(R.layout.activity_main);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -476,6 +483,20 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(Uri uri) {}
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        // Save UI state changes to the savedInstanceState.
+        // This bundle will be passed to onCreate if the process is
+        // killed and restarted.
+        savedInstanceState.putInt("Today", todayPeriodCounter);
+        savedInstanceState.putInt("Week", weekPeriodCounter);
+        savedInstanceState.putInt("Month", monthPeriodCounter);
+        savedInstanceState.putInt("Year", yearPeriodCounter);
+
+        // etc.
+    }
 
     public boolean haveNetworkConnection()
     {

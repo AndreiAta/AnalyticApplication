@@ -137,7 +137,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=" +
-                    calculatePeriod(periodCounter);
+                    calculatePeriod(MainActivity.monthPeriodCounter);
             apiIdSelected = true;
         }else
         {
@@ -173,7 +173,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
     {
         if(hasNetworkConnection())
         {
-            if(periodCounter != 0)
+            if(MainActivity.monthPeriodCounter != 0)
             {
                 imgBtnBack.setClickable(false);
                 imgBtnBack.setAlpha(0.5f);
@@ -181,10 +181,10 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                 imgBtnForward.setAlpha(0.5f);
                 chart.setVisibility(View.INVISIBLE);
                 textViewInfo.setText("VISITS THIS MONTH");
-                periodCounter--;
+                MainActivity.monthPeriodCounter--;
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
-                        + calculatePeriod(periodCounter);
+                        + calculatePeriod(MainActivity.monthPeriodCounter);
                 new RetrieveFeedTask().execute();
             }
         }
@@ -205,10 +205,10 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
             imgBtnForward.setAlpha(0.5f);
             chart.setVisibility(View.INVISIBLE);
             textViewInfo.setText("VISITS THIS MONTH");
-            periodCounter ++;
+            MainActivity.monthPeriodCounter ++;
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
-                    + calculatePeriod(periodCounter);
+                    + calculatePeriod(MainActivity.monthPeriodCounter);
             new RetrieveFeedTask().execute();
         }
         else
@@ -226,12 +226,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
         int daysOfMonth = new DateTime().getDayOfMonth();
         DateTime firstDayOfMonth = new DateTime().minusDays(daysOfMonth - 1);
 
-        if(periodCounter == 0)
-        {
-            stopPeriod = currentPeriod.minusMonths(periodCounter).toString("yyyyMMdd");
-            textViewDate.setText(firstDayOfMonth.toString("dd MMM yyyy") + " - "
-                    + currentPeriod.minusMonths(periodCounter).toString("dd MMM yyyy"));
-        }else
+        if(periodCounter != 0)
         {
             stopPeriod = currentPeriod.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("yyyyMMdd");
             if(!secondCall)
@@ -250,6 +245,20 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                             + currentPeriod.minusMonths(periodCounter - 1).dayOfMonth().withMaximumValue().toString("dd MMM yyyy"));
                 }
             }
+        }else
+        {
+            if(currentPeriod.getDayOfMonth() == 1)
+            {
+                stopPeriod = currentPeriod.minusMonths(periodCounter).toString("yyyyMMdd");
+                textViewDate.setText(firstDayOfMonth.toString("dd MMM yyyy") + " - "
+                        + currentPeriod.minusMonths(periodCounter).toString("dd MMM yyyy"));
+            }else
+            {
+                stopPeriod = currentPeriod.minusMonths(periodCounter).minusDays(1).toString("yyyyMMdd");
+                textViewDate.setText(firstDayOfMonth.toString("dd MMM yyyy") + " - "
+                        + currentPeriod.minusMonths(periodCounter).minusDays(1).toString("dd MMM yyyy"));
+            }
+
         }
 
         String startPeriod = currentPeriod.minusMonths(periodCounter).toString("yyyyMM") + "01";
@@ -558,7 +567,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                                 secondCall = true;
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                                         "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
-                                        + calculatePeriod(periodCounter + 1);
+                                        + calculatePeriod(MainActivity.monthPeriodCounter + 1);
                                 new RetrieveFeedTask().execute();
                             }else
                             {
@@ -597,7 +606,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
                         }
                         imgBtnBack.setClickable(true);
                         imgBtnBack.setAlpha(1f);
-                        if(periodCounter != 0)
+                        if(MainActivity.monthPeriodCounter != 0)
                         {
                             imgBtnForward.setClickable(true);
                             imgBtnForward.setAlpha(1f);
@@ -615,7 +624,7 @@ public class SocialMediaMonthFragment extends Fragment implements View.OnClickLi
 
         private void handleNoData()
         {
-            if(periodCounter == 0)
+            if(MainActivity.monthPeriodCounter == 0)
             {
                 imgBtnForward.setClickable(false);
                 imgBtnForward.setAlpha(0.5f);

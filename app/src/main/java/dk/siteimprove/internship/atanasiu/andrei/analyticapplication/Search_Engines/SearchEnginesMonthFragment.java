@@ -144,7 +144,7 @@ public class SearchEnginesMonthFragment extends Fragment implements View.OnClick
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
-                    + calculatePeriod(periodCounter);
+                    + calculatePeriod(MainActivity.monthPeriodCounter);
             apiIdSelected = true;
         }else
         {
@@ -180,7 +180,7 @@ public class SearchEnginesMonthFragment extends Fragment implements View.OnClick
     {
         if(hasNetworkConnection())
         {
-            if(periodCounter != 0)
+            if(MainActivity.monthPeriodCounter != 0)
             {
                 imgBtnBack.setClickable(false);
                 imgBtnBack.setAlpha(0.5f);
@@ -188,10 +188,10 @@ public class SearchEnginesMonthFragment extends Fragment implements View.OnClick
                 imgBtnForward.setAlpha(0.5f);
                 chart.setVisibility(View.INVISIBLE);
                 textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS THIS MONTH");
-                periodCounter--;
+                MainActivity.monthPeriodCounter--;
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
-                        + calculatePeriod(periodCounter);
+                        + calculatePeriod(MainActivity.monthPeriodCounter);
                 new RetrieveFeedTask().execute();
             }
         }else
@@ -209,10 +209,10 @@ public class SearchEnginesMonthFragment extends Fragment implements View.OnClick
         imgBtnForward.setAlpha(0.5f);
         chart.setVisibility(View.INVISIBLE);
         textViewInfo.setText("TOP 10 SEARCH ENGINES BY VISITS THIS MONTH");
-        periodCounter ++;
+        MainActivity.monthPeriodCounter ++;
         API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                 "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
-                + calculatePeriod(periodCounter);
+                + calculatePeriod(MainActivity.monthPeriodCounter);
         new RetrieveFeedTask().execute();
     }
 
@@ -224,12 +224,7 @@ public class SearchEnginesMonthFragment extends Fragment implements View.OnClick
         int daysOfMonth = new DateTime().getDayOfMonth();
         DateTime firstDayOfMonth = new DateTime().minusDays(daysOfMonth - 1);
 
-        if(periodCounter == 0)
-        {
-            stopPeriod = currentPeriod.minusMonths(periodCounter).toString("yyyyMMdd");
-            textViewDate.setText(firstDayOfMonth.toString("dd MMM yyyy") + " - "
-                    + currentPeriod.minusMonths(periodCounter).toString("dd MMM yyyy"));
-        }else
+        if(periodCounter != 0)
         {
             stopPeriod = currentPeriod.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("yyyyMMdd");
             if(!secondCall)
@@ -241,13 +236,27 @@ public class SearchEnginesMonthFragment extends Fragment implements View.OnClick
                 if(periodCounter == 1)
                 {
                     textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter - 1).toString("dd MMM yyyy") + " - "
-                            + currentPeriod.minusMonths(periodCounter - 1).toString("dd MMM yyyy"));
+                            + currentPeriod.toString("dd MMM yyyy"));
                 }else
                 {
                     textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter - 1).toString("dd MMM yyyy") + " - "
                             + currentPeriod.minusMonths(periodCounter - 1).dayOfMonth().withMaximumValue().toString("dd MMM yyyy"));
                 }
             }
+        }else
+        {
+            if(currentPeriod.getDayOfMonth() == 1)
+            {
+                stopPeriod = currentPeriod.minusMonths(periodCounter).toString("yyyyMMdd");
+                textViewDate.setText(firstDayOfMonth.toString("dd MMM yyyy") + " - "
+                        + currentPeriod.minusMonths(periodCounter).toString("dd MMM yyyy"));
+            }else
+            {
+                stopPeriod = currentPeriod.minusMonths(periodCounter).minusDays(1).toString("yyyyMMdd");
+                textViewDate.setText(firstDayOfMonth.toString("dd MMM yyyy") + " - "
+                        + currentPeriod.minusMonths(periodCounter).minusDays(1).toString("dd MMM yyyy"));
+            }
+
         }
 
         String startPeriod = currentPeriod.minusMonths(periodCounter).toString("yyyyMM") + "01";
@@ -560,7 +569,7 @@ public class SearchEnginesMonthFragment extends Fragment implements View.OnClick
                                 secondCall = true;
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                                         "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
-                                        + calculatePeriod(periodCounter + 1);
+                                        + calculatePeriod(MainActivity.monthPeriodCounter + 1);
                                 new RetrieveFeedTask().execute();
                             }
                             else//Portrait Mode
@@ -599,7 +608,7 @@ public class SearchEnginesMonthFragment extends Fragment implements View.OnClick
                         }
                         imgBtnBack.setClickable(true);
                         imgBtnBack.setAlpha(1f);
-                        if(periodCounter != 0)
+                        if(MainActivity.monthPeriodCounter != 0)
                         {
                             imgBtnForward.setClickable(true);
                             imgBtnForward.setAlpha(1f);
@@ -617,7 +626,7 @@ public class SearchEnginesMonthFragment extends Fragment implements View.OnClick
 
         private void handleNoData()
         {
-            if(periodCounter == 0)
+            if(MainActivity.monthPeriodCounter == 0)
             {
                 imgBtnForward.setClickable(false);
                 imgBtnForward.setAlpha(0.5f);
