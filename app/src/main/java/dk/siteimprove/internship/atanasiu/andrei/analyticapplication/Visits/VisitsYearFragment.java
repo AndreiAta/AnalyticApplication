@@ -133,9 +133,6 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
 
         table = (TableLayout) rootView.findViewById(R.id.table);
 
-        //Get month List for the table
-        monthList = new ArrayList<>();
-
         //Get date period for text view
         int dayOfYear = new DateTime().getDayOfYear();
         DateTime firstDayOfMonth = new DateTime().minusDays(dayOfYear - 1);
@@ -286,7 +283,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
     {
         //Log.i()
         String[] months = new DateFormatSymbols().getMonths();
-        for (int i = 0; i <= totalMonths; i++)
+        for (int i = 0; i < totalMonths; i++)
         {
             String month = months[i];
             System.out.println("month = " + month);
@@ -504,6 +501,8 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
                         xAxis = new ArrayList<>();
                         table.removeAllViews();
                         table.addView(defaultTableRow);
+                        //Get month List for the table
+                        monthList = new ArrayList<>();
                     }
                     if(totalMonths == 0)
                     {
@@ -529,6 +528,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
                                 valueSet1.add(entry);
                                 tableValues.add(visits);
                                 totalVisits = totalVisits + visits;
+
                             }
                         }
 
