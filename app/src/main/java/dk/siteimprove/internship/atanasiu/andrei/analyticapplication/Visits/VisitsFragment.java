@@ -125,7 +125,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
             }
         });
 
-        textViewDate.setText(today.toString("dd MMMM"));
+//        textViewDate.setText(today.toString("dd MMMM"));
         textViewInfo.setText("VISITS TODAY");
         tableToggler.setGravity(Gravity.LEFT);
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
@@ -137,6 +137,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
 
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
+            Log.i("AAAAAA", String.valueOf(MainActivity.todayPeriodCounter));
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/behavior/visits_by_hour?page=1&page_size=10&period=" +
                     calculatePeriod(MainActivity.todayPeriodCounter);
@@ -409,6 +410,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
         protected void onPreExecute()
         {
             progressBar.setVisibility(View.VISIBLE);
+            Log.i("AAAAAPRE", String.valueOf(MainActivity.todayPeriodCounter));
         }
 
         protected String doInBackground(Void... urls)
@@ -446,6 +448,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
 
         protected void onPostExecute(String response)
         {
+            Log.i("AAAAAPOST", String.valueOf(MainActivity.todayPeriodCounter));
             if(getActivity() != null)
             {
                 if(response == null) {
@@ -533,7 +536,6 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
                             lineDataSet1.setDrawFilled(true);
                             lineDataSet1.setHighLightColor(Color.rgb(255,255,255));
                             dataSets.add(lineDataSet1);
-
                             // Setting Header Text to match VisitsToday Fragment.
                             textViewTotal.setText(String.valueOf(totalVisits));
 
@@ -541,7 +543,8 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
                             {
                                 secondCall = true;
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                        "/analytics/behavior/visits_by_hour?page=1&page_size=10&period=" + calculatePeriod(MainActivity.todayPeriodCounter+1);
+                                        "/analytics/behavior/visits_by_hour?page=1&page_size=10&period=" +
+                                        calculatePeriod(MainActivity.todayPeriodCounter+1);
                                 new RetrieveFeedTask().execute();
                             }else
                             {

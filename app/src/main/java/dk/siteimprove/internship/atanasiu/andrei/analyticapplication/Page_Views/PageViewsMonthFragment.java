@@ -144,7 +144,7 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period="
-                    + calculatePeriod(periodCounter);
+                    + calculatePeriod(MainActivity.monthPeriodCounter);
             apiIdSelected = true;
         }else
         {
@@ -183,7 +183,7 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
     {
         if(hasNetworkConnection())
         {
-            if(periodCounter != 0)
+            if(MainActivity.monthPeriodCounter != 0)
             {
                 imgBtnBack.setClickable(false);
                 imgBtnBack.setAlpha(0.5f);
@@ -191,10 +191,10 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
                 imgBtnForward.setAlpha(0.5f);
                 chart.setVisibility(View.INVISIBLE);
                 textViewInfo.setText("VISITS THIS MONTH");
-                periodCounter--;
+                MainActivity.monthPeriodCounter--;
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period="
-                        + calculatePeriod(periodCounter);
+                        + calculatePeriod(MainActivity.monthPeriodCounter);
                 new RetrieveFeedTask().execute();
             }
         }else
@@ -213,10 +213,10 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
             imgBtnForward.setAlpha(0.5f);
             chart.setVisibility(View.INVISIBLE);
             textViewInfo.setText("VISITS THIS MONTH");
-            periodCounter ++;
+            MainActivity.monthPeriodCounter ++;
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period="
-                    + calculatePeriod(periodCounter);
+                    + calculatePeriod(MainActivity.monthPeriodCounter);
             new RetrieveFeedTask().execute();
         }else
         {
@@ -551,7 +551,7 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
                                 secondCall = true;
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                                         "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period="
-                                        + calculatePeriod(periodCounter + 1);
+                                        + calculatePeriod(MainActivity.monthPeriodCounter + 1);
                                 new RetrieveFeedTask().execute();
                             }else
                             {
@@ -560,7 +560,7 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
                             }
                             imgBtnBack.setClickable(true);
                             imgBtnBack.setAlpha(1f);
-                            if(periodCounter != 0)
+                            if(MainActivity.monthPeriodCounter != 0)
                             {
                                 imgBtnForward.setClickable(true);
                                 imgBtnForward.setAlpha(1f);
@@ -578,7 +578,7 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
 
         private void handleNoData()
         {
-            if(periodCounter == 0)
+            if(MainActivity.monthPeriodCounter == 0)
             {
                 imgBtnForward.setClickable(false);
                 imgBtnForward.setAlpha(0.5f);

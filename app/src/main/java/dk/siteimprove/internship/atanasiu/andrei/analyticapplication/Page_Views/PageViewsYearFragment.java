@@ -148,7 +148,7 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
         if(!MainActivity.API_ID.equalsIgnoreCase("")) //Check if the user has selected a website
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                    "/analytics/overview/history?period=" + calculatePeriod(periodCounter);
+                    "/analytics/overview/history?period=" + calculatePeriod(MainActivity.yearPeriodCounter);
             apiIdSelected = true;
 
         }else
@@ -186,7 +186,7 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
     {
         if(hasNetworkConnection())
         {
-            if(periodCounter != 0)
+            if(MainActivity.yearPeriodCounter != 0)
             {
                 imgBtnBack.setClickable(false);
                 imgBtnBack.setAlpha(0.5f);
@@ -194,10 +194,10 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
                 imgBtnForward.setAlpha(0.5f);
                 chart.setVisibility(View.INVISIBLE);
                 textViewInfo.setText("PAGE VIEWS THIS YEAR");
-                periodCounter--;
+                MainActivity.yearPeriodCounter--;
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/overview/history?period="
-                        + calculatePeriod(periodCounter);
+                        + calculatePeriod(MainActivity.yearPeriodCounter);
                 new RetrieveFeedTask().execute();
             }
         }else
@@ -216,10 +216,10 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
             imgBtnForward.setAlpha(0.5f);
             chart.setVisibility(View.INVISIBLE);
             textViewInfo.setText("PAGE VIEWS THIS YEAR");
-            periodCounter ++;
+            MainActivity.yearPeriodCounter ++;
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/overview/history?period="
-                    + calculatePeriod(periodCounter);
+                    + calculatePeriod(MainActivity.yearPeriodCounter);
             new RetrieveFeedTask().execute();
         }else
         {
@@ -557,7 +557,7 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
                             {
                                 secondCall = true;
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                        "/analytics/overview/history?period=" + calculatePeriod(periodCounter + 1);
+                                        "/analytics/overview/history?period=" + calculatePeriod(MainActivity.yearPeriodCounter + 1);
                                 new RetrieveFeedTask().execute();
                             }else
                             {
@@ -567,7 +567,7 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
                         }
                         imgBtnBack.setClickable(true);
                         imgBtnBack.setAlpha(1f);
-                        if(periodCounter != 0)
+                        if(MainActivity.yearPeriodCounter != 0)
                         {
                             imgBtnForward.setClickable(true);
                             imgBtnForward.setAlpha(1f);
@@ -585,7 +585,7 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
 
         private void handleNoData()
         {
-            if(periodCounter == 0)
+            if(MainActivity.yearPeriodCounter == 0)
             {
                 imgBtnForward.setClickable(false);
                 imgBtnForward.setAlpha(0.5f);

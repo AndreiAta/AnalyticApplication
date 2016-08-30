@@ -132,7 +132,6 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
         moreInfoButton.setOnClickListener(this);
 
         table = (TableLayout) rootView.findViewById(R.id.table);
-        periodCounter = 0;
 
         //Get month List for the table
         monthList = new ArrayList<>();
@@ -148,7 +147,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/overview/history?period="
-                    + calculatePeriod(periodCounter);
+                    + calculatePeriod(MainActivity.yearPeriodCounter);
             apiIdSelected = true;
 
         }else
@@ -186,7 +185,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
     {
         if(hasNetworkConnection())
         {
-            if(periodCounter != 0)
+            if(MainActivity.yearPeriodCounter != 0)
             {
                 imgBtnBack.setClickable(false);
                 imgBtnBack.setAlpha(0.5f);
@@ -194,10 +193,10 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
                 imgBtnForward.setAlpha(0.5f);
                 chart.setVisibility(View.INVISIBLE);
                 textViewInfo.setText("VISITS THIS YEAR");
-                periodCounter--;
+                MainActivity.yearPeriodCounter--;
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/overview/history?period="
-                        + calculatePeriod(periodCounter);
+                        + calculatePeriod(MainActivity.yearPeriodCounter);
                 new RetrieveFeedTask().execute();
             }
         }
@@ -218,10 +217,10 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
             imgBtnForward.setAlpha(0.5f);
             chart.setVisibility(View.INVISIBLE);
             textViewInfo.setText("VISITS THIS YEAR");
-            periodCounter ++;
+            MainActivity.yearPeriodCounter ++;
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/overview/history?period="
-                    + calculatePeriod(periodCounter);
+                    + calculatePeriod(MainActivity.yearPeriodCounter);
             new RetrieveFeedTask().execute();
         }
         else
@@ -285,7 +284,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
 
     public void createTable()
     {
-
+        //Log.i()
         String[] months = new DateFormatSymbols().getMonths();
         for (int i = 0; i <= totalMonths; i++)
         {
@@ -564,7 +563,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
                             {
                                 secondCall = true;
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                        "/analytics/overview/history?period=" + calculatePeriod(periodCounter + 1);
+                                        "/analytics/overview/history?period=" + calculatePeriod(MainActivity.yearPeriodCounter + 1);
                                 new RetrieveFeedTask().execute();
                             }else
                             {
@@ -574,7 +573,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
                         }
                         imgBtnBack.setClickable(true);
                         imgBtnBack.setAlpha(1f);
-                        if(periodCounter != 0)
+                        if(MainActivity.yearPeriodCounter != 0)
                         {
                             imgBtnForward.setClickable(true);
                             imgBtnForward.setAlpha(1f);
@@ -592,7 +591,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
 
         private void handleNoData()
         {
-            if(periodCounter == 0)
+            if(MainActivity.yearPeriodCounter == 0)
             {
                 imgBtnForward.setClickable(false);
                 imgBtnForward.setAlpha(0.5f);

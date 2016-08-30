@@ -34,6 +34,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
 import org.joda.time.DateTime;
+import org.joda.time.field.MillisDurationField;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -141,7 +142,7 @@ public class PopPagesMonthFragment extends Fragment implements View.OnClickListe
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/content/most_popular_pages?page=1&page_size=10&period=" +
-                    calculatePeriod(periodCounter);
+                    calculatePeriod(MainActivity.monthPeriodCounter);
             apiIdSelected = true;
         }else
         {
@@ -177,7 +178,7 @@ public class PopPagesMonthFragment extends Fragment implements View.OnClickListe
     {
         if(hasNetworkConnection())
         {
-            if(periodCounter != 0)
+            if(MainActivity.monthPeriodCounter != 0)
             {
                 imgBtnBack.setClickable(false);
                 imgBtnBack.setAlpha(0.5f);
@@ -185,10 +186,10 @@ public class PopPagesMonthFragment extends Fragment implements View.OnClickListe
                 imgBtnForward.setAlpha(0.5f);
                 chart.setVisibility(View.INVISIBLE);
                 textViewInfo.setText("VISITS THIS MONTH");
-                periodCounter--;
+                MainActivity.monthPeriodCounter--;
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/content/most_popular_pages?page=1&page_size=10&period="
-                        + calculatePeriod(periodCounter);
+                        + calculatePeriod(MainActivity.monthPeriodCounter);
                 new RetrieveFeedTask().execute();
             }
         }else
@@ -208,10 +209,10 @@ public class PopPagesMonthFragment extends Fragment implements View.OnClickListe
             imgBtnForward.setAlpha(0.5f);
             chart.setVisibility(View.INVISIBLE);
             textViewInfo.setText("VISITS THIS MONTH");
-            periodCounter ++;
+            MainActivity.monthPeriodCounter ++;
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/content/most_popular_pages?page=1&page_size=10&period="
-                    + calculatePeriod(periodCounter);
+                    + calculatePeriod(MainActivity.monthPeriodCounter);
             new RetrieveFeedTask().execute();
         }else
         {
@@ -564,7 +565,7 @@ public class PopPagesMonthFragment extends Fragment implements View.OnClickListe
                                 secondCall = true;
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                                         "/analytics/content/most_popular_pages?page=1&page_size=10&period=" +
-                                        calculatePeriod(periodCounter + 1);
+                                        calculatePeriod(MainActivity.monthPeriodCounter + 1);
                                 new RetrieveFeedTask().execute();
                             }else
                             {
@@ -603,7 +604,7 @@ public class PopPagesMonthFragment extends Fragment implements View.OnClickListe
                         }
                         imgBtnBack.setClickable(true);
                         imgBtnBack.setAlpha(1f);
-                        if(periodCounter != 0)
+                        if(MainActivity.monthPeriodCounter != 0)
                         {
                             imgBtnForward.setClickable(true);
                             imgBtnForward.setAlpha(1f);
@@ -620,7 +621,7 @@ public class PopPagesMonthFragment extends Fragment implements View.OnClickListe
 
         private void handleNoData()
         {
-            if(periodCounter == 0)
+            if(MainActivity.monthPeriodCounter == 0)
             {
                 imgBtnForward.setClickable(false);
                 imgBtnForward.setAlpha(0.5f);

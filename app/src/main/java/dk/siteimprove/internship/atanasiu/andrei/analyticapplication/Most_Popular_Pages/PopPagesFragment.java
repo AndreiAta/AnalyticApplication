@@ -142,7 +142,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/content/most_popular_pages?page=1&page_size=10&period=" +
-                    calculatePeriod(periodCounter);
+                    calculatePeriod(MainActivity.todayPeriodCounter);
             apiIdSelected = true;
         }else
         {
@@ -177,7 +177,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
     {
         if(hasNetworkConnection())
         {
-            if(periodCounter != 0)
+            if(MainActivity.todayPeriodCounter != 0)
             {
                 imgBtnBack.setClickable(false);
                 imgBtnBack.setAlpha(0.5f);
@@ -185,10 +185,10 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                 imgBtnForward.setAlpha(0.5f);
                 chart.setVisibility(View.INVISIBLE);
                 textViewInfo.setText("VISITS TODAY");
-                periodCounter--;
+                MainActivity.todayPeriodCounter--;
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/content/most_popular_pages?page=1&page_size=10&period="
-                        + calculatePeriod(periodCounter);
+                        + calculatePeriod(MainActivity.todayPeriodCounter);
                 new RetrieveFeedTask().execute();
             }
         }else
@@ -208,10 +208,10 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
             imgBtnForward.setAlpha(0.5f);
             chart.setVisibility(View.INVISIBLE);
             textViewInfo.setText("VISITS TODAY");
-            periodCounter ++;
+            MainActivity.todayPeriodCounter ++;
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/content/most_popular_pages?page=1&page_size=10&period="
-                    + calculatePeriod(periodCounter);
+                    + calculatePeriod(MainActivity.todayPeriodCounter);
             new RetrieveFeedTask().execute();
         }else
         {
@@ -543,7 +543,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                                 secondCall = true;
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                                         "/analytics/content/most_popular_pages?page=1&page_size=10&period=" +
-                                        calculatePeriod(periodCounter+1);
+                                        calculatePeriod(MainActivity.todayPeriodCounter+1);
                                 new RetrieveFeedTask().execute();
                             }else
                             {
@@ -582,7 +582,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
                         }
                         imgBtnBack.setClickable(true);
                         imgBtnBack.setAlpha(1f);
-                        if(periodCounter != 0)
+                        if(MainActivity.todayPeriodCounter != 0)
                         {
                             imgBtnForward.setClickable(true);
                             imgBtnForward.setAlpha(1f);
@@ -600,7 +600,7 @@ public class PopPagesFragment extends Fragment implements View.OnClickListener
 
         private void handleNoData()
         {
-            if(periodCounter == 0)
+            if(MainActivity.todayPeriodCounter == 0)
             {
                 imgBtnForward.setClickable(false);
                 imgBtnForward.setAlpha(0.5f);

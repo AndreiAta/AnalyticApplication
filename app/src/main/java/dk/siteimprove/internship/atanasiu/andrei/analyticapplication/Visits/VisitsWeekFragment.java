@@ -136,7 +136,7 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
         {
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/behavior/visits_by_weekday?page=1&page_size=10&period=" +
-                    calculatePeriod(periodCounter);
+                    calculatePeriod(MainActivity.weekPeriodCounter);
             apiIdSelected = true;
 
         }else
@@ -173,7 +173,7 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
     {
         if(hasNetworkConnection())
         {
-            if(periodCounter != 0)
+            if(MainActivity.weekPeriodCounter != 0)
             {
                 imgBtnBack.setClickable(false);
                 imgBtnBack.setAlpha(0.5f);
@@ -181,10 +181,10 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
                 imgBtnForward.setAlpha(0.5f);
                 chart.setVisibility(View.INVISIBLE);
                 textViewInfo.setText("VISITS THIS WEEK");
-                periodCounter--;
+                MainActivity.weekPeriodCounter--;
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/behavior/visits_by_weekday?page=1&page_size=10&period="
-                        + calculatePeriod(periodCounter);
+                        + calculatePeriod(MainActivity.weekPeriodCounter);
                 new RetrieveFeedTask().execute();
             }
         }
@@ -205,10 +205,10 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
             imgBtnForward.setAlpha(0.5f);
             chart.setVisibility(View.INVISIBLE);
             textViewInfo.setText("VISITS THIS WEEK");
-            periodCounter ++;
+            MainActivity.weekPeriodCounter ++;
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/behavior/visits_by_weekday?page=1&page_size=10&period="
-                    + calculatePeriod(periodCounter);
+                    + calculatePeriod(MainActivity.weekPeriodCounter);
             new RetrieveFeedTask().execute();
         }
         else
@@ -562,7 +562,8 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
                             {
                                 secondCall = true;
                                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
-                                        "/analytics/behavior/visits_by_weekday?page=1&page_size=10&period=" + calculatePeriod(periodCounter+1);
+                                        "/analytics/behavior/visits_by_weekday?page=1&page_size=10&period=" +
+                                        calculatePeriod(MainActivity.weekPeriodCounter+1);
                                 new RetrieveFeedTask().execute();
                             }else
                             {
@@ -572,7 +573,7 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
                         }
                         imgBtnBack.setClickable(true);
                         imgBtnBack.setAlpha(1f);
-                        if(periodCounter != 0)
+                        if(MainActivity.weekPeriodCounter != 0)
                         {
                             imgBtnForward.setClickable(true);
                             imgBtnForward.setAlpha(1f);
@@ -590,7 +591,7 @@ public class VisitsWeekFragment extends Fragment implements View.OnClickListener
 
         private void handleNoData()
         {
-            if(periodCounter == 0)
+            if(MainActivity.weekPeriodCounter == 0)
             {
                 imgBtnForward.setClickable(false);
                 imgBtnForward.setAlpha(0.5f);
