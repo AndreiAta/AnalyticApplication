@@ -47,6 +47,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
@@ -413,7 +414,9 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
 
     public void getDifference()
     {
-//        DateTime firstDayOfMonth = new DateTime().getDayOfMonth().
+        Calendar c = Calendar.getInstance();   // this takes current date
+        c.set(Calendar.DAY_OF_MONTH, 1);
+        String
     }
 
     // ===============================
