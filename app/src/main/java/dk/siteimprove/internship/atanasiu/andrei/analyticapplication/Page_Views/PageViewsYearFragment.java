@@ -525,11 +525,11 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
 
                             if(secondCall) //Last Year
                             {
-                                Entry entry = new Entry((float)visits, i);
+                                Entry entry = new Entry((float)visits, month_of_year -1);
                                 valueSet2.add(entry);
                             }else //Current Year
                             {
-                                Entry entry = new Entry((float) visits, i);
+                                Entry entry = new Entry((float) visits, month_of_year -1);
                                 valueSet1.add(entry);
                                 tableValues.add(visits);
                                 totalVisits = totalVisits + visits;
