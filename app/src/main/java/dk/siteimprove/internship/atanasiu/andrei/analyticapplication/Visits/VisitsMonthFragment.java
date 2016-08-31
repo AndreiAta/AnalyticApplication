@@ -45,12 +45,22 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
+
+import static java.util.Calendar.DAY_OF_MONTH;
+import static java.util.Calendar.DAY_OF_WEEK;
+import static java.util.Calendar.MONTH;
+import static java.util.Calendar.getInstance;
 
 public class VisitsMonthFragment extends Fragment implements View.OnClickListener
 {
@@ -133,6 +143,8 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 ResourcesCompat.getDrawable(getResources(), R.drawable.ic_keyboard_arrow_up_white_18dp, null), null);
         moreInfoButton.setOnClickListener(this);
+
+        getDifference();
 
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
@@ -412,11 +424,52 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         chart.setVisibility(View.VISIBLE);
     }
 
+    public static int getIntDayOfWeek(String dayOfWeek)
+    {
+        try
+        {
+            DateFormat formatter ;
+            Date date ;
+            formatter = new SimpleDateFormat("EEE");
+            date = (Date)formatter.parse(dayOfWeek);
+            GregorianCalendar g = new GregorianCalendar();
+            g.setTime(date);
+            return g.get(DAY_OF_WEEK);
+        }
+        catch (ParseException e)
+        {
+            System.out.println("Exception :"+e);
+        }
+        return 0;
+    }
+
+    private static Date getLastMonthFirstMonday(Date date) {
+        Calendar c = getInstance();
+        c.setTime(date);
+        c.add(MONTH, -1);
+        c.set(DAY_OF_MONTH, 1);
+
+        // search until wednesday
+        while (c.get(DAY_OF_WEEK) != Calendar.MONDAY) {
+            c.add(DAY_OF_MONTH, 1);
+        }
+        return c.getTime();
+    }
+
     public void getDifference()
     {
-        Calendar c = Calendar.getInstance();   // this takes current date
-        c.set(Calendar.DAY_OF_MONTH, 1);
-        String
+        DateTime test = new DateTime().dayOfMonth().withMinimumValue();
+        DateTime test2 = new DateTime().minusMonths(2).dayOfMonth().withMinimumValue();
+        String firstDayOfThisMonth = test.toString("EEEE");
+        String firstDayOfLastMonth = test2.toString("EEEE");
+        String firstMonday = getLastMonthFirstMonday(test2.toDate()).toString();
+
+        Log.i("BLALBAA", firstMonday);
+
+        int currentMonthStart = getIntDayOfWeek(firstDayOfThisMonth);
+        int lastMonthStart = getIntDayOfWeek(firstDayOfLastMonth);
+
+
     }
 
     // ===============================
