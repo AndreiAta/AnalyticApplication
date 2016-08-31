@@ -543,6 +543,8 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
                             lineDataSet2.setFillDrawable(drawable);
                             lineDataSet2.setDrawFilled(true);
                             lineDataSet2.setHighLightColor(Color.rgb(255,255,255));
+                            lineDataSet2.setCircleColor(Color.rgb(181, 0, 97));
+                            lineDataSet2.setCircleColorHole(Color.rgb(181, 0, 97));
                             dataSets.add(lineDataSet2);
                             drawGraph();
 
@@ -557,6 +559,8 @@ public class PageViewsYearFragment extends Fragment implements View.OnClickListe
                             lineDataSet1.setFillDrawable(drawable);
                             lineDataSet1.setDrawFilled(true);
                             lineDataSet1.setHighLightColor(Color.rgb(255,255,255));
+                            lineDataSet1.setCircleColor(Color.rgb(5, 184, 198));
+                            lineDataSet1.setCircleColorHole(Color.rgb(5, 184, 198));
                             dataSets.add(lineDataSet1);
 
                             // Setting Header Text to match VisitsYear Fragment.
