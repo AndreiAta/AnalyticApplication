@@ -142,6 +142,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        currentFragment = "Today";
         todayPeriodCounter = 0;
         weekPeriodCounter = 0;
         monthPeriodCounter = 0;
@@ -158,6 +159,7 @@ public class MainActivity extends AppCompatActivity
             weekPeriodCounter = savedInstanceState.getInt("Week");
             monthPeriodCounter = savedInstanceState.getInt("Month");
             yearPeriodCounter = savedInstanceState.getInt("Year");
+            currentFragment = savedInstanceState.getString("CurrentFragment");
         }
         setContentView(R.layout.activity_main);
 
@@ -494,6 +496,7 @@ public class MainActivity extends AppCompatActivity
         savedInstanceState.putInt("Week", weekPeriodCounter);
         savedInstanceState.putInt("Month", monthPeriodCounter);
         savedInstanceState.putInt("Year", yearPeriodCounter);
+        savedInstanceState.putString("CurrentFragment", currentFragment);
 
         // etc.
     }
