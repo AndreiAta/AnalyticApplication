@@ -8,12 +8,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 
 
@@ -68,8 +70,39 @@ public class MainVisitsFragment extends Fragment
         arg4.putInt("Arg for Frag4", 4);
         mTabHost.addTab(mTabHost.newTabSpec("Tab4").setIndicator("Year"), VisitsYearFragment.class, arg4);
 
-        for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++) {
+        for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++)
+        {
+            //Setting a onClick Listener so the tab refreshes on click
+            final int currentTab = i;
+            mTabHost.getTabWidget().getChildAt(currentTab).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v)
+                {
+                    if(currentTab == 0)
+                    {
+                        mTabHost.setCurrentTab(1);
+                        mTabHost.setCurrentTab(currentTab);
+                        MainActivity.todayPeriodCounter = 0;
+                    }else if(currentTab == 1)
+                    {
+                        mTabHost.setCurrentTab(0);
+                        mTabHost.setCurrentTab(currentTab);
+                        MainActivity.weekPeriodCounter = 0;
+                    }else if(currentTab == 2)
+                    {
+                        mTabHost.setCurrentTab(0);
+                        mTabHost.setCurrentTab(currentTab);
+                        MainActivity.monthPeriodCounter = 0;
+                    }else if(currentTab == 3)
+                    {
+                        mTabHost.setCurrentTab(0);
+                        mTabHost.setCurrentTab(currentTab);
+                        MainActivity.yearPeriodCounter = 0;
+                    }
+                }
+            });
 
+            //Styling for the tabs in TabHost
             mTabHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.rgb(49, 79, 79));
             mTabHost.getTabWidget().getChildAt(i).setBackgroundResource(R.drawable.tab_indicator_holo);
 

@@ -419,6 +419,11 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         chart.setVisibility(View.VISIBLE);
     }
 
+    public void getDifference()
+    {
+//        DateTime firstDayOfMonth = new DateTime().getDayOfMonth().
+    }
+
     // ===============================
     //        INTERNAL CLASS
     // ===============================

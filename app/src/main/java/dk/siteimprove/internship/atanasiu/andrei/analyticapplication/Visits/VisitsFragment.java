@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.SpannableString;
@@ -259,6 +260,12 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
             tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     ResourcesCompat.getDrawable(getResources(), R.drawable.ic_keyboard_arrow_up_white_18dp, null), null);
         }
+    }
+
+    public void refresh()
+    {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.detach(this).attach(this).commit();
     }
 
     public void createTable()
