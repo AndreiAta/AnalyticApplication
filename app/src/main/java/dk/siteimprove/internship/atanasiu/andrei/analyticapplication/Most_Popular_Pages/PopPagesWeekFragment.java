@@ -217,36 +217,31 @@ public class PopPagesWeekFragment extends Fragment implements View.OnClickListen
 
     private String calculatePeriod(int periodCounter)
     {
-        period = "";
-        DateTime currentPeriod = new DateTime();
-        String startPeriod = "";
-        int dayOfWeek = new DateTime().getDayOfWeek();
-        startPeriod = currentPeriod.minusDays(dayOfWeek - 1).toString("yyyyMMdd");
-        String stopPeriod = currentPeriod.toString("yyyyMMdd");
-        textViewDate.setText(currentPeriod.minusDays(dayOfWeek - 1).toString("dd MMM yyyy")
-                + " - " + currentPeriod.toString("dd MMM yyyy"));
+        DateTime thisDate = new DateTime();
+        String dateText;
+        int dayOfWeek = thisDate.getDayOfWeek();
+        String startDate = thisDate.minusDays(dayOfWeek - 1).toString("yyyyMMdd");
+        String stopDate = thisDate.toString("yyyyMMdd");
+
+
         if(periodCounter != 0)
         {
-            startPeriod = currentPeriod.minusDays(dayOfWeek - 1).minusWeeks(periodCounter).toString("yyyyMMdd");
-            stopPeriod = currentPeriod.minusDays(dayOfWeek - 1).plusDays(6).minusWeeks(periodCounter).toString("yyyyMMdd");
-            textViewDate.setText(currentPeriod.minusDays(dayOfWeek - 1).minusWeeks(periodCounter).toString("dd MMM yyyy")
-                    + " - " + currentPeriod.minusDays(dayOfWeek - 1).plusDays(6).minusWeeks(periodCounter).toString("dd MMM yyyy"));
-            if(secondCall)
-            {
-                if(periodCounter == 1)
-                {
-                    textViewDate.setText(currentPeriod.minusDays(dayOfWeek - 1).toString("dd MMM yyyy")
-                            + " - " + currentPeriod.toString("dd MMM yyyy"));
-                }else
-                {
-                    textViewDate.setText(currentPeriod.minusDays(dayOfWeek - 1).minusWeeks(periodCounter - 1).toString("dd MMM yyyy")
-                            + " - "
-                            + currentPeriod.minusDays(dayOfWeek - 1).plusDays(6).minusWeeks(periodCounter -1).toString("dd MMM yyyy"));
-                }
-            }
+            startDate = thisDate.minusDays(dayOfWeek - 1).minusWeeks(periodCounter).toString("yyyyMMdd");
+            stopDate = thisDate.minusDays(dayOfWeek - 1).plusDays(6).minusWeeks(periodCounter).toString("yyyyMMdd");
+            dateText = (thisDate.minusDays(dayOfWeek - 1).minusWeeks(periodCounter).toString("dd MMM yyyy")
+                    + " - " + thisDate.minusDays(dayOfWeek - 1).plusDays(6).minusWeeks(periodCounter).toString("dd MMM yyyy"));
+        }
+        else
+        {
+            dateText = (thisDate.minusDays(dayOfWeek - 1).toString("dd MMM yyyy")
+                    + " - " + thisDate.toString("dd MMM yyyy"));
+        }
+        if(!secondCall) //only set the dateText of the current period.
+        {
+            textViewDate.setText(dateText);
         }
 
-        period = startPeriod + "_" + stopPeriod;
+        period = startDate + "_" + stopDate;
         return period;
     }
 

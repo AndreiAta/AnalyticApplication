@@ -221,17 +221,16 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
 
     private String calculatePeriod(int periodCounter)
     {
-        period = "";
-        DateTime currentPeriod = new DateTime();
-        String currentDay = currentPeriod.toString("yyyyMMdd");
-        textViewDate.setText(currentPeriod.minusDays(periodCounter).toString("dd MMM yyyy"));
+        DateTime thisDate = new DateTime();
+        String currentDay = thisDate.toString("yyyyMMdd");
+        textViewDate.setText(thisDate.minusDays(periodCounter).toString("dd MMM yyyy"));
+
         if(periodCounter != 0)
         {
-            currentDay = currentPeriod.minusDays(periodCounter).toString("yyyyMMdd");
-
+            currentDay = thisDate.minusDays(periodCounter).toString("yyyyMMdd");
             if(secondCall)
             {
-                textViewDate.setText(currentPeriod.minusDays(periodCounter - 1).toString("dd MMM yyyy"));
+                textViewDate.setText(thisDate.minusDays(periodCounter - 1).toString("dd MMM yyyy"));
             }
         }
 

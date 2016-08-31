@@ -220,49 +220,41 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
 
     private String calculatePeriod(int periodCounter)
     {
-        period = "";
-        DateTime currentPeriod = new DateTime();
-        String stopPeriod;
-        int daysOfMonth = new DateTime().getDayOfMonth();
+        DateTime thisDate = new DateTime();
+        String stopDate;
+        String startDate = thisDate.minusMonths(periodCounter).toString("yyyyMM") + "01";
+        String textDate;
+        int daysOfMonth = thisDate.getDayOfMonth();
         DateTime firstDayOfMonth = new DateTime().minusDays(daysOfMonth - 1);
 
         if(periodCounter != 0)
         {
-            stopPeriod = currentPeriod.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("yyyyMMdd");
-            if(!secondCall)
-            {
-                textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter).toString("dd MMM yyyy") + " - "
-                        + currentPeriod.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("dd MMM yyyy"));
-            }else
-            {
-                if(periodCounter == 1)
-                {
-                    textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter - 1).toString("dd MMM yyyy") + " - "
-                            + currentPeriod.toString("dd MMM yyyy"));
-                }else
-                {
-                    textViewDate.setText(firstDayOfMonth.minusMonths(periodCounter - 1).toString("dd MMM yyyy") + " - "
-                            + currentPeriod.minusMonths(periodCounter - 1).dayOfMonth().withMaximumValue().toString("dd MMM yyyy"));
-                }
-            }
-        }else
-        {
-            if(currentPeriod.getDayOfMonth() == 1)
-            {
-                stopPeriod = currentPeriod.minusMonths(periodCounter).toString("yyyyMMdd");
-                textViewDate.setText(firstDayOfMonth.toString("dd MMM yyyy") + " - "
-                        + currentPeriod.minusMonths(periodCounter).toString("dd MMM yyyy"));
-            }else
-            {
-                stopPeriod = currentPeriod.minusMonths(periodCounter).minusDays(1).toString("yyyyMMdd");
-                textViewDate.setText(firstDayOfMonth.toString("dd MMM yyyy") + " - "
-                        + currentPeriod.minusMonths(periodCounter).minusDays(1).toString("dd MMM yyyy"));
-            }
+            stopDate = thisDate.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("yyyyMMdd");
+            textDate = (firstDayOfMonth.minusMonths(periodCounter).toString("dd MMM yyyy") + " - "
+                    + thisDate.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("dd MMM yyyy"));
 
         }
+        else
+        {
+            if(thisDate.getDayOfMonth() == 1)
+            {
+                stopDate = thisDate.minusMonths(periodCounter).toString("yyyyMMdd");
+                textDate = (firstDayOfMonth.toString("dd MMM yyyy") + " - "
+                        + thisDate.minusMonths(periodCounter).toString("dd MMM yyyy"));
+            }else
+            {
+                stopDate = thisDate.minusMonths(periodCounter).minusDays(1).toString("yyyyMMdd");
+                textDate = (firstDayOfMonth.toString("dd MMM yyyy") + " - "
+                        + thisDate.minusMonths(periodCounter).minusDays(1).toString("dd MMM yyyy"));
+            }
+        }
 
-        String startPeriod = currentPeriod.minusMonths(periodCounter).toString("yyyyMM") + "01";
-        period = startPeriod + "_" + stopPeriod;
+        if(!secondCall)
+        {
+            textViewDate.setText(textDate);
+        }
+
+        period = startDate + "_" + stopDate;
         return period;
     }
 

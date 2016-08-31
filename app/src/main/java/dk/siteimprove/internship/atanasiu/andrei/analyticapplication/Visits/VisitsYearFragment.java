@@ -111,16 +111,19 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
         defaultTableRow = (TableRow) rootView.findViewById(R.id.defaultTableRow);
         mv = new CustomMarkerViewVisits(getActivity().getApplicationContext(), R.layout.custom_marker_view);
 
-        imgBtnForward.setOnClickListener(new View.OnClickListener() {
+        imgBtnForward.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View v)
             {
                 getNextPeriod();
             }
         });
-        imgBtnBack.setOnClickListener(new View.OnClickListener() {
+        imgBtnBack.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 getPreviousPeriod();
             }
         });
@@ -228,42 +231,38 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
     }
     private String calculatePeriod(int periodCounter)
     {
-        DateTime currentPeriod = new DateTime();
+        DateTime thisDate = new DateTime();
         String dateText;
-        String firstDayOfYear = currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("yyyyMMdd");
-        textViewDate.setText(currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("dd MMM yyyy")
-                + " - " + currentPeriod.toString("dd MMM yyyy"));
+        String firstDayOfYear = thisDate.minusDays(thisDate.getDayOfYear() - 1).toString("yyyyMMdd");
+
         if(periodCounter != 0)
         {
-            period = currentPeriod.minusYears(periodCounter).toString("yyyy") + "0101"
+            period = thisDate.minusYears(periodCounter).toString("yyyy") + "0101"
                     + "_"
-                    + currentPeriod.minusYears(periodCounter).toString("yyyy") + "1231" ;
-            textViewDate.setText(currentPeriod.minusYears(periodCounter).dayOfYear().withMinimumValue().toString("dd MMM yyyy")
+                    + thisDate.minusYears(periodCounter).toString("yyyy") + "1231" ;
+            dateText = (thisDate.minusYears(periodCounter).dayOfYear().withMinimumValue().toString("dd MMM yyyy")
                     + " - "
-                    + currentPeriod.minusYears(periodCounter).dayOfYear().withMaximumValue().toString("dd MMM yyyy") );
-            if(secondCall)
-            {
-                if(periodCounter == 1)
-                {
-                    textViewDate.setText(currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("dd MMM yyyy")
-                            + " - " + currentPeriod.toString("dd MMM yyyy"));
-                }
-            }
-        }else
+                    + thisDate.minusYears(periodCounter).dayOfYear().withMaximumValue().toString("dd MMM yyyy") );
+        }
+        else
         {
-            if(currentPeriod.getDayOfYear() == 1)
+            if(thisDate.getDayOfYear() == 1)
             {
-                period = firstDayOfYear + "_" + currentPeriod.toString("yyyyMMdd");
-                textViewDate.setText(currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("dd MMM yyyy")
-                        + " - " + currentPeriod.toString("dd MMM yyyy"));
+                period = firstDayOfYear + "_" + thisDate.toString("yyyyMMdd");
+                dateText = (thisDate.minusDays(thisDate.getDayOfYear() - 1).toString("dd MMM yyyy")
+                        + " - " + thisDate.toString("dd MMM yyyy"));
             }else
             {
-                period = firstDayOfYear + "_" + currentPeriod.minusDays(1).toString("yyyyMMdd");
-                textViewDate.setText(currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("dd MMM yyyy")
-                        + " - " + currentPeriod.minusDays(1).toString("dd MMM yyyy"));
+                period = firstDayOfYear + "_" + thisDate.minusDays(1).toString("yyyyMMdd");
+                dateText = (thisDate.minusDays(thisDate.getDayOfYear() - 1).toString("dd MMM yyyy")
+                        + " - " + thisDate.minusDays(1).toString("dd MMM yyyy"));
             }
         }
 
+        if(!secondCall) //only set the dateText of the current period.
+        {
+            textViewDate.setText(dateText);
+        }
 
         return period;
     }
