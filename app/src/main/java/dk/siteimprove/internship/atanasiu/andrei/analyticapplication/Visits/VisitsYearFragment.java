@@ -229,6 +229,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
     private String calculatePeriod(int periodCounter)
     {
         DateTime currentPeriod = new DateTime();
+        String dateText;
         String firstDayOfYear = currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("yyyyMMdd");
         textViewDate.setText(currentPeriod.minusDays(currentPeriod.getDayOfYear() - 1).toString("dd MMM yyyy")
                 + " - " + currentPeriod.toString("dd MMM yyyy"));
