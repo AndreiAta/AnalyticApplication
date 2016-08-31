@@ -523,16 +523,17 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
                             String timestamp = items.getJSONObject(i).getString("timestamp");
                             int visits = items.getJSONObject(i).getInt("visits");
                             String tempString = timestamp.substring(5, 7);
+                            int xPos = Integer.parseInt(tempString);
 
                             if(secondCall) //Last Year
                             {
 
-                                Entry entry = new Entry((float)visits, i);
+                                Entry entry = new Entry((float)visits, xPos -1);
                                 valueSet2.add(entry);
                             }else //Current Year
                             {
 
-                                Entry entry = new Entry((float) visits, i);
+                                Entry entry = new Entry((float) visits, xPos -1);
                                 valueSet1.add(entry);
                                 tableValues.add(visits);
                                 totalVisits = totalVisits + visits;
