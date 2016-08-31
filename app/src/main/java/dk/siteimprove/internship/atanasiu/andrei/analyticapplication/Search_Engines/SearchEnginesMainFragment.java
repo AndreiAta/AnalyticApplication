@@ -126,6 +126,12 @@ public class SearchEnginesMainFragment extends Fragment
         {
             mTabHost.getTabWidget().setVisibility(View.GONE);
         }
+
+        if(MainActivity.currentFragment.equals("Today")) mTabHost.setCurrentTab(0);
+        else if(MainActivity.currentFragment.equals("Week")) mTabHost.setCurrentTab(1);
+        else if(MainActivity.currentFragment.equals("Month")) mTabHost.setCurrentTab(2);
+        else if(MainActivity.currentFragment.equals("Year")) mTabHost.setCurrentTab(3);
+
         return mTabHost;
 
     }
