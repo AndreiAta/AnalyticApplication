@@ -20,6 +20,8 @@ import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
 public class CustomMarkerViewPage extends MarkerView
 {
     private TextView tvContent;
+    int monthCounter;
+    int offset;
 
     public CustomMarkerViewPage (Context context, int layoutResource) {
         super(context, layoutResource);
@@ -36,10 +38,14 @@ public class CustomMarkerViewPage extends MarkerView
         {
             tvContent.setTextColor(Color.rgb(181, 0, 97));
             tvContent.setText("" + Utils.formatNumber(e.getVal(), 0, true));
+            monthCounter = MainActivity.monthPeriodCounter + 1;
+            offset = PageViewsMonthFragment.previousPeriodOffset;
         }else
         {
             tvContent.setTextColor(Color.rgb(5, 184, 198));
             tvContent.setText("" + Utils.formatNumber(e.getVal(), 0, true));
+            monthCounter = MainActivity.monthPeriodCounter;
+            offset = PageViewsMonthFragment.currentPeriodOffset;
         }
 
         if(MainActivity.currentFragment.equals("Today"))
@@ -68,8 +74,8 @@ public class CustomMarkerViewPage extends MarkerView
 
         }else if(MainActivity.currentFragment.equals("Month"))
         {
-            PageViewsMonthFragment.textViewInfo.setText((e.getXIndex() + 1) + dateFixer(e.getXIndex() + 1)
-                    + " of " + today.toString("MMMMM"));
+            PageViewsMonthFragment.textViewInfo.setText((e.getXIndex() + 1 - offset) + dateFixer(e.getXIndex() + 1 - offset)
+                    + " of " + today.minusMonths(monthCounter).toString("MMMMM"));
 
             if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
             {

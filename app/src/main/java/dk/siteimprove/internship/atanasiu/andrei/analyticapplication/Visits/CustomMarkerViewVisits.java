@@ -3,6 +3,7 @@ package dk.siteimprove.internship.atanasiu.andrei.analyticapplication.visits;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.components.MarkerView;
@@ -22,6 +23,8 @@ public class CustomMarkerViewVisits extends MarkerView
 {
     private TextView tvContent;
     ArrayList<String> monthNames;
+    int monthCounter;
+    int offset;
 
     public CustomMarkerViewVisits (Context context, int layoutResource) {
         super(context, layoutResource);
@@ -38,10 +41,14 @@ public class CustomMarkerViewVisits extends MarkerView
         {
             tvContent.setTextColor(Color.rgb(181, 0, 97));
             tvContent.setText("" + Utils.formatNumber(e.getVal(), 0, true));
+            monthCounter = MainActivity.monthPeriodCounter + 1;
+            offset = VisitsMonthFragment.previousPeriodOffset;
         }else
         {
             tvContent.setTextColor(Color.rgb(5, 184, 198));
             tvContent.setText("" + Utils.formatNumber(e.getVal(), 0, true));
+            monthCounter = MainActivity.monthPeriodCounter;
+            offset = VisitsMonthFragment.currentPeriodOffset;
         }
 
         if(MainActivity.currentFragment.equals("Today"))
@@ -70,8 +77,8 @@ public class CustomMarkerViewVisits extends MarkerView
         }
         else if(MainActivity.currentFragment.equals("Month"))
         {
-            VisitsMonthFragment.textViewInfo.setText((e.getXIndex() + 1) + dateFixer(e.getXIndex() + 1)+ " of "
-                    + today.toString("MMMMM"));
+            VisitsMonthFragment.textViewInfo.setText((e.getXIndex() + 1 - offset) + dateFixer(e.getXIndex() + 1 - offset)+ " of "
+                    + today.minusMonths(monthCounter).toString("MMMMM"));
 
             if(Utils.formatNumber(e.getVal(), 0, true).equals("1"))
             {
@@ -79,6 +86,7 @@ public class CustomMarkerViewVisits extends MarkerView
             }else
             {
                 VisitsMonthFragment.textViewTotal.setText(Utils.formatNumber(e.getVal(), 0, true) + " Visits");
+                Log.i("OFFSET", String.valueOf(offset));
             }
         }
         else if(MainActivity.currentFragment.equals("Year"))

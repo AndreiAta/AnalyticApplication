@@ -79,7 +79,7 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
     boolean tableIsVisible = true;
     boolean secondCall = false;
     int totalDays, graphMovement;
-    int currentPeriodOffset = 0, previousPeriodOffset = 0;
+    public static int currentPeriodOffset = 0, previousPeriodOffset = 0;
     CustomMarkerViewPage mv;
     Button moreInfoButton;
     ImageButton imgBtnBack, imgBtnForward;
