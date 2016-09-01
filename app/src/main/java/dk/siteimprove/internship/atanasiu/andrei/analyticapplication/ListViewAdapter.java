@@ -45,6 +45,18 @@ public class ListViewAdapter extends BaseAdapter{
         return 0;
     }
 
+    @Override
+    public int getViewTypeCount() {
+
+        return getCount();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+
+        return position;
+    }
+
 
 
     @Override

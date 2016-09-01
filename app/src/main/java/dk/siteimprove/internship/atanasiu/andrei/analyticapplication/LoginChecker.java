@@ -81,6 +81,8 @@ public class LoginChecker extends AsyncTask<Void, Void, String>
                         Integer id = items.getJSONObject(i).getInt("id");
                         int visits = items.getJSONObject(i).getInt("visits");
 
+                        //MainActivity.websites.add(new Site(id, site_name, visits));
+
                         if(MainActivity.websites.size() == 0)
                         {
                             MainActivity.websites.add(new Site(id, site_name, visits));
