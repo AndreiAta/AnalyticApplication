@@ -144,7 +144,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
                 ResourcesCompat.getDrawable(getResources(), R.drawable.ic_keyboard_arrow_up_white_18dp, null), null);
         moreInfoButton.setOnClickListener(this);
 
-        calculatePeriodOffset();
+            calculatePeriodOffset();
 
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
@@ -594,7 +594,6 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
 
                             }else
                             {
-
                                 Entry entry = new Entry((float) visits, i + currentPeriodOffset);
                                 valueSet1.add(entry);
                                 tableValues.add(visits);
