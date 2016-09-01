@@ -90,7 +90,6 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
     TableRow defaultTableRow;
     ArrayList<String> xAxis;
 
-
     public VisitsMonthFragment()
     {
         // Required empty public constructor
@@ -381,6 +380,11 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
     private ArrayList<String> getXAxisValues() {
         xAxis = new ArrayList<>();
 
+        for (Integer i = 1; i <= valueSet1.size() ; i++)
+        {
+            xAxis.add(i.toString());
+        }
+
         if(previousPeriodOffset > 0)
         {
             for (int i = 0; i < previousPeriodOffset ; i++)
@@ -394,10 +398,6 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
             {
                 xAxis.add(0, "");
             }
-        }
-        for (Integer i = 1; i <= 31 ; i++)
-        {
-            xAxis.add(i.toString());
         }
 
         return xAxis;
@@ -464,26 +464,33 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
 
     public void calculatePeriodOffset()
     {
-        DateTime firstOfThisMonth = new DateTime().minusMonths(MainActivity.monthPeriodCounter).dayOfMonth().withMinimumValue();
-        String firstDayOfThisMonth = firstOfThisMonth.toString("EEEE");
-        DateTime firstOfLastMonth = new DateTime().minusMonths(MainActivity.monthPeriodCounter + 1).dayOfMonth().withMinimumValue();
-        String firstDayOfLastMonth = firstOfLastMonth.toString("EEEE");
-
-        int tempCurrentMonth = getIntDayOfWeek(firstDayOfThisMonth);
-        int tempLastMonth = getIntDayOfWeek(firstDayOfLastMonth);
-        currentPeriodOffset = 0;
-        previousPeriodOffset = 0;
-
-        graphMovement = tempCurrentMonth - tempLastMonth;
-        if(graphMovement > 0)
+        if(landscapeMode)
         {
-            currentPeriodOffset = graphMovement;
-        }
-        else if(graphMovement < 0)
-        {
-            previousPeriodOffset = graphMovement * -1;
-        }
+            DateTime firstOfThisMonth = new DateTime().minusMonths(MainActivity.monthPeriodCounter).dayOfMonth().withMinimumValue();
+            String firstDayOfThisMonth = firstOfThisMonth.toString("EEEE");
+            DateTime firstOfLastMonth = new DateTime().minusMonths(MainActivity.monthPeriodCounter + 1).dayOfMonth().withMinimumValue();
+            String firstDayOfLastMonth = firstOfLastMonth.toString("EEEE");
 
+            int tempCurrentMonth = getIntDayOfWeek(firstDayOfThisMonth);
+            int tempLastMonth = getIntDayOfWeek(firstDayOfLastMonth);
+            currentPeriodOffset = 0;
+            previousPeriodOffset = 0;
+
+            graphMovement = tempCurrentMonth - tempLastMonth;
+            if(graphMovement > 0)
+            {
+                currentPeriodOffset = graphMovement;
+            }
+            else if(graphMovement < 0)
+            {
+                previousPeriodOffset = graphMovement * -1;
+            }
+        }
+        else
+        {
+            currentPeriodOffset = 0;
+            previousPeriodOffset = 0;
+        }
     }
 
     // ===============================

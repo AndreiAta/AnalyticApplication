@@ -45,11 +45,18 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
+
+import static java.util.Calendar.DAY_OF_WEEK;
 
 public class PageViewsMonthFragment extends Fragment implements View.OnClickListener
 {
@@ -71,7 +78,8 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
     ArrayList<String> xAxis;
     boolean tableIsVisible = true;
     boolean secondCall = false;
-    int totalDays, periodCounter;
+    int totalDays, graphMovement;
+    int currentPeriodOffset = 0, previousPeriodOffset = 0;
     CustomMarkerViewPage mv;
     Button moreInfoButton;
     ImageButton imgBtnBack, imgBtnForward;
@@ -118,9 +126,11 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
                 getNextPeriod();
             }
         });
-        imgBtnBack.setOnClickListener(new View.OnClickListener() {
+        imgBtnBack.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 getPreviousPeriod();
             }
         });
@@ -132,13 +142,14 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
                 ResourcesCompat.getDrawable(getResources(), R.drawable.ic_keyboard_arrow_up_white_18dp, null), null);
         moreInfoButton.setOnClickListener(this);
 
-        periodCounter = 0;
         //Get date period for text view
         int daysOfMonth = new DateTime().getDayOfMonth();
         DateTime firstDayOfMonth = new DateTime().minusDays(daysOfMonth - 1);
         DateTime today = new DateTime().minusDays(1);
         String textDatePeriod = firstDayOfMonth.toString("dd MMMM") + " - " + today.toString("dd MMMM");
         textViewDate.setText(textDatePeriod);
+
+        calculatePeriodOffset();
 
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
@@ -192,6 +203,7 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
                 chart.setVisibility(View.INVISIBLE);
                 textViewInfo.setText("VISITS THIS MONTH");
                 MainActivity.monthPeriodCounter--;
+                calculatePeriodOffset();
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period="
                         + calculatePeriod(MainActivity.monthPeriodCounter);
@@ -215,6 +227,7 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
             chart.setVisibility(View.INVISIBLE);
             textViewInfo.setText("VISITS THIS MONTH");
             MainActivity.monthPeriodCounter ++;
+            calculatePeriodOffset();
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period="
                     + calculatePeriod(MainActivity.monthPeriodCounter);
@@ -368,11 +381,28 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
         void onFragmentInteraction(Uri uri);
     }
 
-    private ArrayList<String> getXAxisValues() {
+    private ArrayList<String> getXAxisValues()
+    {
+        xAxis = new ArrayList<>();
 
-        for (Integer i = 1; i <= 31 ; i++)
+        for (Integer i = 1; i <= valueSet1.size() ; i++)
         {
             xAxis.add(i.toString());
+        }
+
+        if(previousPeriodOffset > 0)
+        {
+            for (int i = 0; i < previousPeriodOffset ; i++)
+            {
+                xAxis.add("");
+            }
+        }
+        else if(currentPeriodOffset > 0)
+        {
+            for (int i = 0; i < currentPeriodOffset ; i++)
+            {
+                xAxis.add(0, "");
+            }
         }
 
         return xAxis;
@@ -416,6 +446,56 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
             chart.getAxisRight().setDrawLabels(false);
         }
         chart.setVisibility(View.VISIBLE);
+    }
+
+    public static int getIntDayOfWeek(String dayOfWeek)
+    {
+        try
+        {
+            DateFormat formatter ;
+            Date date ;
+            formatter = new SimpleDateFormat("EEE");
+            date = (Date)formatter.parse(dayOfWeek);
+            GregorianCalendar g = new GregorianCalendar();
+            g.setTime(date);
+            return g.get(DAY_OF_WEEK);
+        }
+        catch (ParseException e)
+        {
+            System.out.println("Exception :"+e);
+        }
+        return 0;
+    }
+
+    public void calculatePeriodOffset()
+    {
+        if(landscapeMode)
+        {
+            DateTime firstOfThisMonth = new DateTime().minusMonths(MainActivity.monthPeriodCounter).dayOfMonth().withMinimumValue();
+            String firstDayOfThisMonth = firstOfThisMonth.toString("EEEE");
+            DateTime firstOfLastMonth = new DateTime().minusMonths(MainActivity.monthPeriodCounter + 1).dayOfMonth().withMinimumValue();
+            String firstDayOfLastMonth = firstOfLastMonth.toString("EEEE");
+
+            int tempCurrentMonth = getIntDayOfWeek(firstDayOfThisMonth);
+            int tempLastMonth = getIntDayOfWeek(firstDayOfLastMonth);
+            currentPeriodOffset = 0;
+            previousPeriodOffset = 0;
+
+            graphMovement = tempCurrentMonth - tempLastMonth;
+            if(graphMovement > 0)
+            {
+                currentPeriodOffset = graphMovement;
+            }
+            else if(graphMovement < 0)
+            {
+                previousPeriodOffset = graphMovement * -1;
+            }
+        }
+        else
+        {
+            currentPeriodOffset = 0;
+            previousPeriodOffset = 0;
+        }
     }
 
     // ===============================
@@ -515,12 +595,12 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
 
                             if(secondCall)
                             {
-                                Entry entry = new Entry((float) visits, i);
+                                Entry entry = new Entry((float) visits, i + previousPeriodOffset);
                                 valueSet2.add(entry);
 
                             }else
                             {
-                                Entry entry = new Entry((float) visits, i);
+                                Entry entry = new Entry((float) visits, i + currentPeriodOffset);
                                 valueSet1.add(entry);
                                 tableValues.add(visits);
                                 totalVisits = totalVisits + visits;
