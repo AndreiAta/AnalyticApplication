@@ -197,6 +197,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/overview/history?period="
                         + calculatePeriod(MainActivity.yearPeriodCounter);
+                chart.highlightValues(null);
                 new RetrieveFeedTask().execute();
             }
         }
@@ -221,6 +222,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/overview/history?period="
                     + calculatePeriod(MainActivity.yearPeriodCounter);
+            chart.highlightValues(null);
             new RetrieveFeedTask().execute();
         }
         else
