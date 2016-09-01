@@ -82,7 +82,8 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
     ArrayList<String> tableWeekDays = new ArrayList<>();
     boolean tableIsVisible = true;
     boolean secondCall = false;
-    int totalDays;
+    int totalDays, graphMovement;
+    int currentPeriodOffset = 0, previousPeriodOffset = 0;
     CustomMarkerViewVisits mv;
     Button moreInfoButton;
     ImageButton imgBtnBack, imgBtnForward;
@@ -144,7 +145,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
                 ResourcesCompat.getDrawable(getResources(), R.drawable.ic_keyboard_arrow_up_white_18dp, null), null);
         moreInfoButton.setOnClickListener(this);
 
-        getDifference();
+        calculatePeriodOffset();
 
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
@@ -195,6 +196,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
                 chart.setVisibility(View.INVISIBLE);
                 textViewInfo.setText("VISITS THIS MONTH");
                 MainActivity.monthPeriodCounter--;
+                calculatePeriodOffset();
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period="
                         + calculatePeriod(MainActivity.monthPeriodCounter);
@@ -220,6 +222,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
             chart.setVisibility(View.INVISIBLE);
             textViewInfo.setText("VISITS THIS MONTH");
             MainActivity.monthPeriodCounter ++;
+            calculatePeriodOffset();
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period="
                     + calculatePeriod(MainActivity.monthPeriodCounter);
@@ -378,6 +381,20 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
     private ArrayList<String> getXAxisValues() {
         xAxis = new ArrayList<>();
 
+        if(previousPeriodOffset > 0)
+        {
+            for (int i = 0; i < previousPeriodOffset ; i++)
+            {
+                xAxis.add("");
+            }
+        }
+        else if(currentPeriodOffset > 0)
+        {
+            for (int i = 0; i < currentPeriodOffset ; i++)
+            {
+                xAxis.add(0, "");
+            }
+        }
         for (Integer i = 1; i <= 31 ; i++)
         {
             xAxis.add(i.toString());
@@ -445,28 +462,27 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         return 0;
     }
 
-    private static String getThisMonthFirstOcurrence(Date date) {
-        Calendar c = getInstance();
-        c.setTime(date);
-        c.add(MONTH, 1);
-        c.set(DAY_OF_MONTH, 1);
-
-        // search until wednesday
-        while (c.get(DAY_OF_WEEK) != Calendar.FRIDAY) {
-            c.add(DAY_OF_MONTH, 1);
-        }
-        return c.getTime().toString();
-    }
-
-    public void getDifference()
+    public void calculatePeriodOffset()
     {
-        DateTime firstOfThisMonth = new DateTime().dayOfMonth().withMinimumValue();
+        DateTime firstOfThisMonth = new DateTime().minusMonths(MainActivity.monthPeriodCounter).dayOfMonth().withMinimumValue();
         String firstDayOfThisMonth = firstOfThisMonth.toString("EEEE");
-        DateTime firstOfLastMonth = new DateTime().minusMonths(1).dayOfMonth().withMinimumValue();
+        DateTime firstOfLastMonth = new DateTime().minusMonths(MainActivity.monthPeriodCounter + 1).dayOfMonth().withMinimumValue();
         String firstDayOfLastMonth = firstOfLastMonth.toString("EEEE");
-        String test = getThisMonthFirstOcurrence(firstOfLastMonth.toDate()).toString();
 
-        Log.i("BLALBAA", test);
+        int tempCurrentMonth = getIntDayOfWeek(firstDayOfThisMonth);
+        int tempLastMonth = getIntDayOfWeek(firstDayOfLastMonth);
+        currentPeriodOffset = 0;
+        previousPeriodOffset = 0;
+
+        graphMovement = tempCurrentMonth - tempLastMonth;
+        if(graphMovement > 0)
+        {
+            currentPeriodOffset = graphMovement;
+        }
+        else if(graphMovement < 0)
+        {
+            previousPeriodOffset = graphMovement * -1;
+        }
 
     }
 
@@ -566,13 +582,13 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
 
                             if(secondCall)
                             {
-                                Entry entry = new Entry((float)visits, i);
+                                Entry entry = new Entry((float)visits, i + previousPeriodOffset);
                                 valueSet2.add(entry);
 
                             }else
                             {
 
-                                Entry entry = new Entry((float) visits, i);
+                                Entry entry = new Entry((float) visits, i + currentPeriodOffset);
                                 valueSet1.add(entry);
                                 tableValues.add(visits);
                                 totalVisits = totalVisits + visits;
@@ -591,7 +607,6 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
                             lineDataSet2.setHighLightColor(Color.rgb(255,255,255));
                             dataSets.add(lineDataSet2);
                             drawGraph();
-
                             secondCall = false;
                         } else
                         {
@@ -605,7 +620,6 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
                             lineDataSet1.setCircleColor(Color.rgb(5, 184, 198));
                             lineDataSet1.setCircleColorHole(Color.rgb(5, 184, 198));
                             dataSets.add(lineDataSet1);
-                            Log.i("Total VISISTS", totalVisits.toString());
                             textViewTotal.setText(totalVisits.toString());
                             if(landscapeMode)
                             {
@@ -616,7 +630,6 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
                                 new RetrieveFeedTask().execute();
                             }else
                             {
-                                Log.i("I AM CALLEDNOLANDSCAPE","XXXXXX");
                                 createTable();
                                 drawGraph();
                             }
