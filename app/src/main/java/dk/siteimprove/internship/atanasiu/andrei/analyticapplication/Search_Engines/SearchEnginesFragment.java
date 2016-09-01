@@ -391,7 +391,8 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
 
         protected void onPreExecute() {
             progressBar.setVisibility(View.VISIBLE);
-
+            imgBtnBack.setClickable(false);
+            imgBtnBack.setAlpha(0.5f);
         }
 
         protected String doInBackground(Void... urls) {
@@ -552,7 +553,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
                                 reverseXPosInList(valueSet1);
                                 Collections.reverse(valueSet1);
                                 dataSets = new ArrayList<>();
-                                BarDataSet barDataSet1 = new BarDataSet(valueSet1, "TODAY");
+                                BarDataSet barDataSet1 = new BarDataSet(valueSet1, "SELECTED DAY");
                                 barDataSet1.setColor(Color.rgb(5, 184, 198));
                                 barDataSet1.setBarSpacePercent(50f);
                                 dataSets.add(barDataSet1);
@@ -566,14 +567,14 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
                             reverseXPosInList(valueSet1);
                             Collections.reverse(valueSet1);
                             dataSets = new ArrayList<>();
-                            BarDataSet barDataSet1 = new BarDataSet(valueSet1, "TODAY");
+                            BarDataSet barDataSet1 = new BarDataSet(valueSet1, "SELECTED DAY");
                             barDataSet1.setColor(Color.rgb(5, 184, 198));
                             barDataSet1.setBarSpacePercent(50f);
                             dataSets.add(barDataSet1);
 
                             reverseXPosInList(valueSet2);
                             Collections.reverse(valueSet2);
-                            BarDataSet barDataSet2 = new BarDataSet(valueSet2, "YESTERDAY");
+                            BarDataSet barDataSet2 = new BarDataSet(valueSet2, "PREVIOUS DAY");
                             barDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
                             barDataSet2.setBarSpacePercent(50f);
                             dataSets.add(barDataSet2);

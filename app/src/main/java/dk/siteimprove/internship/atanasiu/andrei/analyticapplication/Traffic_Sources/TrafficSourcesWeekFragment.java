@@ -436,7 +436,7 @@ public class TrafficSourcesWeekFragment extends Fragment implements View.OnClick
                     {
                         if(secondCall)
                         {
-                            BarDataSet barDataSet2 = new BarDataSet(valueSet2, "LAST WEEK");
+                            BarDataSet barDataSet2 = new BarDataSet(valueSet2, "PREVIOUS WEEK");
                             barDataSet2.setColor(Color.rgb(181, 0, 97));
                             barDataSet2.setBarSpacePercent(50f);
                             dataSets.add(barDataSet2);
@@ -445,7 +445,7 @@ public class TrafficSourcesWeekFragment extends Fragment implements View.OnClick
                             secondCall = false;
                         }else
                         {
-                            BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS WEEK");
+                            BarDataSet barDataSet1 = new BarDataSet(valueSet1, "SELECTED WEEK");
                             barDataSet1.setColor(Color.rgb(5, 184, 198));
                             barDataSet1.setBarSpacePercent(50f);
                             dataSets.add(barDataSet1);

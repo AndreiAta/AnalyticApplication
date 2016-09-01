@@ -415,6 +415,8 @@ public class PopPagesMonthFragment extends Fragment implements View.OnClickListe
 
         protected void onPreExecute() {
             progressBar.setVisibility(View.VISIBLE);
+            imgBtnBack.setClickable(false);
+            imgBtnBack.setAlpha(0.5f);
         }
 
         protected String doInBackground(Void... urls) {
@@ -573,7 +575,7 @@ public class PopPagesMonthFragment extends Fragment implements View.OnClickListe
                                 reverseXPosInList(valueSet1);
                                 Collections.reverse(valueSet1);
                                 dataSets = new ArrayList<>();
-                                BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS MONTH");
+                                BarDataSet barDataSet1 = new BarDataSet(valueSet1, "SELECTED MONTH");
                                 barDataSet1.setColor(Color.rgb(5, 184, 198));
                                 barDataSet1.setBarSpacePercent(50f);
                                 dataSets.add(barDataSet1);
@@ -587,7 +589,7 @@ public class PopPagesMonthFragment extends Fragment implements View.OnClickListe
                             reverseXPosInList(valueSet1);
                             Collections.reverse(valueSet1);
                             dataSets = new ArrayList<>();
-                            BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS MONTH");
+                            BarDataSet barDataSet1 = new BarDataSet(valueSet1, "PREVIOUS MONTH");
                             barDataSet1.setColor(Color.rgb(5, 184, 198));
                             barDataSet1.setBarSpacePercent(50f);
                             dataSets.add(barDataSet1);
