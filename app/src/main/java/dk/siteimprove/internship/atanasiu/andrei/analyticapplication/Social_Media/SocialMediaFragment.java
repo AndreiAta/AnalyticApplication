@@ -184,6 +184,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=" +
                         calculatePeriod(MainActivity.todayPeriodCounter);
+                chart.highlightValues(null);
                 new RetrieveFeedTask().execute();
             }
         }
@@ -208,6 +209,7 @@ public class SocialMediaFragment extends Fragment implements View.OnClickListene
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period=" +
                     calculatePeriod(MainActivity.todayPeriodCounter);
+            chart.highlightValues(null);
             new RetrieveFeedTask().execute();
         }
         else

@@ -189,6 +189,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
                         + calculatePeriod(MainActivity.todayPeriodCounter);
+                chart.highlightValues(null);
                 new RetrieveFeedTask().execute();
             }
         }else
@@ -212,6 +213,7 @@ public class SearchEnginesFragment extends Fragment implements View.OnClickListe
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
                     + calculatePeriod(MainActivity.todayPeriodCounter);
+            chart.highlightValues(null);
             new RetrieveFeedTask().execute();
         }else
         {

@@ -70,7 +70,7 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
     boolean secondCall = false;
     boolean tableIsVisible = true;
     boolean landscapeMode, apiIdSelected;
-    int totalVisits, totalSocialMedia, periodCounter;
+    int totalVisits, totalSocialMedia;
     int[] tempValSet2 = new int[100];
     CustomMarkerViewSocial mv;
     Button moreInfoButton;
@@ -185,7 +185,8 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
                 MainActivity.weekPeriodCounter--;
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
-                        + calculatePeriod(periodCounter);
+                        + calculatePeriod(MainActivity.weekPeriodCounter);
+                chart.highlightValues(null);
                 new RetrieveFeedTask().execute();
             }
         }
@@ -210,6 +211,7 @@ public class SocialMediaWeekFragment extends Fragment implements View.OnClickLis
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/traffic_sources/social_media_organisations?page=1&page_size=10&period="
                     + calculatePeriod(MainActivity.weekPeriodCounter);
+            chart.highlightValues(null);
             new RetrieveFeedTask().execute();
         }
         else

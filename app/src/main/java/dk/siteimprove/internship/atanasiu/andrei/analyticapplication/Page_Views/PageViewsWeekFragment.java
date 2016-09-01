@@ -199,6 +199,7 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/behavior/visits_by_weekday?page=1&page_size=10&period="
                         + calculatePeriod(MainActivity.weekPeriodCounter);
+                chart.highlightValues(null);
                 new RetrieveFeedTask().execute();
             }
         }else
@@ -221,6 +222,7 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/behavior/visits_by_weekday?page=1&page_size=10&period="
                     + calculatePeriod(MainActivity.weekPeriodCounter);
+            chart.highlightValues(null);
             new RetrieveFeedTask().execute();
         }else
         {

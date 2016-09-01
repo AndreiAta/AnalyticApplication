@@ -190,6 +190,7 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/behavior/visits_by_hour?page=1&page_size=10&period="
                         + calculatePeriod(MainActivity.todayPeriodCounter);
+                chart.highlightValues(null);
                 new RetrieveFeedTask().execute();
             }
         }else
@@ -212,6 +213,7 @@ public class PageViewsFragment extends Fragment implements View.OnClickListener
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/behavior/visits_by_hour?page=1&page_size=10&period="
                     + calculatePeriod(MainActivity.todayPeriodCounter);
+            chart.highlightValues(null);
             new RetrieveFeedTask().execute();
         }else
         {

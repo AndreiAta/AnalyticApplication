@@ -185,13 +185,13 @@ public class SearchEnginesWeekFragment extends Fragment implements View.OnClickL
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
                         + calculatePeriod(MainActivity.weekPeriodCounter);
+                chart.highlightValues(null);
                 new RetrieveFeedTask().execute();
             }
         }else
         {
             Toast.makeText(getActivity().getApplicationContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     private void getPreviousPeriod()
@@ -208,6 +208,7 @@ public class SearchEnginesWeekFragment extends Fragment implements View.OnClickL
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/traffic_sources/search_engines?page=1&page_size=10&period="
                     + calculatePeriod(MainActivity.weekPeriodCounter);
+            chart.highlightValues(null);
             new RetrieveFeedTask().execute();
         }else
         {

@@ -190,6 +190,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/behavior/visits_by_hour?page=1&page_size=10&period=" +
                         calculatePeriod(MainActivity.todayPeriodCounter);
+                chart.highlightValues(null);
                 new RetrieveFeedTask().execute();
             }
         }
@@ -214,6 +215,7 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/behavior/visits_by_hour?page=1&page_size=10&period=" +
                     calculatePeriod(MainActivity.todayPeriodCounter);
+            chart.highlightValues(null);
             new RetrieveFeedTask().execute();
         }
         else
@@ -259,12 +261,6 @@ public class VisitsFragment extends Fragment implements View.OnClickListener
             tableToggler.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     ResourcesCompat.getDrawable(getResources(), R.drawable.ic_keyboard_arrow_up_white_18dp, null), null);
         }
-    }
-
-    public void refresh()
-    {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.detach(this).attach(this).commit();
     }
 
     public void createTable()

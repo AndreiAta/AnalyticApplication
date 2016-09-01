@@ -195,6 +195,7 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
                 API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                         "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period="
                         + calculatePeriod(MainActivity.monthPeriodCounter);
+                chart.highlightValues(null);
                 new RetrieveFeedTask().execute();
             }
         }else
@@ -217,6 +218,7 @@ public class PageViewsMonthFragment extends Fragment implements View.OnClickList
             API_URL = "https://api.siteimprove.com/v2/sites/" + MainActivity.API_ID +
                     "/analytics/behavior/visits_by_monthday?page=1&page_size=10&period="
                     + calculatePeriod(MainActivity.monthPeriodCounter);
+            chart.highlightValues(null);
             new RetrieveFeedTask().execute();
         }else
         {
