@@ -145,7 +145,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
                 ResourcesCompat.getDrawable(getResources(), R.drawable.ic_keyboard_arrow_up_white_18dp, null), null);
         moreInfoButton.setOnClickListener(this);
 
-        calculatePeriodOffset();
+            calculatePeriodOffset();
 
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
@@ -464,26 +464,33 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
 
     public void calculatePeriodOffset()
     {
-        DateTime firstOfThisMonth = new DateTime().minusMonths(MainActivity.monthPeriodCounter).dayOfMonth().withMinimumValue();
-        String firstDayOfThisMonth = firstOfThisMonth.toString("EEEE");
-        DateTime firstOfLastMonth = new DateTime().minusMonths(MainActivity.monthPeriodCounter + 1).dayOfMonth().withMinimumValue();
-        String firstDayOfLastMonth = firstOfLastMonth.toString("EEEE");
-
-        int tempCurrentMonth = getIntDayOfWeek(firstDayOfThisMonth);
-        int tempLastMonth = getIntDayOfWeek(firstDayOfLastMonth);
-        currentPeriodOffset = 0;
-        previousPeriodOffset = 0;
-
-        graphMovement = tempCurrentMonth - tempLastMonth;
-        if(graphMovement > 0)
+        if(landscapeMode)
         {
-            currentPeriodOffset = graphMovement;
-        }
-        else if(graphMovement < 0)
-        {
-            previousPeriodOffset = graphMovement * -1;
-        }
+            DateTime firstOfThisMonth = new DateTime().minusMonths(MainActivity.monthPeriodCounter).dayOfMonth().withMinimumValue();
+            String firstDayOfThisMonth = firstOfThisMonth.toString("EEEE");
+            DateTime firstOfLastMonth = new DateTime().minusMonths(MainActivity.monthPeriodCounter + 1).dayOfMonth().withMinimumValue();
+            String firstDayOfLastMonth = firstOfLastMonth.toString("EEEE");
 
+            int tempCurrentMonth = getIntDayOfWeek(firstDayOfThisMonth);
+            int tempLastMonth = getIntDayOfWeek(firstDayOfLastMonth);
+            currentPeriodOffset = 0;
+            previousPeriodOffset = 0;
+
+            graphMovement = tempCurrentMonth - tempLastMonth;
+            if(graphMovement > 0)
+            {
+                currentPeriodOffset = graphMovement;
+            }
+            else if(graphMovement < 0)
+            {
+                previousPeriodOffset = graphMovement * -1;
+            }
+        }
+        else
+        {
+            currentPeriodOffset = 0;
+            previousPeriodOffset = 0;
+        }
     }
 
     // ===============================
@@ -587,7 +594,6 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
 
                             }else
                             {
-
                                 Entry entry = new Entry((float) visits, i + currentPeriodOffset);
                                 valueSet1.add(entry);
                                 tableValues.add(visits);
