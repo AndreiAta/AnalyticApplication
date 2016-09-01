@@ -429,6 +429,11 @@ public class MainActivity extends AppCompatActivity
         }
         else if (id == R.id.signOut)
         {
+            todayPeriodCounter = 0;
+            weekPeriodCounter = 0;
+            monthPeriodCounter = 0;
+            yearPeriodCounter = 0;
+            currentFragment = "Today";
             changeFragment = false;
             initialLogin = null;
             this.recreate();
