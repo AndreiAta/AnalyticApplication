@@ -443,7 +443,7 @@ public class TrafficSourcesMonthFragment extends Fragment implements View.OnClic
                     {
                         if(secondCall)
                         {
-                            BarDataSet barDataSet2 = new BarDataSet(valueSet2, "LAST MONTH");
+                            BarDataSet barDataSet2 = new BarDataSet(valueSet2, "PREVIOUS MONTH");
                             barDataSet2.setColor(Color.rgb(181, 0, 97));
                             barDataSet2.setBarSpacePercent(50f);
                             dataSets.add(barDataSet2);
@@ -452,7 +452,7 @@ public class TrafficSourcesMonthFragment extends Fragment implements View.OnClic
                             secondCall = false;
                         }else
                         {
-                            BarDataSet barDataSet1 = new BarDataSet(valueSet1, "THIS MONTH");
+                            BarDataSet barDataSet1 = new BarDataSet(valueSet1, "SELECTED MONTH");
                             barDataSet1.setColor(Color.rgb(5, 184, 198));
                             barDataSet1.setBarSpacePercent(50f);
                             dataSets.add(barDataSet1);

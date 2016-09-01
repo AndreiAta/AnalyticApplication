@@ -440,6 +440,8 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
         protected void onPreExecute()
         {
             progressBar.setVisibility(View.VISIBLE);
+            imgBtnBack.setClickable(false);
+            imgBtnBack.setAlpha(0.5f);
         }
 
         protected String doInBackground(Void... urls)
@@ -544,7 +546,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
 
                         if(secondCall)
                         {
-                            LineDataSet lineDataSet2 = new LineDataSet(valueSet2, "LAST YEAR");
+                            LineDataSet lineDataSet2 = new LineDataSet(valueSet2, "PREVIOUS YEAR");
                             lineDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
                             Drawable drawable = ContextCompat.getDrawable(getActivity().getApplication(), R.drawable.chart_lastperiod_background);
                             lineDataSet2.setFillDrawable(drawable);
@@ -560,7 +562,7 @@ public class VisitsYearFragment extends Fragment implements View.OnClickListener
                         }else
                         {
                             dataSets = new ArrayList<>();
-                            LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "THIS YEAR");
+                            LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "SELECTED YEAR");
                             lineDataSet1.setColor(Color.rgb(5, 184, 198));
                             Drawable drawable = ContextCompat.getDrawable(getActivity().getApplication(), R.drawable.chart_thisperiod_background);
                             lineDataSet1.setFillDrawable(drawable);

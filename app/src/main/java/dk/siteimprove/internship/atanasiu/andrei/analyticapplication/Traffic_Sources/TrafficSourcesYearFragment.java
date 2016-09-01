@@ -450,7 +450,7 @@ public class TrafficSourcesYearFragment extends Fragment implements View.OnClick
                    {
                        if(secondCall)
                        {
-                           BarDataSet barDataSet2 = new BarDataSet(valueSet2, "YESTERDAY");
+                           BarDataSet barDataSet2 = new BarDataSet(valueSet2, "PREVIOUS DAY");
                            barDataSet2.setColor(Color.rgb(181, 0, 97));
                            barDataSet2.setBarSpacePercent(50f);
                            dataSets.add(barDataSet2);
@@ -459,7 +459,7 @@ public class TrafficSourcesYearFragment extends Fragment implements View.OnClick
                            secondCall = false;
                        }else
                        {
-                           BarDataSet barDataSet1 = new BarDataSet(valueSet1, "TODAY");
+                           BarDataSet barDataSet1 = new BarDataSet(valueSet1, "SELECTED DAY");
                            barDataSet1.setColor(Color.rgb(5, 184, 198));
                            barDataSet1.setBarSpacePercent(50f);
                            dataSets.add(barDataSet1);

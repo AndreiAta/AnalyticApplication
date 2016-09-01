@@ -443,32 +443,28 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         return 0;
     }
 
-    private static Date getLastMonthFirstMonday(Date date) {
+    private static String getThisMonthFirstOcurrence(Date date) {
         Calendar c = getInstance();
         c.setTime(date);
-        c.add(MONTH, -1);
+        c.add(MONTH, 1);
         c.set(DAY_OF_MONTH, 1);
 
         // search until wednesday
-        while (c.get(DAY_OF_WEEK) != Calendar.MONDAY) {
+        while (c.get(DAY_OF_WEEK) != Calendar.FRIDAY) {
             c.add(DAY_OF_MONTH, 1);
         }
-        return c.getTime();
+        return c.getTime().toString();
     }
 
     public void getDifference()
     {
-        DateTime test = new DateTime().dayOfMonth().withMinimumValue();
-        DateTime test2 = new DateTime().minusMonths(2).dayOfMonth().withMinimumValue();
-        String firstDayOfThisMonth = test.toString("EEEE");
-        String firstDayOfLastMonth = test2.toString("EEEE");
-        String firstMonday = getLastMonthFirstMonday(test2.toDate()).toString();
+        DateTime firstOfThisMonth = new DateTime().dayOfMonth().withMinimumValue();
+        String firstDayOfThisMonth = firstOfThisMonth.toString("EEEE");
+        DateTime firstOfLastMonth = new DateTime().minusMonths(1).dayOfMonth().withMinimumValue();
+        String firstDayOfLastMonth = firstOfLastMonth.toString("EEEE");
+        String test = getThisMonthFirstOcurrence(firstOfLastMonth.toDate()).toString();
 
-        Log.i("BLALBAA", firstMonday);
-
-        int currentMonthStart = getIntDayOfWeek(firstDayOfThisMonth);
-        int lastMonthStart = getIntDayOfWeek(firstDayOfLastMonth);
-
+        Log.i("BLALBAA", test);
 
     }
 
@@ -482,6 +478,8 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         protected void onPreExecute()
         {
             progressBar.setVisibility(View.VISIBLE);
+            imgBtnBack.setClickable(false);
+            imgBtnBack.setAlpha(0.5f);
         }
 
         protected String doInBackground(Void... urls)
@@ -581,7 +579,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
 
                         if (secondCall)
                         {
-                            LineDataSet lineDataSet2 = new LineDataSet(valueSet2, "LAST MONTH");
+                            LineDataSet lineDataSet2 = new LineDataSet(valueSet2, "PREVIOUS MONTH");
                             lineDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
                             Drawable drawable = ContextCompat.getDrawable(getActivity().getApplication(), R.drawable.chart_lastperiod_background);
                             lineDataSet2.setFillDrawable(drawable);
@@ -596,7 +594,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
                         } else
                         {
                             dataSets = new ArrayList<>();
-                            LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "THIS MONTH");
+                            LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "SELECTED MONTH");
                             lineDataSet1.setColor(Color.rgb(5, 184, 198));
                             Drawable drawable = ContextCompat.getDrawable(getActivity().getApplication(), R.drawable.chart_thisperiod_background);
                             lineDataSet1.setFillDrawable(drawable);

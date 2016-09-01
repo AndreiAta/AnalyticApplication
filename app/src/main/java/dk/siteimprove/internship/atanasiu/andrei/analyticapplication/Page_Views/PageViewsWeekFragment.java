@@ -427,6 +427,8 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
         protected void onPreExecute()
         {
             progressBar.setVisibility(View.VISIBLE);
+            imgBtnBack.setClickable(false);
+            imgBtnBack.setAlpha(0.5f);
         }
 
         protected String doInBackground(Void... urls)
@@ -531,7 +533,7 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
 
                        if (secondCall)
                        {
-                           LineDataSet lineDataSet2 = new LineDataSet(valueSet2, "LAST WEEK");
+                           LineDataSet lineDataSet2 = new LineDataSet(valueSet2, "PREVIOUS WEEK");
                            lineDataSet2.setColor(Color.rgb(181, 0, 97)); //TODO USE R.COLOR
                            Drawable drawable = ContextCompat.getDrawable(getActivity().getApplication(), R.drawable.chart_lastperiod_background);
                            lineDataSet2.setFillDrawable(drawable);
@@ -546,7 +548,7 @@ public class PageViewsWeekFragment extends Fragment implements View.OnClickListe
                        } else
                        {
                            dataSets = new ArrayList<>();
-                           LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "THIS WEEK");
+                           LineDataSet lineDataSet1 = new LineDataSet(valueSet1, "SELECTED WEEK");
                            lineDataSet1.setColor(Color.rgb(5, 184, 198));
                            Drawable drawable = ContextCompat.getDrawable(getActivity().getApplication(), R.drawable.chart_thisperiod_background);
                            lineDataSet1.setFillDrawable(drawable);
