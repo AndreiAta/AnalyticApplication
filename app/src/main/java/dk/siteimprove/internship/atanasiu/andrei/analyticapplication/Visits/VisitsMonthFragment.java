@@ -36,6 +36,8 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,6 +55,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.MainActivity;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.R;
@@ -144,7 +147,7 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
                 ResourcesCompat.getDrawable(getResources(), R.drawable.ic_keyboard_arrow_up_white_18dp, null), null);
         moreInfoButton.setOnClickListener(this);
 
-            calculatePeriodOffset();
+        calculatePeriodOffset();
 
         if(!MainActivity.API_ID.equalsIgnoreCase(""))
         {
@@ -247,8 +250,8 @@ public class VisitsMonthFragment extends Fragment implements View.OnClickListene
         if(periodCounter != 0)
         {
             stopDate = thisDate.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("yyyyMMdd");
-            textDate = (firstDayOfMonth.minusMonths(periodCounter).toString("dd MMM yyyy") + " - "
-                    + thisDate.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("dd MMM yyyy"));
+            textDate = firstDayOfMonth.minusMonths(periodCounter).toString("dd MMM yyyy") + " - "
+                    + thisDate.minusMonths(periodCounter).dayOfMonth().withMaximumValue().toString("dd MMM yyyy");
 
         }
         else

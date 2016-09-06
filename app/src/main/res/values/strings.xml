@@ -14,4 +14,11 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="spinner_text">Choose Site</string>
+
+
+    <string name="contact_us">
+        If you experience any issues,
+        <u>contact us.</u>
+    </string>
+
 </resources>

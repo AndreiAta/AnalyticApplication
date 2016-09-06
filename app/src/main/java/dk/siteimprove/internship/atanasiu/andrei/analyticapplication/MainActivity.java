@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -33,7 +34,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -50,6 +50,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.entity.Site;
 import dk.siteimprove.internship.atanasiu.andrei.analyticapplication.most_popular_pages.PopPagesFragment;
@@ -142,6 +143,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        Locale.setDefault(new Locale("en", "US")); // Sets the Locale to show all dates in english.
         currentFragment = "Today";
         todayPeriodCounter = 0;
         weekPeriodCounter = 0;
@@ -201,6 +203,7 @@ public class MainActivity extends AppCompatActivity
             dialog.setCancelable(false);
             setupUI(dialog.findViewById(R.id.signInLayout));
 
+            TextView contactTxt = (TextView) dialog.findViewById(R.id.contactTxt);
             emailText = (EditText) dialog.findViewById(R.id.emailTextField);
             apiKeyText = (EditText) dialog.findViewById(R.id.apiKeyTextField);
             headerTxt = (TextView) dialog.findViewById(R.id.headerTxt);
@@ -215,6 +218,21 @@ public class MainActivity extends AppCompatActivity
 
             readFromFile("credentials_file");
             readFromFile("rotate_check_file");
+            contactTxt.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+                    sendIntent.setType("plain/text");
+                    sendIntent.setData(Uri.parse("contact@siteimprove.com"));
+                    sendIntent.setClassName("com.google.android.gm", "com.google.android.gm.ComposeActivityGmail");
+                    sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"contact@siteimprove.com" });
+                    sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Sign me up!");
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Hello! \n I've seen your cool app! sign me up! :-)");
+                    startActivity(sendIntent);
+                }
+            });
             signInButton.setOnClickListener(new View.OnClickListener()
             {
                 @Override

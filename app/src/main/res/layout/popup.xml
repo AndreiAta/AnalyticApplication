@@ -5,7 +5,8 @@
                 android:background="@color/TuataraGrey">
     <ScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView2">
         <RelativeLayout
             android:id="@+id/signInLayout"
             android:layout_width="wrap_content"
@@ -121,4 +122,14 @@
 
         </RelativeLayout>
     </ScrollView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/contactTxt"
+        android:text="@string/contact_us"
+        android:textAlignment="center"
+        android:textColor="@color/White"
+        android:layout_below="@+id/scrollView2"
+        android:layout_centerHorizontal="true"/>
+
 </RelativeLayout>
